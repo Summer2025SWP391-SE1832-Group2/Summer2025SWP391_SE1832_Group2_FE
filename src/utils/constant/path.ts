@@ -3,11 +3,11 @@
  */
 export const paths = {
   // Public routes
-  home: "/",
-  login: "/login",
-  register: "/register",
-  forgotPassword: "/forgot-password",
+  home: '/',
+  login: '/login',
+  register: '/register',
+  forgotPassword: '/forgot-password',
 
   // Fallback
-  notFound: "*",
+  notFound: '*',
 } as const;
