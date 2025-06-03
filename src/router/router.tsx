@@ -1,6 +1,8 @@
 import MainLayout from '@/components/layout/main-layout';
 import LoginPage from '@/pages/auth/login';
 import RegisterPage from '@/pages/auth/register';
+import BlogPage from '@/pages/blog';
+import BlogType from '@/pages/blog/blogType';
 import HomePage from '@/pages/home';
 import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
@@ -22,6 +24,14 @@ const router = createBrowserRouter([
       {
         path: paths.register,
         element: <RegisterPage />,
+      },
+      {
+        path: paths.blog,
+        element: <BlogPage />,
+      },
+      {
+        path: paths.blogType,
+        element: <BlogType />,
       },
     ],
   },
