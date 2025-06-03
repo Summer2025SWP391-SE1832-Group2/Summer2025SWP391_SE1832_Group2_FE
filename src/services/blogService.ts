@@ -7,7 +7,7 @@ const getAllBlogs = async (): Promise<Blog[]> => {
 };
 
 const getAllBlogByBlogTypeID = async (id : number): Promise<Blog[]> => {
-  const response = await axiosInstance.get<Blog[]>(`/api/Blog/${id}`);
+  const response = await axiosInstance.get<Blog[]>(`/api/Blog/type/${id}`);
   return response.data;
 };
 

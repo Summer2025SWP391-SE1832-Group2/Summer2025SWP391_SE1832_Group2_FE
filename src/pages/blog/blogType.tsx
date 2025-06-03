@@ -21,12 +21,12 @@ const BlogType: React.FC = () => {
 
     fetchBlogTypes();
   }, []);
-    const handleClick = (category: number) => {
-        //navigate(`/category/${encodeURIComponent(category)}`);
-                navigate(`/blog`);
+    const handleClick = (id: number) => {
+        //navigate(`/category/${encodeURIComponent(id)}`);
+                navigate(`/blog-type/blog/${encodeURIComponent(id)}`);
 
       };
-  return (
+  return (  
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {blogTypes.map((item) => (

@@ -6,7 +6,7 @@
     blogTypeId: number;
     createAt : string;
     updateAt : string;
-    Image: string;
+    image: string;
   };
    type Blogtype = {
       blogTypeId: number;

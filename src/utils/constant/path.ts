@@ -7,7 +7,7 @@ export const paths = {
   login: '/login',
   register: '/register',
   forgotPassword: '/forgot-password',
-  blog: '/blog',
+  blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
   // Fallback
   notFound: '*',
