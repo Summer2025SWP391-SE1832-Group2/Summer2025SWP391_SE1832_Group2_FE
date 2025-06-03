@@ -1,11 +1,16 @@
-import MainLayout from '@/components/layout/main-layout';
-import LoginPage from '@/pages/auth/login';
-import RegisterPage from '@/pages/auth/register';
+
 import BlogPage from '@/pages/blog';
 import BlogType from '@/pages/blog/blogType';
+import MainLayout from '@/components/layout/main-layout/main-layout';
+import DashboardLayout from '@/components/layout/dashboard-layout/dashboard-layout';
 import HomePage from '@/pages/home';
+import LoginPage from '@/pages/login';
+import RegisterPage from '@/pages/register';
+import DashboardPage from '@/pages/dashboard';
 import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import PublicRoute from './public-route';
+import ProtectedRoute from './protected-route';
 
 const router = createBrowserRouter([
   {
@@ -17,15 +22,6 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: paths.login,
-        element: <LoginPage />,
-      },
-
-      {
-        path: paths.register,
-        element: <RegisterPage />,
-      },
-      {
         path: paths.blog,
         element: <BlogPage />,
       },
@@ -33,6 +29,34 @@ const router = createBrowserRouter([
         path: paths.blogType,
         element: <BlogType />,
       },
+      {
+        element: <PublicRoute />,
+        children: [
+          {
+            path: paths.login,
+            element: <LoginPage />,
+          },
+          {
+            path: paths.register,
+            element: <RegisterPage />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: paths.dashboard,
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <DashboardPage />,
+      },
+     
     ],
   },
   {

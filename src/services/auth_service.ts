@@ -1,5 +1,6 @@
 import axiosInstance from '@/lib/api/axios';
-import type { LoginRequest, RegisterRequest, LoginResponse, RegisterResponse } from '@/types/auth';
+import type { LoginRequest, LoginResponse } from '@/types/login';
+import type { RegisterRequest, RegisterResponse } from '@/types/register';
 
 const loginService = async (data: LoginRequest) => {
   
