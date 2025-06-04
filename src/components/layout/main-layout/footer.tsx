@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { paths } from '@/utils/constant/path';
+import BrandLogo from '@/components/common/brand-logo';
 
 const Footer = () => {
   return (
@@ -8,12 +9,7 @@ const Footer = () => {
         <div className='grid grid-cols-1 md:grid-cols-4 gap-8'>
           {/* Company Info */}
           <div className='space-y-4'>
-            <div className='flex items-center space-x-2'>
-              <div className='h-8 w-8 rounded bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center'>
-                <span className='text-white font-bold text-sm'>DNA</span>
-              </div>
-              <span className='text-xl font-bold'>BloodLine</span>
-            </div>
+            <BrandLogo />
             <p className='text-sm text-muted-foreground'>
               Dịch vụ xét nghiệm ADN hàng đầu Việt Nam với công nghệ tiên tiến và độ chính xác cao.
             </p>

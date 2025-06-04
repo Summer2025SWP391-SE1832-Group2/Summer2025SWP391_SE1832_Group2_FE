@@ -1,12 +1,4 @@
-'use client';
-
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
@@ -16,25 +8,42 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { paths } from '@/utils/constant/path';
-import { loginFormDefaultValues, loginFormSchema, type LoginFormValues } from '@/lib/zod/login';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/hooks/useAuth';
+import { loginFormDefaultValues, loginFormSchema, type LoginFormValues } from '@/lib/zod/login';
+import { useAuthStore } from '@/stores/auth';
+import { paths } from '@/utils/constant/path';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { loginMutation } = useAuth();
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const { showToast } = useToast();
+  const { setAuth } = useAuthStore();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: loginFormDefaultValues,
   });
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const onSubmit = async (data: LoginFormValues) => {
-    loginMutation.mutate(data);
+    try {
+      const response = await loginMutation.mutateAsync(data);
+      if (!response.success) return;
+      setAuth(response.data.token);
+      showToast(response.message || 'Đăng nhập thành công!', 'success');
+    } catch (error) {
+      showToast((error as string) || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+    }
   };
 
   return (
@@ -63,7 +72,7 @@ const LoginPage = () => {
 
               <FormField
                 control={form.control}
-                name='username'
+                name='email'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
