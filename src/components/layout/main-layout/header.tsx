@@ -66,6 +66,10 @@ const Header = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent className='w-56' align='end' forceMount>
                 <DropdownMenuItem className='flex flex-col items-start'>Profile</DropdownMenuItem>
+                <Link to={paths.profile}>
+                    Profile
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
