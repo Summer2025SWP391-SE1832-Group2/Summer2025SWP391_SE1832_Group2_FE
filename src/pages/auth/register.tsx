@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -34,6 +36,16 @@ const RegisterPage = () => {
   const { registerMutation } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Toggle confirm password visibility
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   // Form for initial registration (first step)
   const requestForm = useForm<RegisterFormValues>({
     resolver: zodResolver(registerRequestSchema),
@@ -45,16 +57,6 @@ const RegisterPage = () => {
     resolver: zodResolver(registerVerifySchema),
     defaultValues: registerVerifyDefaultValues,
   });
-
-  // Toggle password visibility
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  // Toggle confirm password visibility
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
 
   // Handle first step submission
   const onRequestSubmit = async (data: RegisterFormValues) => {
@@ -69,31 +71,27 @@ const RegisterPage = () => {
         });
         setVerificationSent(true);
       }
+      if (response.data == 'Register User Successfully') {
+        navigate(paths.login);
+        showToast(response.message || 'Đăng ký thành công!', 'success');
+      }
     } catch (error) {
-      showToast((error as string) || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+      console.error('Registration request error:', error);
     }
   };
 
   // Handle second step submission
   const onVerifySubmit = async (data: RegisterVerifyValues) => {
     const { confirmPassword, ...rest } = data;
-    try {
-      const response = await registerMutation.mutateAsync({
-        ...rest,
-        verificationCode: data.verificationCode.toString(),
-      });
-      if (response.data === 'Register User Successfully') {
-        navigate(paths.login);
-        showToast(response.message || 'Đăng ký thành công!', 'success');
-      }
-    } catch (error) {
-      showToast((error as string) || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
-    }
+    registerMutation.mutate({
+      ...rest,
+      verificationCode: data.verificationCode.toString(),
+    });
   };
 
   return (
     <div className='flex-1 flex items-center justify-center px-4 py-12 bg-gradient-to-br from-blue-50 to-purple-50'>
-      <Card className='shadow-lg min-w-[400px]'>
+      <Card className='shadow-lg'>
         <CardHeader className='text-center'>
           <div className='w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4'>
             <span className='text-white font-bold text-xl'>DNA</span>
@@ -132,6 +130,24 @@ const RegisterPage = () => {
                       <FormControl>
                         <Input
                           placeholder='Nhập họ và tên đầy đủ'
+                          disabled={registerMutation.isPending}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={requestForm.control}
+                  name='username'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tên đăng nhập</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder='Nhập tên đăng nhập'
                           disabled={registerMutation.isPending}
                           {...field}
                         />
@@ -294,6 +310,24 @@ const RegisterPage = () => {
                           placeholder='Nhập họ và tên đầy đủ'
                           {...field}
                           disabled={registerMutation.isPending || verificationSent}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={requestForm.control}
+                  name='username'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tên đăng nhập</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder='Nhập tên đăng nhập'
+                          disabled={registerMutation.isPending || verificationSent}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />

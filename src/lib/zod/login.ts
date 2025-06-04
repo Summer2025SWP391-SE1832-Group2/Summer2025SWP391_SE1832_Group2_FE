@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 export const loginFormSchema = z.object({
-  email: z.string().min(1, 'Email là bắt buộc').email('Email không hợp lệ'),
+  username: z
+    .string()
+    .min(1, 'Tên đăng nhập là bắt buộc')
+    .min(3, 'Tên đăng nhập phải có ít nhất 3 ký tự')
+    .max(20, 'Tên đăng nhập không được quá 20 ký tự'),
   password: z
     .string()
     .min(1, 'Mật khẩu là bắt buộc')

@@ -1,5 +1,3 @@
-import type { UserRole } from '@/types/user-role';
-
 /**
  * Application route constants
  */
@@ -8,25 +6,8 @@ export const paths = {
   home: '/',
   login: '/login',
   register: '/register',
-  profile: '/profile',
   forgotPassword: '/forgot-password',
-
-  // Protected routes
-  dashboard: '/dashboard',
 
   // Fallback
   notFound: '*',
 } as const;
-
-export const getDefaultRouteByRole = (role?: UserRole) => {
-  switch (role) {
-    case 'Staff':
-    case 'Manager':
-    case 'Admin':
-      return paths.dashboard;
-    case 'Customer':
-      return paths.home;
-    default:
-      return paths.login;
-  }
-};

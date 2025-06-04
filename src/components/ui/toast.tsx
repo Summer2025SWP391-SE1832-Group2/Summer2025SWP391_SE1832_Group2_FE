@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type ReactNode, createContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -9,7 +9,7 @@ type ToastProps = {
   duration?: number;
 };
 
-export const Toast = ({ message, type, onClose, duration = 4000 }: ToastProps) => {
+export const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 4000 }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
@@ -71,7 +71,7 @@ type ToastContainerProps = {
   children: React.ReactNode;
 };
 
-export const ToastContainer = ({ children }: ToastContainerProps) => {
+export const ToastContainer: React.FC<ToastContainerProps> = ({ children }) => {
   return <div className='toast-container'>{children}</div>;
 };
 
@@ -80,9 +80,9 @@ type ToastContextType = {
   showToast: (message: string, type: ToastProps['type'], duration?: number) => void;
 };
 
-export const ToastContext = createContext<ToastContextType | undefined>(undefined);
+export const ToastContext = React.createContext<ToastContextType | undefined>(undefined);
 
-export const ToastProvider = ({ children }: { children: ReactNode }) => {
+export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<
     Array<{ id: string; message: string; type: ToastProps['type']; duration?: number }>
   >([]);

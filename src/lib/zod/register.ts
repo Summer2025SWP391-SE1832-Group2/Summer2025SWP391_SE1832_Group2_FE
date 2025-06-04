@@ -8,6 +8,12 @@ const baseRegisterSchema = z.object({
     .min(2, 'Họ và tên phải có ít nhất 2 ký tự')
     .max(50, 'Họ và tên không được quá 50 ký tự')
     .trim(),
+  username: z
+    .string()
+    .min(1, 'Tên đăng nhập là bắt buộc')
+    .min(3, 'Tên đăng nhập phải có ít nhất 3 ký tự')
+    .max(20, 'Tên đăng nhập không được quá 20 ký tự')
+    .regex(/^[a-zA-Z0-9_]+$/, 'Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới'),
   email: z.string().min(1, 'Email là bắt buộc').email('Email không hợp lệ'),
   phoneNumber: z
     .string()
@@ -54,6 +60,7 @@ export const registerVerifySchema = baseRegisterSchema
 // Default values
 export const registerFormDefaultValues = {
   fullName: '',
+  username: '',
   email: '',
   phoneNumber: '',
   password: '',

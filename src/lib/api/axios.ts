@@ -1,4 +1,3 @@
-import { useAuthStore } from '@/stores/auth';
 import axios from 'axios';
 
 // Base API URL - replace with your actual API endpoint
@@ -17,10 +16,6 @@ export const axiosInstance = axios.create({
 // Add request interceptor to include auth token
 axiosInstance.interceptors.request.use(
   (config) => {
-    const { token, isAuthenticated } = useAuthStore.getState();
-    if (token && isAuthenticated) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
   },
   (error) => {

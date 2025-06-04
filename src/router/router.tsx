@@ -1,14 +1,9 @@
-import MainLayout from '@/components/layout/main-layout/main-layout';
-import DashboardLayout from '@/components/layout/dashboard-layout/dashboard-layout';
+import MainLayout from '@/components/layout/main-layout';
+import LoginPage from '@/pages/auth/login';
+import RegisterPage from '@/pages/auth/register';
 import HomePage from '@/pages/home';
-import LoginPage from '@/pages/login';
-import RegisterPage from '@/pages/register';
-import DashboardPage from '@/pages/dashboard';
 import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import PublicRoute from './public-route';
-import ProtectedRoute from './protected-route';
-import ProfilePage from '@/pages/profile';
 
 const router = createBrowserRouter([
   {
@@ -20,41 +15,14 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: paths.profile,
-        element: <ProfilePage />,
+        path: paths.login,
+        element: <LoginPage />,
       },
+
       {
-        element: <PublicRoute />,
-        children: [
-          {
-            path: paths.login,
-            element: <LoginPage />,
-          },
-          {
-            path: paths.register,
-            element: <RegisterPage />,
-          },
-        ],
+        path: paths.register,
+        element: <RegisterPage />,
       },
-    ],
-  },
-  {
-    path: paths.dashboard,
-    element: (
-      <ProtectedRoute>
-        <DashboardLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      // {
-      //   path: paths.profile,
-      //   element: <ProfilePage />,
-      // },
-      {
-        index: true,
-        element: <DashboardPage />,
-      },
-      // Add other dashboard routes here
     ],
   },
   {

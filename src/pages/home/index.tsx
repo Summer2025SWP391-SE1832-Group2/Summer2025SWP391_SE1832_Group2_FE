@@ -101,45 +101,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      <section id="about" className="bg-white py-20 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold">Về chúng tôi</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            {/* Text content */}
-            <div>
-              <h3 className="text-2xl font-semibold mb-4">Xét nghiệm ADN tại nhà – Bloodline</h3>
-              <p className="text-muted-foreground mb-6">
-                Bloodline mang đến giải pháp xét nghiệm ADN uy tín, bảo mật và tiện lợi ngay tại nhà.
-                Không cần di chuyển – chỉ cần đặt lịch, chuyên viên sẽ đến tận nơi lấy mẫu và kết quả sẽ được trả nhanh chóng qua hệ thống bảo mật cao.
-              </p>
-              <ul className="list-disc list-inside mb-6 text-muted-foreground text-sm space-y-1">
-                <li>Chính xác 99.99% – công nghệ đạt chuẩn quốc tế</li>
-                <li>Bảo mật thông tin tuyệt đối – an tâm tuyệt đối</li>
-                <li>Giao mẫu tận nơi – không cần đến phòng lab</li>
-              </ul>
-              <Button className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full">
-                Đăng ký xét nghiệm
-              </Button>
-            </div>
-
-
-            {/* Image */}
-            <div className="w-full">
-              <img
-                src="https://png.pngtree.com/png-clipart/20240905/original/pngtree-doctors-team-png-image_15943672.png"
-                alt="Mật ong nguyên chất"
-                className="rounded-xl shadow-lg object-cover w-full h-auto"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-
 
       {/* Features Section */}
       <section className='py-20 px-4 bg-muted/50'>
