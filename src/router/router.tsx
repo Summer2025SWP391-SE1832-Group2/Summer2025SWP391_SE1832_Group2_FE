@@ -11,6 +11,7 @@ import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import PublicRoute from './public-route';
 import ProtectedRoute from './protected-route';
+import AppointmentsPage from '@/pages/dashboard/appointments';
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <DashboardPage />,
+      },
+      {
+        path: paths.appointments,
+        element: <AppointmentsPage />,
       },
      
     ],

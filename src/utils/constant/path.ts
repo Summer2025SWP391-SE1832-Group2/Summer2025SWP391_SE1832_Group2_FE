@@ -14,7 +14,7 @@ export const paths = {
 
   // Protected routes
   dashboard: '/dashboard',
-
+  appointments: '/dashboard/appointments',
   // Fallback
   notFound: '*',
 } as const;

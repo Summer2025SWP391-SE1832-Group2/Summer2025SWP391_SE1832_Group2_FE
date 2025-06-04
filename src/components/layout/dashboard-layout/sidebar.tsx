@@ -85,7 +85,7 @@ const DashboardSidebar = () => {
       {/* Sidebar content */}
       <div className='p-4'>
         <nav className='space-y-1'>
-          {filteredLinks.map((link) => (
+          {sidebarLinks.map((link) => (
             <Button
               key={link.href}
               variant='ghost'

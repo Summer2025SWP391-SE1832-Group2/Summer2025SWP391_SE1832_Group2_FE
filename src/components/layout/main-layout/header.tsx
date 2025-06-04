@@ -50,6 +50,12 @@ const Header = () => {
           >
             Liên hệ
           </a>
+          <a
+            href='/blog-type'
+            className='text-sm font-medium text-muted-foreground hover:text-primary'
+          >
+            Blog
+          </a>
         </nav>
 
         <div className='flex items-center space-x-4'>
