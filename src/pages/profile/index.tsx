@@ -17,9 +17,8 @@ import { Button } from '@/components/ui/button';
 import {
   Select, SelectTrigger, SelectContent, SelectItem, SelectValue,
 } from '@/components/ui/select';
-import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { format, subDays } from 'date-fns';
+import { endOfDay, format, subDays } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { useToast } from '@/components/ui/toast';
 import { useAuthStore } from '@/stores/auth';
@@ -49,7 +48,7 @@ const ProfilePage = () => {
     };
 
     if (user?.userId) fetchUser();
-  }, [user?.userId, reset, showToast]);
+  }, [user?.userId]);
 
   const onSubmit = async (data: UserRequest) => {
     try {
@@ -57,9 +56,11 @@ const ProfilePage = () => {
       const res: UserResponse = await updateUserRequest({
         ...data,
         userRequestId: user!.userId,
+        
       });
+console.log('Response:', res);
 
-      if (!res.success) {
+      if (res.success) {
         showToast(res.message || 'Cập nhật thất bại', 'error');
         return;
       }
@@ -138,7 +139,7 @@ const ProfilePage = () => {
                       captionLayout="dropdown"
                       fromYear={1950}
                       toYear={new Date().getFullYear()}
-                      toDate={subDays(new Date(), 1)}
+                       disabled={{ after: endOfDay(new Date()) }}
                       selected={dateOfBirth ? new Date(dateOfBirth) : undefined}
                       onSelect={(date) => {
                         if (date) {

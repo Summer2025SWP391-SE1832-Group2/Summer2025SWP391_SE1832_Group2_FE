@@ -29,9 +29,8 @@ const Header = () => {
         <nav className='hidden md:flex items-center space-x-6'>
           <Link
             to={paths.home}
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              location.pathname === paths.home ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === paths.home ? 'text-primary' : 'text-muted-foreground'
+              }`}
           >
             Trang chủ
           </Link>
@@ -65,9 +64,9 @@ const Header = () => {
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className='w-56' align='end' forceMount>
-                <Link to={paths.profile} className='dropdown-item" flex flex-col items-start'>
-                    Profile
-                </Link>
+                <DropdownMenuItem asChild>
+                  <Link to={paths.profile}>Profile</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
