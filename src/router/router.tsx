@@ -8,7 +8,6 @@ import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import PublicRoute from './public-route';
 import ProtectedRoute from './protected-route';
-import ProfilePage from '@/pages/profile';
 
 const router = createBrowserRouter([
   {
@@ -18,10 +17,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
-      },
-      {
-        path: paths.profile,
-        element: <ProfilePage />,
       },
       {
         element: <PublicRoute />,
@@ -46,10 +41,6 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      // {
-      //   path: paths.profile,
-      //   element: <ProfilePage />,
-      // },
       {
         index: true,
         element: <DashboardPage />,
