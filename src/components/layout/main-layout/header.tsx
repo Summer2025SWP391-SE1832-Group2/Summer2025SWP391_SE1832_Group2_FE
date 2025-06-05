@@ -115,12 +115,12 @@ const Header = () => {
           <a href='#' className='text-sm font-medium text-muted-foreground hover:text-primary'>
             Liên hệ
           </a>
-          <a
-            href='/blog-type'
+          <Link
+            to={paths.blogType}
             className='text-sm font-medium text-muted-foreground hover:text-primary'
           >
             Blog
-          </a>
+          </Link>
         </nav>
 
         <div className='flex items-center space-x-4'>

@@ -4,14 +4,13 @@ import { paths } from '@/utils/constant/path';
 import confetti from 'canvas-confetti';
 import { CheckCircle2, ChevronRight, FileText, Home, ListChecks } from 'lucide-react';
 import { useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const PaymentSuccessPage = () => {
-  const [searchParams] = useSearchParams();
   const orderDetails = {
-    orderNumber: searchParams.get('orderNumber') || '0000000',
-    serviceName: searchParams.get('serviceName') || 'DNA Testing Service',
-    amount: searchParams.get('amount') || '1,000,000 VND',
+    orderNumber: '0000000',
+    serviceName: 'DNA Testing Service',
+    amount: '1,000,000 VND',
     date: new Date().toLocaleDateString('vi-VN', {
       day: '2-digit',
       month: '2-digit',

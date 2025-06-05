@@ -18,7 +18,7 @@ import PublicRoute from './public-route';
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: paths.home,
     element: <MainLayout />,
     children: [
       {
