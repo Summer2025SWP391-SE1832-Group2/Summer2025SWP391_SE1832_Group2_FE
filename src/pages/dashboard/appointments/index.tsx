@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -9,95 +9,96 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import {Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import type { BookingSchedule } from "@/types/booking"; // User bạn định nghĩa
+import type {  User } from "@/types/user"; // User bạn định nghĩa
 
-
-// Types
-type SampleCollectionSchedule = {
-  scheduleId: number;
-  bookingId: number;
-  collectorId: number;
-  collectionDate: string;
-  time: string;
-  location: string;
-  status: string;
-};
-
-type Booking = {
-  bookingId: number;
-  serviceTypeId: number;
-  userId: number;
-  bookingDate: string;
-  sampleMethod: string;
-  status: string;
-  paymentStatus: string;
-  preferredDate: string;
-  result: string;
-  sampleCollectionSchedules: SampleCollectionSchedule[];
-};
-
-// Mock data
-const employees = ["Alice", "Bob", "Charlie"];
-
-const bookings: Booking[] = [
-  {
-    bookingId: 4,
-    serviceTypeId: 1,
-    userId: 3,
-    bookingDate: "2025-06-04T00:00:00",
-    sampleMethod: "Online",
-    status: "Pending",
-    paymentStatus: "Unpaid",
-    preferredDate: "2025-06-04T00:00:00",
-    result: "Pending",
-    sampleCollectionSchedules: [
-      {
-        scheduleId: 1,
-        bookingId: 4,
-        collectorId: 10,
-        collectionDate: "2025-06-05T09:00:00",
-        time: "09:00 AM",
-        location: "District 1",
-        status: "Scheduled",
-      },
-    ],
-  },
-  {
-    bookingId: 5,
-    serviceTypeId: 2,
-    userId: 4,
-    bookingDate: "2025-06-05T00:00:00",
-    sampleMethod: "Offline",
-    status: "Confirmed",
-    paymentStatus: "Paid",
-    preferredDate: "2025-06-06T00:00:00",
-    result: "Confirmed",
-    sampleCollectionSchedules: [
-      {
-        scheduleId: 2,
-        bookingId: 5,
-        collectorId: 11,
-        collectionDate: "2025-06-06T14:00:00",
-        time: "02:00 PM",
-        location: "District 3",
-        status: "Scheduled",
-      },
-    ],
-  },
-];
+import { getAllBookingSchedule,getStaffForSchedule,AssignStaffForSchedule  } from "@/services/booking_service";
 
 export default function AppointmentsPage() {
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<BookingSchedule | null>(null);
+  const [bookings, setBookings] = useState<BookingSchedule[]>([]);
+
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
+  const [employees, setEmployees] = useState<User[]>([]); // danh sách nhân viên lấy từ API
   const [assignedEmployee, setAssignedEmployee] = useState("");
 
-  const filteredBookings = bookings.filter(
-    (b) =>
-      (filterStatus === "" || filterStatus === "All" || b.status === filterStatus) &&
-      b.bookingId.toString().includes(search)
-  );
+  const filteredBookings = bookings.filter((b) => {
+    const statusMatch =
+      filterStatus === "" || filterStatus === "All"
+        ? true
+        : filterStatus === "NoCollector"
+        ? b.sampleCollectionSchedules.some(scs => scs.collectorId == null) // kiểm tra trong mảng
+        : b.status === filterStatus;
+  
+    return statusMatch && b.bookingId.toString().includes(search);
+  });
+  
+  
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllBookingSchedule();
+        setBookings(data);
+      } catch (error) {
+        console.error("Failed to fetch bookings:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Khi selectedBooking thay đổi, gọi API lấy nhân viên cho scheduleId
+  const handleBookingClick = async (booking: BookingSchedule) => {
+    setSelectedBooking(booking);
+    setAssignedEmployee(""); // reset nhân viên được chọn
+
+    // Lấy scheduleId từ booking (ví dụ lấy scheduleId của sampleCollectionSchedules đầu tiên)
+    const scheduleId = booking.sampleCollectionSchedules?.[0]?.scheduleId;
+
+    if (!scheduleId) {
+      setEmployees([]);
+      return;
+    }
+
+    try {
+      const staffList = await getStaffForSchedule(scheduleId);
+      setEmployees(staffList);
+    } catch (error) {
+      console.error("Failed to fetch staff for schedule:", error);
+      setEmployees([]);
+    }
+  };
+
+  const handleSaveAssignment = async () => {
+    if (!selectedBooking || !assignedEmployee) {
+      alert("Please select a booking and an employee.");
+      return;
+    }
+  
+    const scheduleId = selectedBooking.sampleCollectionSchedules?.[0]?.scheduleId;
+    const staffId = parseInt(assignedEmployee);
+  
+    if (!scheduleId || !staffId) {
+      alert("Missing schedule or staff ID.");
+      return;
+    }
+  
+    try {
+      await AssignStaffForSchedule(scheduleId, staffId);
+      alert("Staff assigned successfully!");
+      setSelectedBooking(null); // close dialog
+      // Refresh booking list if needed:
+      const updatedBookings = await getAllBookingSchedule();
+      setBookings(updatedBookings);
+    } catch (error) {
+      console.error("Assignment failed:", error);
+      alert("Failed to assign staff.");
+    }
+  };
+  
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-4">
       {/* Filters */}
@@ -116,17 +117,18 @@ export default function AppointmentsPage() {
             <SelectItem value="All">All</SelectItem>
             <SelectItem value="Pending">Pending</SelectItem>
             <SelectItem value="Confirmed">Confirmed</SelectItem>
+            <SelectItem value="NoCollector">No Collector</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Booking List */}
       {filteredBookings.map((booking) => (
-        <Card
-          key={booking.bookingId}
-          className="hover:shadow-md cursor-pointer"
-          onClick={() => setSelectedBooking(booking)}
-        >
+         <Card
+         key={booking.bookingId}
+         className="hover:shadow-md cursor-pointer"
+         onClick={() => handleBookingClick(booking)} // sửa lại gọi hàm xử lý
+       >
           <CardContent className="py-6 px-6 space-y-2">
             <div className="text-lg font-semibold text-gray-800">
               Booking #{booking.bookingId} — Service Type #{booking.serviceTypeId}
@@ -147,110 +149,102 @@ export default function AppointmentsPage() {
 
       {/* Booking Detail Dialog */}
       <Dialog open={!!selectedBooking} onOpenChange={() => setSelectedBooking(null)}>
-  <DialogContent className="max-w-3xl">
-    <DialogHeader>
-      <DialogTitle>Booking Details</DialogTitle>
-    </DialogHeader>
+        <DialogContent className="w-full max-w-[90vw] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Booking Details</DialogTitle>
+          </DialogHeader>
 
-    {selectedBooking && (
-      <div className="space-y-6 text-sm text-gray-700">
-        {/* Group 1: Status */}
-        <div className="border rounded-lg p-4 bg-gray-50">
-          <p className="font-semibold mb-2">Status</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div><strong>Status:</strong> {selectedBooking.status}</div>
-            <div><strong>Result:</strong> {selectedBooking.result}</div>
-            <div><strong>Collection Status:</strong> {
-              selectedBooking.sampleCollectionSchedules[0]?.status || "N/A"
-            }</div>
+          {selectedBooking && (
+            <div className="flex flex-col md:flex-row gap-6 text-sm text-gray-700">
+              {/* Left Section */}
+              <div className="flex-1 space-y-4">
+                {/* Status Info */}
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <p className="font-semibold mb-2">Status</p>
+                  <div className="space-y-1">
+                    <div><strong>Status:</strong> {selectedBooking.status}</div>
+                    <div><strong>Result:</strong> {selectedBooking.result}</div>
+                    <div><strong>Collection Status:</strong> {
+                      selectedBooking.sampleCollectionSchedules[0]?.status || "N/A"
+                    }</div>
+                  </div>
+                </div>
+
+                {/* Time Info */}
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <p className="font-semibold mb-2">Time</p>
+                  <div className="space-y-1">
+                    <div><strong>Preferred Date:</strong> {new Date(selectedBooking.preferredDate).toLocaleDateString()}</div>
+                    <div><strong>Collection Date:</strong> {
+                      selectedBooking.sampleCollectionSchedules[0]
+                        ? new Date(selectedBooking.sampleCollectionSchedules[0].collectionDate).toLocaleString()
+                        : "N/A"
+                    }</div>
+                    <div><strong>Time:</strong> {
+                      selectedBooking.sampleCollectionSchedules[0]?.time || "N/A"
+                    }</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Section */}
+              <div className="flex-1 space-y-4">
+                {/* Details */}
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <p className="font-semibold mb-2">Details</p>
+                  <div className="space-y-1">
+                    <div><strong>Booking ID:</strong> {selectedBooking.bookingId}</div>
+                    <div><strong>Service Type ID:</strong> {selectedBooking.serviceTypeId}</div>
+                    <div><strong>User ID:</strong> {selectedBooking.userId}</div>
+                    <div><strong>Sample Method:</strong> {selectedBooking.sampleMethod}</div>
+                    <div><strong>Payment Status:</strong> {selectedBooking.paymentStatus}</div>
+                    <div><strong>Location:</strong> {
+                      selectedBooking.sampleCollectionSchedules[0]?.location || "N/A"
+                    }</div>
+                  </div>
+                </div>
+
+                {/* Assign Employee */}
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <p className="font-semibold mb-2">Assign to Employee</p>
+                  <Select value={assignedEmployee} onValueChange={setAssignedEmployee}>
+                    <SelectTrigger className="w-full mt-1">
+                      <SelectValue placeholder="Select Staff" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {employees.length === 0 && (
+                        <SelectItem value="NULL" disabled>No staff available</SelectItem>
+                      )}
+                      {employees
+  .filter(emp => emp.userId !== null && emp.userId !== undefined) // lọc bỏ userId null/undefined
+  .map((emp) => (
+    <SelectItem key={emp.userId} value={emp.userId.toString()}>
+      {emp.fullName}
+    </SelectItem>
+))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-3 mt-6">
+            <Button className="px-5 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+              onClick={handleSaveAssignment}
+            >
+              Save Changes
+            </Button>
+            <Button
+              className="px-5 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition"
+              onClick={() => setSelectedBooking(null)}
+            >
+              Cancel
+            </Button>
           </div>
-        </div>
-
-        {/* Group 2: Time */}
-        <div className="border rounded-lg p-4 bg-gray-50">
-          <p className="font-semibold mb-2">Time</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div><strong>Preferred Date:</strong> {new Date(selectedBooking.preferredDate).toLocaleDateString()}</div>
-            <div><strong>Collection Date:</strong> {
-              selectedBooking.sampleCollectionSchedules[0]
-                ? new Date(selectedBooking.sampleCollectionSchedules[0].collectionDate).toLocaleString()
-                : "N/A"
-            }</div>
-            <div><strong>Time:</strong> {
-              selectedBooking.sampleCollectionSchedules[0]?.time || "N/A"
-            }</div>
-          </div>
-        </div>
-
-        {/* Group 3: Individual Fields */}
-        <div className="border rounded-lg p-4 bg-gray-50">
-          <p className="font-semibold mb-2">Details</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div><strong>Booking ID:</strong> {selectedBooking.bookingId}</div>
-            <div><strong>Service Type ID:</strong> {selectedBooking.serviceTypeId}</div>
-            <div><strong>User ID:</strong> {selectedBooking.userId}</div>
-            <div><strong>Sample Method:</strong> {selectedBooking.sampleMethod}</div>
-            <div><strong>Payment Status:</strong> {selectedBooking.paymentStatus}</div>
-            <div><strong>Location:</strong> {
-              selectedBooking.sampleCollectionSchedules[0]?.location || "N/A"
-            }</div>
-          </div>
-        </div>
-
-        {/* Assign to Employee */}
-        <div className="border rounded-lg p-4 bg-gray-50">
-          <p className="font-semibold mb-2">Assign to Employee</p>
-          <Select value={assignedEmployee} onValueChange={setAssignedEmployee}>
-            <SelectTrigger className="w-[180px] mt-1">
-              <SelectValue placeholder="Select Staff" />
-            </SelectTrigger>
-            <SelectContent>
-              {employees.map((emp) => (
-                <SelectItem key={emp} value={emp}>{emp}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Optional full schedule listing (if needed) */}
-        {selectedBooking.sampleCollectionSchedules.length > 1 && (
-          <div className="border rounded-lg p-4 bg-gray-50">
-            <p className="font-semibold mb-2">All Sample Collection Schedules</p>
-            <ul className="space-y-2 text-xs">
-              {selectedBooking.sampleCollectionSchedules.map((s) => (
-                <li key={s.scheduleId} className="border p-2 rounded-md bg-white">
-                  <div><strong>Schedule ID:</strong> {s.scheduleId}</div>
-                  <div><strong>Collector ID:</strong> {s.collectorId}</div>
-                  <div><strong>Collection Date:</strong> {new Date(s.collectionDate).toLocaleString()}</div>
-                  <div><strong>Time:</strong> {s.time}</div>
-                  <div><strong>Location:</strong> {s.location}</div>
-                  <div><strong>Status:</strong> {s.status}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-  <div className="flex justify-end gap-3">
-    <Button
-      // onClick={handleSaveChanges}
-      className="px-5 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-    >
-      Save Changes
-    </Button>
-    <Button
-      // onClick={handleCloseDialog}
-      className="px-5 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition"
-    >
-      Cancel
-    </Button>
-  </div>
-
-      </div>
-      
-    )}
-  </DialogContent>
-</Dialog>
-
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
