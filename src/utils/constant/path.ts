@@ -1,4 +1,4 @@
-import type { UserRole } from '@/types/user-role';
+import type { UserRole } from '@/types/user';
 
 /**
  * Application route constants
@@ -8,6 +8,7 @@ export const paths = {
   home: '/',
   login: '/login',
   register: '/register',
+  profile: '/profile',
   forgotPassword: '/forgot-password',
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
@@ -15,6 +16,9 @@ export const paths = {
   // Protected routes
   dashboard: '/dashboard',
   appointments: '/dashboard/appointments',
+  services: 'services',
+  serviceDetail: (id: string) => `/services/${id}`,
+
   // Fallback
   notFound: '*',
 } as const;

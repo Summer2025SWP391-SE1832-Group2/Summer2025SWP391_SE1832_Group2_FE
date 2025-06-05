@@ -1,4 +1,4 @@
-export type User = {
+export type UserStaff = {
     userId: number;
     fullName: string;
     email: string;
@@ -9,3 +9,27 @@ export type User = {
     dateOfBirth: string; // hoặc `Date` nếu bạn convert khi nhận
   };
   
+type UserRequest = {
+  userId: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  role: string;
+  gender: string;
+  dateOfBirth: string;
+};
+type UserResponse = {
+  success: boolean;
+  message: string;
+  data: string;
+};
+
+type User = {
+  userId: number;
+  fullName: string;
+  email: string;
+  role: UserRole;
+};
+
+type UserRole = 'Guest' | 'Customer' | 'Staff' | 'Manager' | 'Admin';
+export type { UserRequest, UserResponse, UserRole, User };

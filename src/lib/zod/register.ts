@@ -28,7 +28,7 @@ const baseRegisterSchema = z.object({
 });
 
 // Schema for the first step (registration request)
-export const registerRequestSchema = baseRegisterSchema
+const registerRequestSchema = baseRegisterSchema
   .extend({
     confirmPassword: z.string().min(1, 'Xác nhận mật khẩu là bắt buộc'),
   })
@@ -38,7 +38,7 @@ export const registerRequestSchema = baseRegisterSchema
   });
 
 // Schema for the second step (verification)
-export const registerVerifySchema = baseRegisterSchema
+const registerVerifySchema = baseRegisterSchema
   .extend({
     confirmPassword: z.string().min(1, 'Xác nhận mật khẩu là bắt buộc'),
     verificationCode: z
@@ -52,7 +52,7 @@ export const registerVerifySchema = baseRegisterSchema
   });
 
 // Default values
-export const registerFormDefaultValues = {
+const registerFormDefaultValues = {
   fullName: '',
   email: '',
   phoneNumber: '',
@@ -60,11 +60,20 @@ export const registerFormDefaultValues = {
   confirmPassword: '',
 };
 
-export const registerVerifyDefaultValues = {
+const registerVerifyDefaultValues = {
   ...registerFormDefaultValues,
   verificationCode: '',
 };
 
 // Types
-export type RegisterFormValues = z.infer<typeof registerRequestSchema>;
-export type RegisterVerifyValues = z.infer<typeof registerVerifySchema>;
+type RegisterFormValues = z.infer<typeof registerRequestSchema>;
+type RegisterVerifyValues = z.infer<typeof registerVerifySchema>;
+
+export {
+  registerRequestSchema,
+  registerVerifySchema,
+  registerFormDefaultValues,
+  registerVerifyDefaultValues,
+  type RegisterFormValues,
+  type RegisterVerifyValues,
+};
