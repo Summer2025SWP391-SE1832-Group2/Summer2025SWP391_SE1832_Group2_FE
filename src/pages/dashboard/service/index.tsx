@@ -3,7 +3,7 @@ import { ErrorMessage } from '@/components/common/error';
 import { Loading } from '@/components/common/loading';
 import { DataTable } from '@/components/common/table/data_table';
 import { Button } from '@/components/ui/button';
-import { useService } from '@/hooks/\buseService';
+import { useService } from '@/hooks/useService';
 import type { ServiceResponse } from '@/types/services';
 import type { Row } from '@tanstack/react-table';
 import { Pencil } from 'lucide-react';

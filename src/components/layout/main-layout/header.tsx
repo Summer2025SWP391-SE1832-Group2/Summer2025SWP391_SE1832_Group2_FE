@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useService } from '@/hooks/\buseService';
+import { useService } from '@/hooks/useService';
 import { useAuthStore } from '@/stores/auth';
 import { paths } from '@/utils/constant/path';
 import { ChevronDown, User } from 'lucide-react';

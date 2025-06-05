@@ -18,7 +18,7 @@ import { TimeInputGroup } from '@/components/ui/time-picker/time-input-group';
 import { Timeline, TimelineItem } from '@/components/ui/timeline/timeline';
 import { useToast } from '@/components/ui/toast';
 import ServiceMethodOption from '@/feature/service-detail/service-method-option';
-import { useService } from '@/hooks/\buseService';
+import { useService } from '@/hooks/useService';
 import { useBooking } from '@/hooks/useBooking';
 import { cn } from '@/lib/utils';
 import { bookingFormSchema, type BookingFormValues } from '@/lib/zod/booking';
