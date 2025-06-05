@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/api/axios";
 import type { Booking, BookingSchedule } from "@/types/booking";
-import type { User } from "@/types/user";
+import type { UserStaff } from "@/types/user";
 
 // Get all bookings
 const getAllBookings = async (): Promise<Booking[]> => {
@@ -13,12 +13,12 @@ const getAllBookingSchedule = async (): Promise<BookingSchedule[]> => {
     return response.data;
   };
 
-  const getStaffForSchedule = async (id : number): Promise<User[]> => {
-    const response = await axiosInstance.get<User[]>(`/api/SampleCollectionSchedule/${id}/available-staffs`);
+  const getStaffForSchedule = async (id : number): Promise<UserStaff[]> => {
+    const response = await axiosInstance.get<UserStaff[]>(`/api/SampleCollectionSchedule/${id}/available-staffs`);
     return response.data;
   };
 
-  const AssignStaffForSchedule = async (id : number,idStaff : number): Promise<User[]> => {
+  const AssignStaffForSchedule = async (id : number,idStaff : number): Promise<UserStaff[]> => {
     const response = await axiosInstance.put(`/api/SampleCollectionSchedule/AssignTask/${id}/${idStaff}`);
     return response.data;
   };
