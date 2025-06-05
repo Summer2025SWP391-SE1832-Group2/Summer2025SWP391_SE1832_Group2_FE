@@ -19,6 +19,10 @@ export const paths = {
   services: 'services',
   serviceDetail: (id: string) => `/services/${id}`,
 
+  // Payment results
+  paymentSuccess: '/payment/success',
+  paymentFailed: '/payment/failed',
+
   // Fallback
   notFound: '*',
 } as const;
