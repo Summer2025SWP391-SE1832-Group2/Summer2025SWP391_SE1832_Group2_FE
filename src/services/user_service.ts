@@ -23,20 +23,15 @@ export const getUserRequestById = async (): Promise<UserRequest> => {
 
 // CREATE UserRequest
 export const createUserRequest = async (
-  data: UserRequest & { password: string }
+  data: UserRequest & { password: string },
 ): Promise<UserResponse> => {
   const response = await axiosInstance.post<UserResponse>('/api/User', data);
   return response.data;
 };
 
 // UPDATE UserRequest
-export const updateUserRequest = async (
-  data: Partial<UserRequest> & { userRequestId: string }
-): Promise<UserResponse> => {
-  const response = await axiosInstance.put<UserResponse>('/api/User', {
-    ...data,
-    userRequestId: data.userRequestId,
-  });
+export const updateUserRequest = async (data: UserRequest): Promise<UserResponse> => {
+  const response = await axiosInstance.put<UserResponse>('/api/User', data);
   return response.data;
 };
 

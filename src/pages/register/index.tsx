@@ -61,6 +61,7 @@ const RegisterPage = () => {
     const { confirmPassword, ...rest } = data;
     try {
       const response = await registerMutation.mutateAsync(rest);
+
       if (response.data === 'Verification code has sent to email.') {
         showToast(response.data || 'Mã xác minh đã được gửi đến email!', 'success');
         // Transfer form values from first step to second step
@@ -69,8 +70,8 @@ const RegisterPage = () => {
         });
         setVerificationSent(true);
       }
-    } catch (error) {
-      showToast((error as string) || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+    } catch (error: any) {
+      showToast(error?.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
     }
   };
 
@@ -86,14 +87,14 @@ const RegisterPage = () => {
         navigate(paths.login);
         showToast(response.message || 'Đăng ký thành công!', 'success');
       }
-    } catch (error) {
-      showToast((error as string) || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+    } catch (error: any) {
+      showToast(error?.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
     }
   };
 
   return (
     <div className='flex-1 flex items-center justify-center px-4 py-12 bg-gradient-to-br from-blue-50 to-purple-50'>
-      <Card className='shadow-lg min-w-[400px]'>
+      <Card className='shadow-lg w-full max-w-md'>
         <CardHeader className='text-center'>
           <div className='w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4'>
             <span className='text-white font-bold text-xl'>DNA</span>

@@ -1,29 +1,25 @@
-'use client';
-
+import { getUserRequestById, updateUserRequest } from '@/services/user_service';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  getUserRequestById,
-  updateUserRequest,
-} from '@/services/user_service';
 
-import type { UserRequest, UserResponse } from '@/types/user';
-import {
-  Card, CardHeader, CardTitle, CardContent,
-} from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { CustomCalendar } from '@/components/common/CustomCalendar';
 import { Button } from '@/components/ui/button';
-import {
-  Select, SelectTrigger, SelectContent, SelectItem, SelectValue,
-} from '@/components/ui/select';
-import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { format, subDays } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/components/ui/toast';
 import { useAuthStore } from '@/stores/auth';
-import { CustomCalendar } from '@/components/common/CustomCalendar';
+import type { UserRequest, UserResponse } from '@/types/user';
+import { format, subDays } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 const ProfilePage = () => {
   const { user } = useAuthStore();
@@ -56,7 +52,6 @@ const ProfilePage = () => {
       setSaving(true);
       const res: UserResponse = await updateUserRequest({
         ...data,
-        userRequestId: user!.userId,
       });
 
       if (!res.success) {
@@ -135,7 +130,7 @@ const ProfilePage = () => {
                   <PopoverContent className='w-auto p-0'>
                     <CustomCalendar
                       mode='single'
-                      captionLayout="dropdown"
+                      captionLayout='dropdown'
                       fromYear={1950}
                       toYear={new Date().getFullYear()}
                       toDate={subDays(new Date(), 1)}
@@ -148,7 +143,6 @@ const ProfilePage = () => {
                       }}
                       initialFocus
                     />
-
                   </PopoverContent>
                 </Popover>
               </div>

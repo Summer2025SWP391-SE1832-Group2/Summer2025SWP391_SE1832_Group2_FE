@@ -1,4 +1,5 @@
-type UserRequest ={
+type UserRequest = {
+  userId: number;
   fullName: string;
   email: string;
   phone: string;
@@ -11,4 +12,13 @@ type UserResponse = {
   message: string;
   data: string;
 };
-export type { UserRequest, UserResponse };
+
+type User = {
+  userId: number;
+  fullName: string;
+  email: string;
+  role: UserRole;
+};
+
+type UserRole = 'Guest' | 'Customer' | 'Staff' | 'Manager' | 'Admin';
+export type { UserRequest, UserResponse, UserRole, User };
