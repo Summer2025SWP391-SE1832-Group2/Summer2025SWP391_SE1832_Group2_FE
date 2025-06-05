@@ -1,5 +1,5 @@
 import BrandLogo from '@/components/common/brand-logo';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -57,7 +57,7 @@ const Header = () => {
               <DropdownMenuTrigger asChild>
                 <div className='flex items-center gap-2'>
                   <Avatar>
-                    <AvatarFallback>{user.fullName.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{user?.fullName?.charAt(0) ?? "?"}</AvatarFallback>
                   </Avatar>
                   <span className='hidden lg:block text-sm font-medium'>{user.fullName}</span>
                   <ChevronDown className='h-4 w-4' />

@@ -9,6 +9,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import PublicRoute from './public-route';
 import ProtectedRoute from './protected-route';
 import ProfilePage from '@/pages/profile';
+import ResultPage from '@/pages/result';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: paths.profile,
         element: <ProfilePage />,
+      },
+      {
+        path: paths.result,
+        element: <ResultPage />,
       },
       {
         element: <PublicRoute />,

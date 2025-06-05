@@ -17,12 +17,10 @@ import { Button } from '@/components/ui/button';
 import {
   Select, SelectTrigger, SelectContent, SelectItem, SelectValue,
 } from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { endOfDay, format, subDays } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { endOfDay, format } from 'date-fns';
 import { useToast } from '@/components/ui/toast';
 import { useAuthStore } from '@/stores/auth';
-import { CustomCalendar } from '@/components/common/CustomCalendar';
+import { CustomCalendar} from '@/components/common/CustomCalendar';
 
 const ProfilePage = () => {
   const { user } = useAuthStore();
@@ -56,9 +54,9 @@ const ProfilePage = () => {
       const res: UserResponse = await updateUserRequest({
         ...data,
         userRequestId: user!.userId,
-        
+
       });
-console.log('Response:', res);
+      console.log('Response:', res);
 
       if (res.success) {
         showToast(res.message || 'Cập nhật thất bại', 'error');
@@ -122,36 +120,22 @@ console.log('Response:', res);
 
               <div>
                 <Label>Ngày sinh</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant='outline'
-                      className='w-full justify-start text-left font-normal'
-                    >
-                      {dateOfBirth
-                        ? format(new Date(dateOfBirth), 'dd/MM/yyyy', { locale: vi })
-                        : 'Chọn ngày'}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className='w-auto p-0'>
-                    <CustomCalendar
-                      mode='single'
-                      captionLayout="dropdown"
-                      fromYear={1950}
-                      toYear={new Date().getFullYear()}
-                       disabled={{ after: endOfDay(new Date()) }}
-                      selected={dateOfBirth ? new Date(dateOfBirth) : undefined}
-                      onSelect={(date) => {
-                        if (date) {
-                          const formatted = format(date, 'yyyy-MM-dd');
-                          setValue('dateOfBirth', formatted);
-                        }
-                      }}
-                      initialFocus
-                    />
+                <CustomCalendar
+                  value={dateOfBirth ? new Date(dateOfBirth) : undefined}
+                  onChange={(date) => {
+                    if (date) {
+                      const formatted = format(date, 'yyyy-MM-dd')
+                      setValue('dateOfBirth', formatted, { shouldValidate: true })
+                    } else {
+                      setValue('dateOfBirth', '', { shouldValidate: true })
+                    }
+                  }}
+                  fromYear={1950}
+                  toYear={new Date().getFullYear()}
+                  disabled={{ after: endOfDay(new Date()) }}
+                  placeholder="Chọn ngày"
+                />
 
-                  </PopoverContent>
-                </Popover>
               </div>
 
               <Button className='w-full' type='submit' disabled={saving || loading}>
