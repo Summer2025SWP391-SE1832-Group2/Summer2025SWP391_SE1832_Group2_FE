@@ -5,8 +5,7 @@ import MainLayout from '@/components/layout/main-layout/main-layout';
 import DashboardPage from '@/pages/dashboard';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
-import PaymentFailedPage from '@/pages/payment/failed';
-import PaymentSuccessPage from '@/pages/payment/success';
+
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
 import ServiceDetailPage from '@/pages/service-detail';
@@ -16,6 +15,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
 import AppointmentsPage from '@/pages/dashboard/appointments';
 import PublicRoute from './public-route';
+import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
 
 const router = createBrowserRouter([
   {

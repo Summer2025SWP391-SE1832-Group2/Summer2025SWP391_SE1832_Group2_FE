@@ -116,6 +116,18 @@ const Header = () => {
             Liên hệ
           </a>
           <Link
+            to={paths.paymentSuccess}
+            className='text-sm font-medium text-muted-foreground hover:text-primary'
+          >
+            Payment success
+          </Link>
+          <Link
+            to={paths.paymentSuccess}
+            className='text-sm font-medium text-muted-foreground hover:text-primary'
+          >
+            Payment success
+          </Link>
+          <Link
             to={paths.blogType}
             className='text-sm font-medium text-muted-foreground hover:text-primary'
           >
