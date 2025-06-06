@@ -8,7 +8,7 @@ export const getResultDetailsByBookingId = async (
   bookingId: number
 ): Promise<ResultDetail[]> => {
   const response = await axiosInstance.get<ResultDetail[]>(
-    `/api/ResultDetail/byBookingId/${bookingId}`
+    `/api/ResultDetail/${bookingId}/getAllResultByBookingId`
   );
   return response.data;
 };

@@ -4,6 +4,14 @@ import { getResultDetailsByBookingId } from "@/services/result-service";
 import type { TestParameter } from "@/types/testparameters";
 import type { ResultDetail } from "@/types/resultdetail";
 
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+
 const ResultPage = () => {
   const [testParameters, setTestParameters] = useState<TestParameter[]>([]);
   const [resultDetails, setResultDetails] = useState<ResultDetail[]>([]);
@@ -31,52 +39,70 @@ const ResultPage = () => {
     fetchData();
   }, [serviceId, bookingId]);
 
-  if (loading) return <div className="p-6">Đang tải dữ liệu...</div>;
-
   const sampleIds = [...new Set(resultDetails.map((r) => r.sampleId))];
 
-  const rows = testParameters.map((param) => {
-    const row: Record<string, string> = { name: param.name };
-    sampleIds.forEach((sampleId) => {
+  const rows = sampleIds.map((sampleId) => {
+    const row: Record<string, string> = { name: `Sample ${sampleId}` };
+    testParameters.forEach((param) => {
       const match = resultDetails.find(
         (r) =>
           r.sampleId === sampleId &&
           r.testParameterId === param.testParameterId
       );
-      row[`sample-${sampleId}`] = match?.value || "-";
+      row[`param-${param.testParameterId}`] = match?.value || "-";
     });
     return row;
   });
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Kết quả booking: {bookingId}</h1>
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border border-gray-300 rounded-md">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-2 text-left border-b">Tên</th>
-              {sampleIds.map((id) => (
-                <th key={id} className="px-4 py-2 text-left border-b">
-                  Sample {id}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, idx) => (
-              <tr key={idx} className="hover:bg-gray-50">
-                <td className="px-4 py-2 border-b">{row.name}</td>
-                {sampleIds.map((id) => (
-                  <td key={id} className="px-4 py-2 border-b">
-                    {row[`sample-${id}`]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Card className="rounded-2xl shadow-md">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">
+            Kết quả booking: {bookingId}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <Skeleton className="w-full h-[200px] rounded-md" />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto border border-muted rounded-md">
+                <thead className="bg-muted">
+                  <tr>
+                    <th className="px-4 py-2 text-left border-b">Sample</th>
+                    {testParameters.map((param) => (
+                      <th
+                        key={param.testParameterId}
+                        className="px-4 py-2 text-left border-b"
+                      >
+                        {param.name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-muted/40">
+                      <td className="px-4 py-2 border-b font-medium">
+                        {row.name}
+                      </td>
+                      {testParameters.map((param) => (
+                        <td
+                          key={param.testParameterId}
+                          className="px-4 py-2 border-b"
+                        >
+                          {row[`param-${param.testParameterId}`]}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
