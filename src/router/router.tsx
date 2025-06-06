@@ -5,13 +5,14 @@ import MainLayout from '@/components/layout/main-layout/main-layout';
 import DashboardPage from '@/pages/dashboard';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
-import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
+import PaymentFailedPage from '@/pages/payment/failed';
+import PaymentSuccessPage from '@/pages/payment/success';
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
 import ServiceDetailPage from '@/pages/service-detail';
 import ServicePage from '@/pages/dashboard/service';
 import { paths } from '@/utils/constant/path';
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
 import AppointmentsPage from '@/pages/dashboard/appointments';
 import PublicRoute from './public-route';
@@ -94,7 +95,7 @@ const router = createBrowserRouter([
   },
   {
     path: paths.notFound,
-    element: <Navigate to={paths.home} />,
+    element: <div>404 - Page Not Found</div>,
   },
 ]);
 
