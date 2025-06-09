@@ -10,6 +10,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuthStore } from '@/stores/auth';
 import { useNavigate } from 'react-router-dom';
+import { paths } from '@/utils/constant/path';
 
 const DashboardHeader = () => {
   const { user, logout } = useAuthStore();
@@ -17,7 +18,7 @@ const DashboardHeader = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate(paths.login);
   };
 
   return (

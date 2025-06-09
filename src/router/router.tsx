@@ -35,20 +35,20 @@ const router = createBrowserRouter([
         element: <BlogType />,
       },
       {
-        path: paths.profile,
-        element: <ProfilePage />,
-      },
-      {
-        path: paths.serviceDetail(':id'),
-        element: <ServiceDetailPage />,
-      },
-      {
         path: paths.paymentSuccess,
         element: <PaymentSuccessPage />,
       },
       {
         path: paths.paymentFailed,
         element: <PaymentFailedPage />,
+      },
+      {
+        path: paths.profile,
+        element: <ProfilePage />,
+      },
+      {
+        path: paths.serviceDetail(':id'),
+        element: <ServiceDetailPage />,
       },
       {
         element: <PublicRoute />,
