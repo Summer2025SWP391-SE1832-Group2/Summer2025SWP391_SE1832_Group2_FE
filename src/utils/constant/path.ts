@@ -20,8 +20,8 @@ export const paths = {
   serviceDetail: (id: string) => `/services/${id}`,
 
   // Payment results
-  paymentSuccess: '/payment/success',
-  paymentFailed: '/payment/failed',
+  paymentSuccess: '/payment-success',
+  paymentFailed: '/payment-failed',
 
   // Fallback
   notFound: '*',
