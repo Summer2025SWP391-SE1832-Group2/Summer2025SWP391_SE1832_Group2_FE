@@ -13,7 +13,7 @@ import {
 import { useService } from '@/hooks/useService';
 import { useAuthStore } from '@/stores/auth';
 import { paths } from '@/utils/constant/path';
-import { ChevronDown, Clock, User } from 'lucide-react';
+import { ChevronDown, Clock, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -139,7 +139,7 @@ const Header = () => {
                 <DropdownMenuItem className='flex flex-col items-start w-full'>
                   <Link to={paths.profile} className='flex items-center gap-2 w-full'>
                     <User className='h-4 w-4' />
-                    Profile
+                    Hồ sơ
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className='flex flex-col items-start w-full'>
@@ -148,7 +148,10 @@ const Header = () => {
                     lịch sử đặt lịch
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} className='text-red-600'>
+                  <LogOut className='h-4 w-4' />
+                  Đăng xuất
+                  </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

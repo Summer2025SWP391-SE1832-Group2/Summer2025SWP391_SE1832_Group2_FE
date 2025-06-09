@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthStore } from '@/stores/auth';
@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import { paths } from '@/utils/constant/path';
 
 
-const BookingHistory = () => {
+const BookingHistoryPage = () => {
     const { user } = useAuthStore();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [loading, setLoading] = useState(false);
@@ -88,4 +88,4 @@ const BookingHistory = () => {
     );
 };
 
-export default BookingHistory;
+export default BookingHistoryPage;

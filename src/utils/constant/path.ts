@@ -12,18 +12,7 @@ export const paths = {
   forgotPassword: '/forgot-password',
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
-<<<<<<< Updated upstream
-
-  // Protected routes
-  dashboard: '/dashboard',
-  appointments: '/dashboard/appointments',
-  services: '/dashboard/services',
-  serviceDetail: (id: string) => `/services/${id}`,
-
-  // Payment results
-  paymentSuccess: '/payment-success',
-  paymentFailed: '/payment-failed',
-=======
+  result: '/result',
   bookingHistory: '/bookinghistory',
   bookingDetail: (bookingId: string)=> `/bookingdetail/${bookingId}`,
   
@@ -31,7 +20,7 @@ export const paths = {
   
   // Protected routes
   dashboard: '/dashboard',
-  appointments: '/dashboardappointments',
+  appointments: '/dashboard/appointments',
   services: '/dashboardservices',
   serviceDetail: (id: string) => `/dashboardservices/${id}`,
   dashboardProfile: '/dashboard/profile',
@@ -40,7 +29,6 @@ export const paths = {
   // Payment results
   paymentSuccess: '/payment/success',
   paymentFailed: '/payment/failed',
->>>>>>> Stashed changes
 
   // Fallback
   notFound: '*',

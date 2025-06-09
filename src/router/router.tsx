@@ -18,8 +18,9 @@ import PublicRoute from './public-route';
 import {
   //  PaymentFailedPage,
    PaymentSuccessPage } from '@/pages/payment';
-import BookingHistory from '@/pages/booking-history';
-import BookingDetail from '@/pages/booking-detail';
+import BookingHistoryPage from '@/pages/booking-history';
+import BookingDetailPage from '@/pages/booking-detail';
+import ResultPage from '@/pages/result';
 
 
 const router = createBrowserRouter([
@@ -45,26 +46,28 @@ const router = createBrowserRouter([
       },
       {
         path: paths.bookingHistory,
-        element: <BookingHistory />,
+        element: <BookingHistoryPage />,
       },
       {
-<<<<<<< Updated upstream
+        path: paths.bookingDetail(':id'),
+        element: <BookingDetailPage />,
+      },
+      {
         path: paths.profile,
         element: <ProfilePage />,
+      },
+      {
+        path: paths.result,
+        element: <ResultPage />,
       },
       {
         path: paths.serviceDetail(':id'),
         element: <ServiceDetailPage />,
       },
-=======
-        path: paths.bookingDetail(':id'),
-        element: <BookingDetail />,
-      },
       // {
       //   path: "/test",
       //   element: < />,
       // },
->>>>>>> Stashed changes
       {
         element: <PublicRoute />,
         children: [
