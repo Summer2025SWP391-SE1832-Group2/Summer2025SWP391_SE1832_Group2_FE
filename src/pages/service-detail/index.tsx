@@ -139,7 +139,7 @@ const ServiceDetailPage = () => {
         <span className='inline-block text-sm font-medium text-primary mb-3 tracking-wider uppercase'>
           DNA Testing Service
         </span>
-        <h1 className='text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent'>
+        <h1 className='text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent h-15'>
           {service.name}
         </h1>
         <p className='text-xl text-muted-foreground max-w-3xl mx-auto mb-8'>

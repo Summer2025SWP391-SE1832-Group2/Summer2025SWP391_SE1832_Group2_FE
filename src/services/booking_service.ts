@@ -9,7 +9,7 @@ const getAllBookings = async (): Promise<Booking[]> => {
 };
 
 const getAllBookingSchedule = async (): Promise<BookingSchedule[]> => {
-    const response = await axiosInstance.get<BookingSchedule[]>("/BookingWithSchedule()");
+    const response = await axiosInstance.get<BookingSchedule[]>("/BookingWithSchedule");
     return response.data;
   };
 
