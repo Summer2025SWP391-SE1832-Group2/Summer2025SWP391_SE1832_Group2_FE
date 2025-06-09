@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const loginFormSchema = z.object({
+const loginFormSchema = z.object({
   email: z.string().min(1, 'Email là bắt buộc').email('Email không hợp lệ'),
   password: z
     .string()
@@ -9,9 +9,11 @@ export const loginFormSchema = z.object({
     .max(50, 'Mật khẩu không được quá 50 ký tự'),
 });
 
-export const loginFormDefaultValues = {
+const loginFormDefaultValues = {
   username: '',
   password: '',
 };
 
-export type LoginFormValues = z.infer<typeof loginFormSchema>;
+type LoginFormValues = z.infer<typeof loginFormSchema>;
+
+export { loginFormSchema, loginFormDefaultValues, type LoginFormValues };

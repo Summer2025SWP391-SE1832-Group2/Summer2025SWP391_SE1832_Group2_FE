@@ -1,6 +1,6 @@
 import axiosInstance from '@/lib/api/axios';
 import { useAuthStore } from '@/stores/auth';
-import type { UserRequest, UserResponse } from '@/types/user';
+import type { UserRequest } from '@/types/user';
 
 // GET all UserRequests
 export const getAllUserRequests = async (): Promise<UserRequest[]> => {
@@ -23,25 +23,20 @@ export const getUserRequestById = async (): Promise<UserRequest> => {
 
 // CREATE UserRequest
 export const createUserRequest = async (
-  data: UserRequest & { password: string }
-): Promise<UserResponse> => {
-  const response = await axiosInstance.post<UserResponse>('/api/User', data);
+  data: UserRequest & { password: string },
+): Promise<boolean> => {
+  const response = await axiosInstance.post<boolean>('/api/User', data);
   return response.data;
 };
 
 // UPDATE UserRequest
-export const updateUserRequest = async (
-  data: Partial<UserRequest> & { userRequestId: string }
-): Promise<UserResponse> => {
-  const response = await axiosInstance.put<UserResponse>('/api/User', {
-    ...data,
-    userRequestId: data.userRequestId,
-  });
+export const updateUserRequest = async (data: UserRequest): Promise<boolean> => {
+  const response = await axiosInstance.put<boolean>('/api/User', data);
   return response.data;
 };
 
 // DELETE UserRequest by ID
-export const deleteUserRequestById = async (id: string): Promise<UserResponse> => {
-  const response = await axiosInstance.delete<UserResponse>(`/api/User/${id}`);
+export const deleteUserRequestById = async (id: string): Promise<boolean> => {
+  const response = await axiosInstance.delete<boolean>(`/api/User/${id}`);
   return response.data;
 };

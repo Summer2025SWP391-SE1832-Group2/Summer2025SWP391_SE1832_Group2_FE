@@ -1,4 +1,16 @@
-type UserRequest ={
+export type UserStaff = {
+    userId: number;
+    fullName: string;
+    email: string;
+    phone: string | null;
+    passwordHash: string;
+    role: "Staff" | "Admin" | "Customer" | string; 
+    gender: "male" | "female" | string;
+    dateOfBirth: string; 
+  };
+  
+type UserRequest = {
+  userId: number;
   fullName: string;
   email: string;
   phone: string;
@@ -6,9 +18,13 @@ type UserRequest ={
   gender: string;
   dateOfBirth: string;
 };
-type UserResponse = {
-  success: boolean;
-  message: string;
-  data: string;
+
+type User = {
+  userId: number;
+  fullName: string;
+  email: string;
+  role: UserRole;
 };
-export type { UserRequest, UserResponse };
+
+type UserRole = 'Guest' | 'Customer' | 'Staff' | 'Manager' | 'Admin';
+export type { UserRequest, UserRole, User };

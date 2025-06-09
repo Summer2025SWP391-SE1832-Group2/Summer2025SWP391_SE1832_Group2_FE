@@ -3,6 +3,7 @@ import type { LoginRequest, LoginResponse } from '@/types/login';
 import type { RegisterRequest, RegisterResponse } from '@/types/register';
 
 const loginService = async (data: LoginRequest) => {
+  
   const response = await axiosInstance.post<LoginResponse>('/api/Auth/login', data);
   return response.data;
 };

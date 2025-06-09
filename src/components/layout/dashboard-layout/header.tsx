@@ -10,6 +10,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuthStore } from '@/stores/auth';
 import { useNavigate } from 'react-router-dom';
+import { paths } from '@/utils/constant/path';
 
 const DashboardHeader = () => {
   const { user, logout } = useAuthStore();
@@ -17,7 +18,7 @@ const DashboardHeader = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate(paths.login);
   };
 
   return (
@@ -52,7 +53,7 @@ const DashboardHeader = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant='ghost' className='flex items-center gap-2' role='combobox'>
                   <Avatar className='h-8 w-8'>
-                    <AvatarFallback>{user?.fullName?.charAt(0) ?? "?"}</AvatarFallback>
+                    <AvatarFallback>{user?.fullName.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <span className='hidden lg:block text-sm font-medium'>{user?.fullName}</span>
                 </Button>

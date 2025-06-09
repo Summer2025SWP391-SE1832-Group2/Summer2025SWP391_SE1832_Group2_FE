@@ -41,14 +41,14 @@ const LoginPage = () => {
       if (!response.success) return;
       setAuth(response.data.token);
       showToast(response.message || 'Đăng nhập thành công!', 'success');
-    } catch (error) {
-      showToast((error as string) || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+    } catch (error: any) {
+      showToast(error?.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
     }
   };
 
   return (
     <div className='flex-1 flex items-center justify-center px-4 py-12 bg-gradient-to-br from-blue-50 to-purple-50'>
-      <Card className='shadow-lg min-w-[400px]'>
+      <Card className='shadow-lg w-full max-w-md'>
         <CardHeader className='text-center'>
           <div className='w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4'>
             <span className='text-white font-bold text-xl'>DNA</span>

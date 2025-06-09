@@ -1,5 +1,4 @@
-import type { UserRole } from '@/types/user-role';
-import { getDefaultRouteByRole } from '@/utils/constant/path';
+import type { User, UserRole } from '@/types/user';
 import { jwtDecode } from 'jwt-decode';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -10,13 +9,6 @@ interface JwtPayload {
   Email: string;
   Role: UserRole;
   exp: number;
-}
-
-interface User {
-  userId: string;
-  fullName: string;
-  email: string;
-  role: UserRole;
 }
 
 interface AuthActions {
@@ -50,7 +42,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             return;
           }
           const user: User = {
-            userId: decoded.UserId,
+            userId: Number(decoded.UserId),
             fullName: decoded.FullName,
             email: decoded.Email,
             role: decoded.Role,
