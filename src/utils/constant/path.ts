@@ -6,22 +6,22 @@ import type { UserRole } from '@/types/user';
 export const paths = {
   // Public routes
   home: '/',
-  login: 'login',
-  register: 'register',
-  profile: 'profile',
-  forgotPassword: 'forgot-password',
-  blog: 'blog-type/blog/:blogTypeId',
-  blogType: 'blog-type',
+  login: '/login',
+  register: '/register',
+  profile: '/profile',
+  forgotPassword: '/forgot-password',
+  blog: '/blog-type/blog/:blogTypeId',
+  blogType: '/blog-type',
 
   // Protected routes
   dashboard: '/dashboard',
-  appointments: 'appointments',
-  services: 'services',
-  serviceDetail: (id: string) => `services/${id}`,
+  appointments: '/dashboard/appointments',
+  services: '/dashboard/services',
+  serviceDetail: (id: string) => `/services/${id}`,
 
   // Payment results
-  paymentSuccess: 'payment/success',
-  paymentFailed: 'payment/failed',
+  paymentSuccess: '/payment/success',
+  paymentFailed: '/payment/failed',
 
   // Fallback
   notFound: '*',
