@@ -171,11 +171,11 @@ useEffect(() => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            )}
                 <div className="mt-6 flex justify-end">
                   <Button onClick={handleSave}>Lưu kết quả</Button>
                 </div>
-              </div>
-            )}
           </CardContent>
         </Card>
       )}
