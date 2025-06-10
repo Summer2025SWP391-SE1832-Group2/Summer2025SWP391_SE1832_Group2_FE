@@ -17,11 +17,13 @@ import AppointmentsPage from '@/pages/dashboard/appointments';
 import PublicRoute from './public-route';
 import {
   //  PaymentFailedPage,
-   PaymentSuccessPage } from '@/pages/payment';
+  PaymentSuccessPage
+} from '@/pages/payment';
 import BookingHistoryPage from '@/pages/booking-history';
 import BookingDetailPage from '@/pages/booking-detail';
 import ResultPage from '@/pages/result';
-import BookingList from '@/pages/booking-list';
+import BookingListPage from '@/pages/booking-list';
+import AddResultPage from '@/pages/add-result';
 
 
 const router = createBrowserRouter([
@@ -49,10 +51,7 @@ const router = createBrowserRouter([
         path: paths.bookingHistory,
         element: <BookingHistoryPage />,
       },
-      {
-        path: paths.BookingList,
-        element: <BookingList />,
-      },
+
       {
         path: paths.bookingDetail(':id'),
         element: <BookingDetailPage />,
@@ -84,6 +83,7 @@ const router = createBrowserRouter([
             path: paths.register,
             element: <RegisterPage />,
           },
+
         ],
       },
     ],
@@ -111,6 +111,14 @@ const router = createBrowserRouter([
       {
         path: paths.services,
         element: <ServicePage />,
+      },
+      {
+        path: paths.bookingList,
+        element: <BookingListPage />,
+      },
+      {
+        path: paths.addResult,
+        element: <AddResultPage />,
       },
 
       // Add other dashboard routes here
