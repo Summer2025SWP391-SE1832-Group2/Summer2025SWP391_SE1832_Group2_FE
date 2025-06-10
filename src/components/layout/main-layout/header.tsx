@@ -148,6 +148,12 @@ const Header = () => {
                     lịch sử đặt lịch
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem className='flex flex-col items-start w-full'>
+                  <Link to={paths.result} className='flex items-center gap-2 w-full'>
+                    <Clock className='h-4 w-4' />
+                    xem kết quả
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout} className='text-red-600'>
                   <LogOut className='h-4 w-4' />
                   Đăng xuất

@@ -18,7 +18,7 @@ const ResultPage = () => {
   const [loading, setLoading] = useState(true);
 
   const serviceId = 1;
-  const bookingId = 4;
+  const bookingId = 2;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,6 +94,7 @@ const ResultPage = () => {
                         >
                           {row[`param-${param.testParameterId}`]}
                         </td>
+
                       ))}
                     </tr>
                   ))}
