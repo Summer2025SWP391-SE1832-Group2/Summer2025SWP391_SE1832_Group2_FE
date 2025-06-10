@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/auth';
-import  { type UserRole } from '@/types/user';
+import { type UserRole } from '@/types/user';
 import {
   BarChart3,
   Calendar,
@@ -71,6 +71,26 @@ const sidebarLinks: SidebarLink[] = [
     href: '/dashboard/tests',
     icon: <TestTube className='h-5 w-5' />,
     roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
+    title: 'Nhập mẫu',
+    href: '/dashboard/bookinglist',
+    icon: <Package className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
+    children: [
+      {
+        title: 'Nhập thông số sample',
+        href: '/dashboard/bookinglist',
+        icon: <Package className='h-5 w-5' />,
+        roles: ['Staff', 'Manager', 'Admin'],
+      },
+      {
+        title: 'Nhập kết quả',
+        href: '/dashboard/addresult',
+        icon: <Package className='h-5 w-5' />,
+        roles: ['Staff', 'Manager', 'Admin'],
+      },
+    ],
   },
   {
     title: 'Báo cáo',
