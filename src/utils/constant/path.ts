@@ -12,16 +12,24 @@ export const paths = {
   forgotPassword: '/forgot-password',
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
-
+  result: '/result',
+  bookingHistory: '/bookinghistory',
+  bookingDetail: (bookingId: string)=> `/bookingdetail/${bookingId}`,
+  BookingList: '/Bookinglist',
+  
+ 
+  
   // Protected routes
   dashboard: '/dashboard',
   appointments: '/dashboard/appointments',
   services: '/dashboard/services',
-  serviceDetail: (id: string) => `/services/${id}`,
+  serviceDetail: (id: string) => `/dashboardservices/${id}`,
+  dashboardProfile: '/dashboard/profile',
+
 
   // Payment results
-  paymentSuccess: '/payment-success',
-  paymentFailed: '/payment-failed',
+  paymentSuccess: '/payment/success',
+  paymentFailed: '/payment/failed',
 
   // Fallback
   notFound: '*',

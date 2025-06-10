@@ -37,11 +37,11 @@ const CustomDropdown = React.memo(function CustomDropdown({
   
   return (
     <Select value={value?.toString()} onValueChange={handleChange}>
-      <SelectTrigger className="pr-1.5 focus:ring-0">
+      <SelectTrigger className="w-32 h-9 rounded-md pr-1.5 focus:ring-0">
         <SelectValue>{selected?.props?.children}</SelectValue>
       </SelectTrigger>
       <SelectContent position="popper">
-        <ScrollArea className="h-40">
+        <ScrollArea className="h-32">
           {options.map((option, idx) => (
             <SelectItem
               key={`${option.props.value}-${idx}`}
@@ -71,7 +71,7 @@ function CustomCalendar({
         month: 'space-y-4',
         caption: 'flex flex-col items-center pt-1 relative',
         caption_label: 'text-sm font-medium hidden',
-        caption_dropdowns: 'flex justify-center items-center gap-2 w-full ',
+        caption_dropdowns: 'flex justify-between items-center gap-2 w-full ',
         nav: 'space-x-1 flex items-center',
         nav_button: cn(
           buttonVariants({ variant: 'outline' }),

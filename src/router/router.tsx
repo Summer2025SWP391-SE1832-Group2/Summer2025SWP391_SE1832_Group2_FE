@@ -15,7 +15,14 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
 import AppointmentsPage from '@/pages/dashboard/appointments';
 import PublicRoute from './public-route';
-import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
+import {
+  //  PaymentFailedPage,
+   PaymentSuccessPage } from '@/pages/payment';
+import BookingHistoryPage from '@/pages/booking-history';
+import BookingDetailPage from '@/pages/booking-detail';
+import ResultPage from '@/pages/result';
+import BookingList from '@/pages/booking-list';
+
 
 const router = createBrowserRouter([
   {
@@ -39,17 +46,33 @@ const router = createBrowserRouter([
         element: <PaymentSuccessPage />,
       },
       {
-        path: paths.paymentFailed,
-        element: <PaymentFailedPage />,
+        path: paths.bookingHistory,
+        element: <BookingHistoryPage />,
+      },
+      {
+        path: paths.BookingList,
+        element: <BookingList />,
+      },
+      {
+        path: paths.bookingDetail(':id'),
+        element: <BookingDetailPage />,
       },
       {
         path: paths.profile,
         element: <ProfilePage />,
       },
       {
+        path: paths.result,
+        element: <ResultPage />,
+      },
+      {
         path: paths.serviceDetail(':id'),
         element: <ServiceDetailPage />,
       },
+      // {
+      //   path: "/test",
+      //   element: < />,
+      // },
       {
         element: <PublicRoute />,
         children: [
@@ -73,10 +96,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      // {
-      //   path: paths.profile,
-      //   element: <ProfilePage />,
-      // },
+      {
+        path: paths.dashboardProfile,
+        element: <ProfilePage />,
+      },
       {
         index: true,
         element: <DashboardPage />,

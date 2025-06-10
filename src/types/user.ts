@@ -4,9 +4,9 @@ export type UserStaff = {
     email: string;
     phone: string | null;
     passwordHash: string;
-    role: "Staff" | "Admin" | "Customer" | string; // hoặc thay đổi theo role bạn dùng
+    role: "Staff" | "Admin" | "Customer" | string; 
     gender: "male" | "female" | string;
-    dateOfBirth: string; // hoặc `Date` nếu bạn convert khi nhận
+    dateOfBirth: string; 
   };
   
 type UserRequest = {
@@ -18,11 +18,6 @@ type UserRequest = {
   gender: string;
   dateOfBirth: string;
 };
-type UserResponse = {
-  success: boolean;
-  message: string;
-  data: string;
-};
 
 type User = {
   userId: number;
@@ -32,4 +27,4 @@ type User = {
 };
 
 type UserRole = 'Guest' | 'Customer' | 'Staff' | 'Manager' | 'Admin';
-export type { UserRequest, UserResponse, UserRole, User };
+export type { UserRequest, UserRole, User };
