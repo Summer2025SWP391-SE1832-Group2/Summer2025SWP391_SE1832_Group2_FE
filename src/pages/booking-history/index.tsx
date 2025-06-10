@@ -79,17 +79,17 @@ const BookingHistoryPage = () => {
             {!loading && bookings.length > 0 && (
                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                {bookings.map((booking) => (
-                 <Card key={booking.bookingId} className="rounded-2xl shadow-md p-4 space-y-4">
+                <Card className="rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 p-4 space-y-4 bg-white">
                    <div className="flex items-center justify-between">
                      <div>
                        <p className="font-semibold text-sm text-muted-foreground">Mã đơn #{booking.bookingId}</p>
                        <p className="text-base font-medium">{user?.fullName ?? 'Khách hàng'}</p>
                      </div>
-                     <div className="flex flex-col gap-1 items-end">
+                     <div className="flex gap-2 items-center">
                        <Badge className={getStatusColor(booking.status)}>
                          {booking.status}
                        </Badge>
-                       <Badge variant="secondary">
+                       <Badge className={getStatusColor(booking.paymentStatus)} variant="secondary">
                          {booking.paymentStatus}
                        </Badge>
                      </div>
