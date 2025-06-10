@@ -21,6 +21,7 @@ import {
 import BookingHistoryPage from '@/pages/booking-history';
 import BookingDetailPage from '@/pages/booking-detail';
 import ResultPage from '@/pages/result';
+import BookingList from '@/pages/booking-list';
 
 
 const router = createBrowserRouter([
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: paths.bookingHistory,
         element: <BookingHistoryPage />,
+      },
+      {
+        path: paths.BookingList,
+        element: <BookingList />,
       },
       {
         path: paths.bookingDetail(':id'),

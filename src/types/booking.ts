@@ -20,7 +20,7 @@ type BookingSchedule = {
   sampleCollectionSchedules: SampleCollectionSchedule[];
 };
 type Booking = {
-  bookingId?: number;
+  bookingId: number;
   serviceId: number;
   userId: number;
   bookingDate: string;

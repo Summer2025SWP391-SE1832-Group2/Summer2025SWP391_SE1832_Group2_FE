@@ -15,13 +15,14 @@ export const paths = {
   result: '/result',
   bookingHistory: '/bookinghistory',
   bookingDetail: (bookingId: string)=> `/bookingdetail/${bookingId}`,
+  BookingList: '/Bookinglist',
   
  
   
   // Protected routes
   dashboard: '/dashboard',
   appointments: '/dashboard/appointments',
-  services: '/dashboardservices',
+  services: '/dashboard/services',
   serviceDetail: (id: string) => `/dashboardservices/${id}`,
   dashboardProfile: '/dashboard/profile',
 
