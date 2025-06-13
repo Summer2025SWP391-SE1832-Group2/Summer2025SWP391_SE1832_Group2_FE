@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -13,11 +12,11 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/hooks/useAuth';
 import {
-  registerFormDefaultValues,
-  registerFormSchema,
-  registerVerifySchema,
-  type RegisterFormValues,
-} from '@/lib/zod/register';
+  resetPasswordFormDefaultValues,
+  resetPasswordFormSchema,
+  resetPasswordVerifySchema,
+  type ResetPasswordFormValues,
+} from '@/lib/zod/resetPassword';
 import { paths } from '@/utils/constant/path';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
@@ -25,18 +24,18 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
-const RegisterPage = () => {
-  const [step, setStep] = useState<'request' | 'verify'>('request');
+const ResetPasswordPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { registerMutation } = useAuth();
+  const [step, setStep] = useState<'request' | 'verify'>('request');
+  const { requestResetPasswordMutation, confirmResetPasswordMutation } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
   // Use different schema based on step
-  const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(step === 'request' ? registerFormSchema : registerVerifySchema),
-    defaultValues: registerFormDefaultValues,
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(step === 'request' ? resetPasswordFormSchema : resetPasswordVerifySchema),
+    defaultValues: resetPasswordFormDefaultValues,
   });
 
   // Update validation schema when step changes
@@ -52,38 +51,37 @@ const RegisterPage = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const onSubmit = async (data: RegisterFormValues) => {
-    const { confirmPassword, ...rest } = data;
-
+  const onSubmit = async (data: ResetPasswordFormValues) => {
     try {
       if (step === 'request') {
-        // First step: Request registration (sends verification code)
-        const response = await registerMutation.mutateAsync(rest);
-
-        if (response.data === 'Verification code has sent to email.') {
-          showToast('Mã xác minh đã được gửi đến email!', 'success');
-          setStep('verify');
-        }
-      } else {
-        // Second step: Verify and complete registration
-        const response = await registerMutation.mutateAsync({
-          ...rest,
-          verificationCode: data.verificationCode || '',
+        // First step: Request reset password (sends email with verification code)
+        await requestResetPasswordMutation.mutateAsync({
+          email: data.email,
+          newPassword: data.newPassword,
         });
 
-        if (response.data === 'Register User Successfully') {
-          showToast('Đăng ký thành công!', 'success');
-          navigate(paths.login);
-        }
+        setStep('verify');
+        showToast('Mã xác nhận đã được gửi đến email của bạn!', 'success');
+      } else {
+        // Second step: Confirm reset password with verification code
+        await confirmResetPasswordMutation.mutateAsync({
+          email: data.email,
+          newPassword: data.newPassword,
+          verifyCode: data.verifyCode || '',
+        });
+
+        showToast('Đặt lại mật khẩu thành công!', 'success');
+        navigate(paths.login);
       }
     } catch (error: any) {
       showToast(error?.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
     }
   };
 
-  const isPending = registerMutation.isPending;
-  const isError = registerMutation.isError;
-  const error = registerMutation.error;
+  const isPending =
+    requestResetPasswordMutation.isPending || confirmResetPasswordMutation.isPending;
+  const isError = requestResetPasswordMutation.isError || confirmResetPasswordMutation.isError;
+  const error = requestResetPasswordMutation.error || confirmResetPasswordMutation.error;
 
   return (
     <div className='flex-1 flex items-center justify-center px-4 py-12 bg-gradient-to-br from-blue-50 to-purple-50'>
@@ -92,13 +90,11 @@ const RegisterPage = () => {
           <div className='w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4'>
             <span className='text-white font-bold text-xl'>DNA</span>
           </div>
-          <CardTitle className='text-2xl'>
-            {step === 'request' ? 'Đăng ký tài khoản' : 'Xác minh tài khoản'}
-          </CardTitle>
+          <CardTitle className='text-2xl'>Đặt lại mật khẩu</CardTitle>
           <CardDescription>
             {step === 'request'
-              ? 'Tạo tài khoản BloodLine DNA để sử dụng dịch vụ'
-              : 'Nhập mã xác minh được gửi đến email của bạn'}
+              ? 'Nhập thông tin để đặt lại mật khẩu của bạn'
+              : 'Nhập mã xác nhận đã được gửi đến email của bạn'}
           </CardDescription>
         </CardHeader>
 
@@ -108,28 +104,11 @@ const RegisterPage = () => {
               {isError && (
                 <div className='rounded-lg bg-destructive/10 p-4 text-sm text-destructive flex items-start'>
                   <AlertCircle className='h-5 w-5 mr-2 flex-shrink-0 mt-0.5' />
-                  <span>{error?.message || 'Có lỗi xảy ra. Vui lòng thử lại.'}</span>
+                  <span>
+                    {error?.message || 'Có lỗi xảy ra khi đặt lại mật khẩu. Vui lòng thử lại.'}
+                  </span>
                 </div>
               )}
-
-              <FormField
-                control={form.control}
-                name='fullName'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Họ và tên</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Nhập họ và tên đầy đủ'
-                        disabled={isPending || step === 'verify'}
-                        readOnly={step === 'verify'}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}
@@ -139,8 +118,7 @@ const RegisterPage = () => {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        type='email'
-                        placeholder='Nhập địa chỉ email'
+                        placeholder='Nhập email'
                         disabled={isPending || step === 'verify'}
                         readOnly={step === 'verify'}
                         {...field}
@@ -153,35 +131,15 @@ const RegisterPage = () => {
 
               <FormField
                 control={form.control}
-                name='phoneNumber'
+                name='newPassword'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Số điện thoại</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='tel'
-                        placeholder='Nhập số điện thoại (VD: 0912345678)'
-                        disabled={isPending || step === 'verify'}
-                        readOnly={step === 'verify'}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='password'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mật khẩu</FormLabel>
+                    <FormLabel>Mật khẩu mới</FormLabel>
                     <FormControl>
                       <div className='relative'>
                         <Input
                           type={showPassword ? 'text' : 'password'}
-                          placeholder='Nhập mật khẩu'
+                          placeholder='Nhập mật khẩu mới'
                           disabled={isPending || step === 'verify'}
                           readOnly={step === 'verify'}
                           {...field}
@@ -201,9 +159,6 @@ const RegisterPage = () => {
                         </button>
                       </div>
                     </FormControl>
-                    <FormDescription>
-                      Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -219,7 +174,7 @@ const RegisterPage = () => {
                       <div className='relative'>
                         <Input
                           type={showConfirmPassword ? 'text' : 'password'}
-                          placeholder='Nhập lại mật khẩu'
+                          placeholder='Xác nhận mật khẩu mới'
                           disabled={isPending || step === 'verify'}
                           readOnly={step === 'verify'}
                           {...field}
@@ -247,10 +202,10 @@ const RegisterPage = () => {
               {step === 'verify' && (
                 <FormField
                   control={form.control}
-                  name='verificationCode'
+                  name='verifyCode'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Mã xác minh</FormLabel>
+                      <FormLabel>Mã xác nhận</FormLabel>
                       <FormControl>
                         <Input
                           placeholder='Nhập mã xác nhận'
@@ -269,8 +224,8 @@ const RegisterPage = () => {
                 {isPending
                   ? 'Đang xử lý...'
                   : step === 'request'
-                  ? 'Tạo tài khoản'
-                  : 'Xác minh và hoàn tất đăng ký'}
+                  ? 'Gửi yêu cầu'
+                  : 'Xác nhận đặt lại mật khẩu'}
               </Button>
 
               {step === 'verify' && (
@@ -288,9 +243,8 @@ const RegisterPage = () => {
           </Form>
 
           <div className='mt-6 text-center text-sm'>
-            <span className='text-muted-foreground'>Đã có tài khoản? </span>
             <Link to={paths.login} className='text-primary hover:underline font-medium'>
-              Đăng nhập ngay
+              Quay lại đăng nhập
             </Link>
           </div>
         </CardContent>
@@ -299,4 +253,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default ResetPasswordPage;

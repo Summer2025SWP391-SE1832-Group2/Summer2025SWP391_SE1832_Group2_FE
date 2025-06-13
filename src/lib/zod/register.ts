@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-// Base schema for registration
+// Base schema without refinement
 const baseRegisterSchema = z.object({
   fullName: z
     .string()
@@ -25,55 +25,40 @@ const baseRegisterSchema = z.object({
       /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số',
     ),
+  confirmPassword: z.string().min(1, 'Xác nhận mật khẩu là bắt buộc'),
+  verificationCode: z.string().optional(), // Optional for the first step
 });
 
-// Schema for the first step (registration request)
-const registerRequestSchema = baseRegisterSchema
-  .extend({
-    confirmPassword: z.string().min(1, 'Xác nhận mật khẩu là bắt buộc'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
+// Add refinement for password matching
+export const registerFormSchema = baseRegisterSchema.refine(
+  (data) => data.password === data.confirmPassword,
+  {
     message: 'Mật khẩu xác nhận không khớp',
     path: ['confirmPassword'],
-  });
+  },
+);
 
-// Schema for the second step (verification)
-const registerVerifySchema = baseRegisterSchema
-  .extend({
-    confirmPassword: z.string().min(1, 'Xác nhận mật khẩu là bắt buộc'),
+// Schema for the verification step with required verificationCode
+export const registerVerifySchema = z
+  .object({
+    ...baseRegisterSchema.shape,
     verificationCode: z
       .string()
       .min(1, 'Mã xác minh là bắt buộc')
-      .length(6, 'Mã xác minh phải có 6'),
+      .length(6, 'Mã xác minh phải có 6 số'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Mật khẩu xác nhận không khớp',
     path: ['confirmPassword'],
   });
 
-// Default values
-const registerFormDefaultValues = {
+export const registerFormDefaultValues = {
   fullName: '',
   email: '',
   phoneNumber: '',
   password: '',
   confirmPassword: '',
-};
-
-const registerVerifyDefaultValues = {
-  ...registerFormDefaultValues,
   verificationCode: '',
 };
 
-// Types
-type RegisterFormValues = z.infer<typeof registerRequestSchema>;
-type RegisterVerifyValues = z.infer<typeof registerVerifySchema>;
-
-export {
-  registerRequestSchema,
-  registerVerifySchema,
-  registerFormDefaultValues,
-  registerVerifyDefaultValues,
-  type RegisterFormValues,
-  type RegisterVerifyValues,
-};
+export type RegisterFormValues = z.infer<typeof registerFormSchema>;

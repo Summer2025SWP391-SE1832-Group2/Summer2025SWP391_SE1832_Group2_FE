@@ -82,7 +82,7 @@ const Header = () => {
                 </div>
               )}
 
-              {services && services.length > 0 ? (
+              {services && services.length > 0 && (
                 <div className='transition-all duration-300 delay-100'>
                   {services.map((service, index) => (
                     <Link
@@ -100,7 +100,8 @@ const Header = () => {
                     </Link>
                   ))}
                 </div>
-              ) : (
+              )}
+              {services && services.length === 0 && (
                 <EmptyState
                   title='No services found'
                   description='There are no services to display at this time.'
@@ -157,7 +158,7 @@ const Header = () => {
                 <DropdownMenuItem onClick={handleLogout} className='text-red-600'>
                   <LogOut className='h-4 w-4' />
                   Đăng xuất
-                  </DropdownMenuItem>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

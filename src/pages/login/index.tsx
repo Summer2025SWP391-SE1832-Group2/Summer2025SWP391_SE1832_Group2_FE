@@ -122,7 +122,7 @@ const LoginPage = () => {
               />
 
               <div className='flex items-center justify-between text-sm'>
-                <Link to={paths.forgotPassword} className='text-primary hover:underline'>
+                <Link to={paths.resetPassword} className='text-primary hover:underline'>
                   Quên mật khẩu?
                 </Link>
               </div>
