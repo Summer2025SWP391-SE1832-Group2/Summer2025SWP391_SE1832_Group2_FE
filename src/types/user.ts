@@ -1,14 +1,14 @@
 export type UserStaff = {
-    userId: number;
-    fullName: string;
-    email: string;
-    phone: string | null;
-    passwordHash: string;
-    role: "Staff" | "Admin" | "Customer" | string; 
-    gender: "male" | "female" | string;
-    dateOfBirth: string; 
-  };
-  
+  userId: number;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  passwordHash: string;
+  role: "Staff" | "Admin" | "Customer" | string;
+  gender: "male" | "female" | string;
+  dateOfBirth: string;
+};
+
 type UserRequest = {
   userId: number;
   fullName: string;
@@ -17,6 +17,8 @@ type UserRequest = {
   role: string;
   gender: string;
   dateOfBirth: string;
+  personalId: string;
+  address: string;
 };
 
 type User = {

@@ -18,7 +18,7 @@ const ResultPage = () => {
   const [loading, setLoading] = useState(true);
 
   const serviceId = 1;
-  const bookingId = 2;
+  const bookingId = 4;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,15 +66,15 @@ const ResultPage = () => {
           {loading ? (
             <Skeleton className="w-full h-[200px] rounded-md" />
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full table-auto border border-muted rounded-md">
-                <thead className="bg-muted">
+            <div className="w-full overflow-auto max-h-[500px]">
+              <table className="min-w-max border border-muted rounded-md">
+                <thead className="bg-muted sticky top-0 z-10">
                   <tr>
-                    <th className="px-4 py-2 text-left border-b">Sample</th>
+                    <th className="px-4 py-2 text-left border-b whitespace-nowrap">Sample</th>
                     {testParameters.map((param) => (
                       <th
                         key={param.testParameterId}
-                        className="px-4 py-2 text-left border-b"
+                        className="px-4 py-2 text-left border-b whitespace-nowrap"
                       >
                         {param.name}
                       </th>
@@ -84,23 +84,23 @@ const ResultPage = () => {
                 <tbody>
                   {rows.map((row, idx) => (
                     <tr key={idx} className="hover:bg-muted/40">
-                      <td className="px-4 py-2 border-b font-medium">
+                      <td className="px-4 py-2 border-b font-medium whitespace-nowrap">
                         {row.name}
                       </td>
                       {testParameters.map((param) => (
                         <td
                           key={param.testParameterId}
-                          className="px-4 py-2 border-b"
+                          className="px-4 py-2 border-b whitespace-nowrap"
                         >
                           {row[`param-${param.testParameterId}`]}
                         </td>
-
                       ))}
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+
           )}
         </CardContent>
       </Card>

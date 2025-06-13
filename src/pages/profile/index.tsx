@@ -32,45 +32,45 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState<UserRequest | null>(null);
 
-useEffect(() => {
-  const fetchUser = async () => {
-    try {
-      setLoading(true);
-      const data = await getUserRequestById();
-      reset(data);
-      setUserData(data);
-    } catch (error) {
-      console.error('Không lấy được thông tin user:', error);
-      showToast('Không lấy được thông tin người dùng', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const data = await getUserRequestById();
+        reset(data);
+        setUserData(data);
+      } catch (error) {
+        console.error('Không lấy được thông tin user:', error);
+        showToast('Không lấy được thông tin người dùng', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (user?.userId) fetchUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [user?.userId]);
+    if (user?.userId) fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.userId]);
 
   const onSubmit = async (data: UserRequest) => {
-  try {
-    setSaving(true);
-    const success = await updateUserRequest(data);
+    try {
+      setSaving(true);
+      const success = await updateUserRequest(data);
 
-    if (!success) {
-      showToast('Cập nhật thất bại', 'error');
-      return;
+      if (!success) {
+        showToast('Cập nhật thất bại', 'error');
+        return;
+      }
+
+      showToast('Cập nhật thành công!', 'success');
+      setIsEditing(false);
+      setUserData(data); // cập nhật UI sau khi save
+    } catch (error) {
+      console.error('Lỗi cập nhật user:', error);
+      showToast('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+    } finally {
+      setSaving(false);
     }
-
-    showToast('Cập nhật thành công!', 'success');
-    setIsEditing(false);
-    setUserData(data); // cập nhật UI sau khi save
-  } catch (error) {
-    console.error('Lỗi cập nhật user:', error);
-    showToast('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
-  } finally {
-    setSaving(false);
-  }
-};
+  };
 
 
   if (loading) return <p className='text-center'>Đang tải thông tin...</p>;
@@ -103,8 +103,8 @@ useEffect(() => {
                     {userData?.gender === 'male'
                       ? 'Nam'
                       : userData?.gender === 'female'
-                      ? 'Nữ'
-                      : 'Khác'}
+                        ? 'Nữ'
+                        : 'Khác'}
                   </p>
                 </div>
                 <div>
@@ -115,6 +115,15 @@ useEffect(() => {
                       : '—'}
                   </p>
                 </div>
+                <div>
+                  <Label>Số CCCD/CMND</Label>
+                  <p>{userData?.personalId || '—'}</p>
+                </div>
+                <div>
+                  <Label>Địa chỉ</Label>
+                  <p>{userData?.address || '—'}</p>
+                </div>
+
                 <Button onClick={() => setIsEditing(true)}>Chỉnh sửa</Button>
               </>
             ) : (
@@ -183,6 +192,15 @@ useEffect(() => {
                     </PopoverContent>
                   </Popover>
                 </div>
+                <div>
+                  <Label className='mb-2'>Số CCCD/CMND</Label>
+                  <Input {...register('personalId')} />
+                </div>
+
+                <div>
+                  <Label className='mb-2'>Địa chỉ</Label>
+                  <Input {...register('address')} />
+                </div>
 
                 <div className='flex gap-4'>
                   <Button type='submit' disabled={saving}>
@@ -192,7 +210,7 @@ useEffect(() => {
                     type='button'
                     variant='outline'
                     onClick={() => {
-                      reset(userData || {}); 
+                      reset(userData || {});
                       setIsEditing(false);
                     }}
                   >

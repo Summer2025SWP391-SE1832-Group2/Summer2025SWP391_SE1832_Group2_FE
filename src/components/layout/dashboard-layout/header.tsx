@@ -53,7 +53,9 @@ const DashboardHeader = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant='ghost' className='flex items-center gap-2' role='combobox'>
                   <Avatar className='h-8 w-8'>
-                    <AvatarFallback>{user?.fullName.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>
+                      {(user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U')}
+                    </AvatarFallback>
                   </Avatar>
                   <span className='hidden lg:block text-sm font-medium'>{user?.fullName}</span>
                 </Button>
