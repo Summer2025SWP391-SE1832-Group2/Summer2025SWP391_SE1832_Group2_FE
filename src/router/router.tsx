@@ -13,7 +13,7 @@ import ServicePage from '@/pages/dashboard/service';
 import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
-import AppointmentsPage from '@/pages/dashboard/appointments';
+import AppointmentsPage from '@/pages/appointments';
 import PublicRoute from './public-route';
 import {
   //  PaymentFailedPage,
@@ -24,6 +24,7 @@ import BookingDetailPage from '@/pages/booking-detail';
 import ResultPage from '@/pages/result';
 import BookingListPage from '@/pages/booking-list';
 import AddResultPage from '@/pages/add-result';
+import StaffSchedulePage from '@/pages/staff-schedule';
 
 
 const router = createBrowserRouter([
@@ -119,6 +120,10 @@ const router = createBrowserRouter([
       {
         path: paths.addResult,
         element: <AddResultPage />,
+      },
+      {
+        path: paths.staffschedule,
+        element: <StaffSchedulePage />,
       },
 
       // Add other dashboard routes here

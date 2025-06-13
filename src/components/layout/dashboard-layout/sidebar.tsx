@@ -67,6 +67,12 @@ const sidebarLinks: SidebarLink[] = [
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
+    title: 'Lịch Làm việc',
+    href: '/dashboard/staffschedules',
+    icon: <Calendar className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
     title: 'Xét nghiệm',
     href: '/dashboard/tests',
     icon: <TestTube className='h-5 w-5' />,

@@ -27,6 +27,7 @@ export const paths = {
   dashboardProfile: '/dashboard/profile',
   bookingList: '/dashboard/bookinglist',
   addResult: '/dashboard/addresult',
+  staffschedule : '/dashboard/staffschedules',
 
 
   // Payment results
