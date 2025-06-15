@@ -9,15 +9,12 @@ export const paths = {
   login: '/login',
   register: '/register',
   profile: '/profile',
-  forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
   result: '/result',
   bookingHistory: '/bookinghistory',
   bookingDetail: (bookingId: string) => `/bookingdetail/${bookingId}`,
-
-
-
 
   // Protected routes
   dashboard: '/dashboard',
@@ -28,7 +25,6 @@ export const paths = {
   bookingList: '/dashboard/bookinglist',
   addResult: '/dashboard/addresult',
   staffschedule : '/dashboard/staffschedules',
-
 
   // Payment results
   paymentSuccess: '/payment/success',

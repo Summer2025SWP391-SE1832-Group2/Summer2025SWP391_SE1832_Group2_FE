@@ -6,6 +6,7 @@ export const bookingSchema = z.object({
   method: z.enum(['AtFacility', 'SelfCollection', 'StaffVisit']),
   location: z.string().min(1, { message: 'Location is required' }),
   buyKit: z.boolean(),
+  time: z.string().min(1, { message: 'Time is required' }),
 });
 
 // Conditional schema that requires location field when method is StaffVisit

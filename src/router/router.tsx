@@ -17,7 +17,7 @@ import AppointmentsPage from '@/pages/appointments';
 import PublicRoute from './public-route';
 import {
   //  PaymentFailedPage,
-  PaymentSuccessPage
+  PaymentSuccessPage,
 } from '@/pages/payment';
 import BookingHistoryPage from '@/pages/booking-history';
 import BookingDetailPage from '@/pages/booking-detail';
@@ -26,6 +26,7 @@ import BookingListPage from '@/pages/booking-list';
 import AddResultPage from '@/pages/add-result';
 import StaffSchedulePage from '@/pages/staff-schedule';
 
+import ResetPasswordPage from '@/pages/reset-password';
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
         element: <PublicRoute />,
         children: [
           {
+            path: paths.resetPassword,
+            element: <ResetPasswordPage />,
+          },
+          {
             path: paths.login,
             element: <LoginPage />,
           },
@@ -84,7 +89,6 @@ const router = createBrowserRouter([
             path: paths.register,
             element: <RegisterPage />,
           },
-
         ],
       },
     ],

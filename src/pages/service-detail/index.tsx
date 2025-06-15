@@ -14,12 +14,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
-import { TimeInputGroup } from '@/components/ui/time-picker/time-input-group';
 import { Timeline, TimelineItem } from '@/components/ui/timeline/timeline';
 import { useToast } from '@/components/ui/toast';
 import ServiceMethodOption from '@/feature/service-detail/service-method-option';
-import { useService } from '@/hooks/useService';
 import { useBooking } from '@/hooks/useBooking';
+import { useService } from '@/hooks/useService';
 import { cn } from '@/lib/utils';
 import { bookingFormSchema, type BookingFormValues } from '@/lib/zod/booking';
 import { useAuthStore } from '@/stores/auth';
@@ -31,7 +30,6 @@ import {
 } from '@/utils/constant/timeline-services';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, formatISO } from 'date-fns';
-import { vi } from 'date-fns/locale';
 import { CalendarIcon, Home, MapPin, Package } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -55,6 +53,7 @@ const ServiceDetailPage = () => {
       method: 'AtFacility',
       location: 'Medical Facility',
       buyKit: false,
+      time: '07:00:00',
     },
   });
 
@@ -237,47 +236,68 @@ const ServiceDetailPage = () => {
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <CardContent className='pt-6 space-y-6'>
                   {/* Date Picker */}
-                  <FormField
-                    control={form.control}
-                    name='bookingDate'
-                    render={({ field }) => (
-                      <FormItem className='flex flex-col'>
-                        <FormLabel>Ngày hẹn</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant='outline'
-                              className={cn(
-                                'w-full pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground',
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, 'PPP HH:mm:ss', { locale: vi })
-                              ) : (
-                                <span>Chọn ngày</span>
-                              )}
-                              <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent align='start' className='w-auto p-0'>
-                            <Calendar
-                              mode='single'
-                              captionLayout='dropdown-buttons'
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              fromYear={1960}
-                              toYear={2030}
+                  <div className='flex gap-4 items-center'>
+                    <FormField
+                      control={form.control}
+                      name='bookingDate'
+                      render={({ field }) => (
+                        <FormItem className='flex flex-col'>
+                          <FormLabel>Ngày hẹn</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={'outline'}
+                                  className={cn(
+                                    'w-[240px] pl-3 text-left font-normal',
+                                    !field.value && 'text-muted-foreground',
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, 'PPP')
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                  <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className='w-auto p-0' align='start'>
+                              <Calendar
+                                mode='single'
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date > new Date() || date < new Date('1900-01-01')
+                                }
+                                captionLayout='dropdown'
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name='time'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel htmlFor='time'>Thời gian</FormLabel>
+                          <FormControl>
+                            <Input
+                              type='time'
+                              id='time'
+                              step='1'
+                              {...field}
+                              className='bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none'
                             />
-                            <div className='p-3 border-t border-border'>
-                              <TimeInputGroup date={field.value} setDate={field.onChange} />
-                            </div>
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   {/* Address Field (conditional) */}
                   {(selectedMethod === 'StaffVisit' || selectedMethod === 'SelfCollection') && (
