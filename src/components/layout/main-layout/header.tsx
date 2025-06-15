@@ -87,7 +87,7 @@ const Header = () => {
                   {services.map((service, index) => (
                     <Link
                       key={service.serviceId}
-                      to={paths.serviceDetail(service.serviceId.toString())}
+                      to={paths.booking(service.serviceId.toString())}
                       className={`block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 ${
                         isServiceMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
                       }`}

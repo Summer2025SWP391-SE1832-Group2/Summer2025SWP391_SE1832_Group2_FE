@@ -14,13 +14,13 @@ export const paths = {
   blogType: '/blog-type',
   result: '/result',
   bookingHistory: '/bookinghistory',
+  booking: (serviceId: string) => `/booking/${serviceId}`,
   bookingDetail: (bookingId: string) => `/bookingdetail/${bookingId}`,
 
   // Protected routes
   dashboard: '/dashboard',
   appointments: '/dashboard/appointments',
   services: '/dashboard/services',
-  serviceDetail: (id: string) => `/dashboardservices/${id}`,
   dashboardProfile: '/dashboard/profile',
   bookingList: '/dashboard/bookinglist',
   addResult: '/dashboard/addresult',

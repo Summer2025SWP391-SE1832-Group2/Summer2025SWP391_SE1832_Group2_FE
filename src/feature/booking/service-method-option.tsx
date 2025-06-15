@@ -4,7 +4,7 @@ import type { BookingFormValues } from '@/lib/zod/booking';
 import type { UseFormReturn } from 'react-hook-form';
 
 type ServiceMethodOptionProps = {
-  method: string;
+  method: BookingFormValues['method'];
   icon: React.ReactNode;
   title: string;
   description: string;
@@ -28,9 +28,7 @@ const ServiceMethodOption = ({
         ? 'border-primary bg-primary/5 dark:bg-primary/10 shadow-md'
         : 'border-transparent hover:border-primary/30',
     )}
-    onClick={() =>
-      form.setValue('method', method as 'AtFacility' | 'SelfCollection' | 'StaffVisit')
-    }
+    onClick={() => form.setValue('method', method)}
   >
     <CardContent className='p-4 flex items-start gap-4'>
       <div className='bg-primary/10 p-3 rounded-full flex-shrink-0'>{icon}</div>
