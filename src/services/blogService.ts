@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/api/axios";
-import type { Blog, Blogtype } from "@/types/blog";
+import type { Blog, BlogType } from "@/types/blog";
 
 const getAllBlogs = async (): Promise<Blog[]> => {
   const response = await axiosInstance.get<Blog[]>("/api/Blog");
@@ -8,11 +8,12 @@ const getAllBlogs = async (): Promise<Blog[]> => {
 
 const getAllBlogByBlogTypeID = async (id : number): Promise<Blog[]> => {
   const response = await axiosInstance.get<Blog[]>(`/api/Blog/type/${id}`);
+  console.log("getAllBlogByBlogTypeID response: ", response.data);
   return response.data;
 };
 
-const getAllBlogtype = async (): Promise<Blogtype[]> => {
-  const response = await axiosInstance.get<Blogtype[]>("/api/BlogsType");
+const getAllBlogtype = async (): Promise<BlogType[]> => {
+  const response = await axiosInstance.get<BlogType[]>("/api/BlogsType");
   return response.data;
 };
 
@@ -24,6 +25,8 @@ const getBlogById = async (id: number): Promise<Blog> => {
 
 const createBlog = async (data: Omit<Blog, "blogId">): Promise<Blog> => {
   const response = await axiosInstance.post<Blog>("/api/Blog", data);
+  console.log("createBlog data: ", data);
+  console.log("createBlog response: ", response.data);
   return response.data;
 };
 
@@ -37,6 +40,11 @@ const deleteBlog = async (id: number): Promise<void> => {
   await axiosInstance.delete( `/api/Blog/${id}`);
 };
 
+const updateBlogType = async ( data: Partial<BlogType>): Promise<BlogType> => {
+  const response = await axiosInstance.put<BlogType>(`/api/BlogsType`, data);
+  return response.data;
+};
+
 export {
   getAllBlogs,
   getBlogById,
@@ -44,5 +52,6 @@ export {
   updateBlog,
   deleteBlog,
   getAllBlogByBlogTypeID,
-  getAllBlogtype
+  getAllBlogtype,
+  updateBlogType
 };

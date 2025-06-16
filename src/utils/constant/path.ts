@@ -25,6 +25,9 @@ export const paths = {
   bookingList: '/dashboard/bookinglist',
   addResult: '/dashboard/addresult',
   staffschedule : '/dashboard/staffschedules',
+  blogmanage : '/dashboard/blogmanage',
+  blogcreate: '/dashboard/blogmanage/blogcreate',
+
 
   // Payment results
   paymentSuccess: '/payment/success',

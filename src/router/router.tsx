@@ -1,5 +1,5 @@
 import BlogPage from '@/pages/blog';
-import BlogType from '@/pages/blog/blogType';
+import BlogTypePage from '@/pages/blog/blogType';
 import DashboardLayout from '@/components/layout/dashboard-layout/dashboard-layout';
 import MainLayout from '@/components/layout/main-layout/main-layout';
 import DashboardPage from '@/pages/dashboard';
@@ -27,6 +27,8 @@ import AddResultPage from '@/pages/add-result';
 import StaffSchedulePage from '@/pages/staff-schedule';
 
 import ResetPasswordPage from '@/pages/reset-password';
+import BlogManagePage from '@/pages/blog-manage';
+import BlogCreatePage from '@/pages/blog-manage/blog-create';
 
 const router = createBrowserRouter([
   {
@@ -43,7 +45,7 @@ const router = createBrowserRouter([
       },
       {
         path: paths.blogType,
-        element: <BlogType />,
+        element: <BlogTypePage />,
       },
       {
         path: paths.paymentSuccess,
@@ -129,6 +131,15 @@ const router = createBrowserRouter([
         path: paths.staffschedule,
         element: <StaffSchedulePage />,
       },
+      {
+        path: paths.blogmanage,
+        element: <BlogManagePage />,
+       
+      },
+      {
+        path: paths.blogcreate,
+        element: <BlogCreatePage />,
+      }
 
       // Add other dashboard routes here
     ],

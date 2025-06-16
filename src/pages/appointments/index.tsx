@@ -37,6 +37,7 @@ export default function AppointmentsPage() {
     const fetchData = async () => {
       try {
         const data = await getAllBookingSchedule();
+        console.log("Fetched bookings:", data);
         setBookings(data);
       } catch (error) {
         console.error("Failed to fetch bookings:", error);

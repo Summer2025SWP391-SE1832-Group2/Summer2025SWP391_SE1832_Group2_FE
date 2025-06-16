@@ -105,6 +105,12 @@ const sidebarLinks: SidebarLink[] = [
     roles: ['Manager', 'Admin'],
   },
   {
+    title: 'Blogs',
+    href: '/dashboard/blogmanage',
+    icon: <FileText className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
     title: 'Người dùng',
     href: '/dashboard/users',
     icon: <Users className='h-5 w-5' />,
