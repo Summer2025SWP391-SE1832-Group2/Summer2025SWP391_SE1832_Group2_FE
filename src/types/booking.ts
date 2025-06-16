@@ -1,3 +1,5 @@
+import type { BookingFormValues } from '@/lib/zod/booking';
+
 type SampleCollectionSchedule = {
   scheduleId: number;
   bookingId: number;
@@ -27,7 +29,7 @@ type Booking = {
   bookingDate: string;
   status: BookingStatus;
   buyKit: boolean;
-  method: ServiceMethod;
+  method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
   preferredDate: string;
   time: string;
@@ -37,7 +39,6 @@ type Booking = {
 //   export type { Booking,BookingSchedule, SampleCollectionSchedule };
 type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
 type PaymentStatus = 'Unpaid' | 'Processing' | 'Paid' | 'Failed';
-type ServiceMethod = 'AtFacility' | 'SelfCollection' | 'StaffVisit';
 
 type BookingRequest = {
   bookingId?: number;
@@ -46,10 +47,18 @@ type BookingRequest = {
   bookingDate: string;
   status: BookingStatus;
   buyKit: boolean;
-  method: ServiceMethod;
+  method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
+  collectionDate: string;
   time: string;
   location: string;
 };
 
-export { type BookingRequest, type BookingStatus, type PaymentStatus, type ServiceMethod, type Booking, type BookingSchedule, type SampleCollectionSchedule };
+export {
+  type BookingRequest,
+  type BookingStatus,
+  type PaymentStatus,
+  type Booking,
+  type BookingSchedule,
+  type SampleCollectionSchedule,
+};

@@ -2,33 +2,35 @@ import BlogPage from '@/pages/blog';
 import BlogTypePage from '@/pages/blog/blogType';
 import DashboardLayout from '@/components/layout/dashboard-layout/dashboard-layout';
 import MainLayout from '@/components/layout/main-layout/main-layout';
+import BlogType from '@/pages/blog/blogType';
 import DashboardPage from '@/pages/dashboard';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
 
-import ProfilePage from '@/pages/profile';
-import RegisterPage from '@/pages/register';
 import ServiceDetailPage from '@/pages/service-detail';
-import ServicePage from '@/pages/dashboard/service';
-import { paths } from '@/utils/constant/path';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import ProtectedRoute from './protected-route';
+import BookingPage from '@/pages/booking';
 import AppointmentsPage from '@/pages/appointments';
-import PublicRoute from './public-route';
+import ServicePage from '@/pages/dashboard/service';
 import {
   //  PaymentFailedPage,
   PaymentSuccessPage,
 } from '@/pages/payment';
 import BookingHistoryPage from '@/pages/booking-history';
 import BookingDetailPage from '@/pages/booking-detail';
-import ResultPage from '@/pages/result';
 import BookingListPage from '@/pages/booking-list';
 import AddResultPage from '@/pages/add-result';
 import StaffSchedulePage from '@/pages/staff-schedule';
 
-import ResetPasswordPage from '@/pages/reset-password';
 import BlogManagePage from '@/pages/blog-manage';
 import BlogCreatePage from '@/pages/blog-manage/blog-create';
+import ProfilePage from '@/pages/profile';
+import RegisterPage from '@/pages/register';
+import ResetPasswordPage from '@/pages/reset-password';
+import ResultPage from '@/pages/result';
+import { paths } from '@/utils/constant/path';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ProtectedRoute from './protected-route';
+import PublicRoute from './public-route';
 
 const router = createBrowserRouter([
   {
@@ -69,8 +71,8 @@ const router = createBrowserRouter([
         element: <ResultPage />,
       },
       {
-        path: paths.serviceDetail(':id'),
-        element: <ServiceDetailPage />,
+        path: paths.booking(':serviceId'),
+        element: <BookingPage />,
       },
       // {
       //   path: "/test",
