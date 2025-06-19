@@ -57,7 +57,7 @@ const BookingPage = () => {
     defaultValues: {
       serviceId: Number(serviceId),
       method: 'TAI_CO_SO_Y_TE',
-      location: 'Medical Facility',
+      location: user?.address ?? 'Medical Facility',
       buyKit: false,
       time: TIME_SLOTS[0].value,
     },

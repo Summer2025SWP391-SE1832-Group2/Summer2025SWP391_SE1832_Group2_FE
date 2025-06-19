@@ -13,10 +13,7 @@ import BookingHistoryPage from '@/pages/booking-history';
 import BookingListPage from '@/pages/booking-list';
 import AppointmentsPage from '@/pages/dashboard/appointments';
 import ServicePage from '@/pages/dashboard/service';
-import {
-  //  PaymentFailedPage,
-  PaymentSuccessPage,
-} from '@/pages/payment';
+import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
 import ResetPasswordPage from '@/pages/reset-password';
@@ -48,6 +45,10 @@ const router = createBrowserRouter([
         element: <PaymentSuccessPage />,
       },
       {
+        path: paths.paymentFailed,
+        element: <PaymentFailedPage />,
+      },
+      {
         path: paths.bookingHistory,
         element: <BookingHistoryPage />,
       },
@@ -68,10 +69,7 @@ const router = createBrowserRouter([
         path: paths.booking(':serviceId'),
         element: <BookingPage />,
       },
-      // {
-      //   path: "/test",
-      //   element: < />,
-      // },
+
       {
         element: <PublicRoute />,
         children: [
@@ -100,12 +98,12 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: paths.dashboardProfile,
-        element: <ProfilePage />,
-      },
-      {
         index: true,
         element: <DashboardPage />,
+      },
+      {
+        path: paths.dashboardProfile,
+        element: <ProfilePage />,
       },
       {
         path: paths.appointments,
