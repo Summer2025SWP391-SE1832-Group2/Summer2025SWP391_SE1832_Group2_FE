@@ -13,7 +13,6 @@ type BookingSchedule = {
   bookingId: number;
   serviceTypeId: number;
   userId: number;
-  userName: string;
   bookingDate: string;
   sampleMethod: string;
   status: string;

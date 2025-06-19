@@ -24,11 +24,6 @@ export const paths = {
   dashboardProfile: '/dashboard/profile',
   bookingList: '/dashboard/bookinglist',
   addResult: '/dashboard/addresult',
-  staffschedule : '/dashboard/staffschedules',
-  blogmanage : '/dashboard/blogmanage',
-  blogcreate: '/dashboard/blogmanage/blogcreate',
-  blogdetail: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
-
 
   // Payment results
   paymentSuccess: '/payment/success',
