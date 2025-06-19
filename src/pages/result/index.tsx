@@ -1,163 +1,111 @@
 import { useEffect, useState } from "react";
+import { getTestParametersByServiceId } from "@/services/parameters-service";
+import { getResultDetailsByBookingId } from "@/services/result-service";
+import type { TestParameter } from "@/types/testparameters";
+import type { ResultDetail } from "@/types/resultdetail";
+
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableHead,
-} from "@/components/ui/table";
 
-interface TestParameter {
-  testParameterId: number;
-  name: string;
-}
-
-interface ResultDetail {
-  sampleId: number;
-  testParameterId: number;
-  value: string;
-}
-
-const bookingOptions = [
-  { label: "Booking 1", value: "1" },
-  { label: "Booking 2", value: "2" },
-];
-
-const mockTestParameters: TestParameter[] = Array.from({ length: 20 }, (_, i) => ({
-  testParameterId: i + 1,
-  name: `Parameter ${i + 1}`,
-}));
-
-const mockResultDetails: ResultDetail[] = [
-  ...mockTestParameters.map((p) => ({
-    sampleId: 1,
-    testParameterId: p.testParameterId,
-    value: (Math.random() * 10).toFixed(2),
-  })),
-  ...mockTestParameters.map((p) => ({
-    sampleId: 2,
-    testParameterId: p.testParameterId,
-    value: (Math.random() * 10).toFixed(2),
-  })),
-];
-
-export default function ResultPage() {
-  const [selectedBookingId, setSelectedBookingId] = useState("1");
+const ResultPage = () => {
   const [testParameters, setTestParameters] = useState<TestParameter[]>([]);
   const [resultDetails, setResultDetails] = useState<ResultDetail[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const serviceId = 1;
+  const bookingId = 2;
 
   useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      await new Promise((r) => setTimeout(r, 400));
-      setTestParameters(mockTestParameters);
-      setResultDetails(mockResultDetails);
-      setLoading(false);
+    const fetchData = async () => {
+      try {
+        const [params, results] = await Promise.all([
+          getTestParametersByServiceId(serviceId),
+          getResultDetailsByBookingId(bookingId),
+        ]);
+        setTestParameters(params);
+        setResultDetails(results);
+      } catch (error) {
+        console.error("Lỗi khi fetch dữ liệu:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    load();
-  }, [selectedBookingId]);
+
+    fetchData();
+  }, [serviceId, bookingId]);
 
   const sampleIds = [...new Set(resultDetails.map((r) => r.sampleId))];
 
-  return (
-    <div className="p-6 space-y-6">
-      <div className="max-w-sm">
-        <Select
-          value={selectedBookingId}
-          onValueChange={setSelectedBookingId}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Chọn booking" />
-          </SelectTrigger>
-          <SelectContent>
-            {bookingOptions.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+  const rows = sampleIds.map((sampleId) => {
+    const row: Record<string, string> = { name: `Sample ${sampleId}` };
+    testParameters.forEach((param) => {
+      const match = resultDetails.find(
+        (r) =>
+          r.sampleId === sampleId &&
+          r.testParameterId === param.testParameterId
+      );
+      row[`param-${param.testParameterId}`] = match?.value || "-";
+    });
+    return row;
+  });
 
-      <Card>
+  return (
+    <div className="p-6">
+      <Card className="rounded-2xl shadow-md">
         <CardHeader>
-          <CardTitle>Kết quả Booking: {selectedBookingId}</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            Kết quả booking: {bookingId}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
             <Skeleton className="w-full h-[200px] rounded-md" />
           ) : (
             <div className="overflow-x-auto">
-              <Table className="min-w-[800px]">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[200px]">Chỉ số</TableHead>
-                    {sampleIds.map((sampleId) => (
-                      <TableHead key={sampleId} className="text-center">
-                        Sample {sampleId}
-                      </TableHead>
+              <table className="min-w-full table-auto border border-muted rounded-md">
+                <thead className="bg-muted">
+                  <tr>
+                    <th className="px-4 py-2 text-left border-b">Sample</th>
+                    {testParameters.map((param) => (
+                      <th
+                        key={param.testParameterId}
+                        className="px-4 py-2 text-left border-b"
+                      >
+                        {param.name}
+                      </th>
                     ))}
-                    <TableHead className="text-center">Pi</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {testParameters.map((param) => {
-                    const piValue = Math.PI; // bạn có thể đổi sang công thức khác nếu muốn
-                    return (
-                      <TableRow key={param.testParameterId}>
-                        <TableCell className="font-medium whitespace-nowrap">
-                          {param.name}
-                        </TableCell>
-                        {sampleIds.map((sampleId) => {
-                          const match = resultDetails.find(
-                            (r) =>
-                              r.sampleId === sampleId &&
-                              r.testParameterId === param.testParameterId
-                          );
-                          return (
-                            <TableCell key={sampleId} className="text-center">
-                              {match?.value || "-"}
-                            </TableCell>
-                          );
-                        })}
-                        <TableCell className="text-center">{piValue.toFixed(2)}</TableCell>
-                      </TableRow>
-                    );
-                  })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-muted/40">
+                      <td className="px-4 py-2 border-b font-medium">
+                        {row.name}
+                      </td>
+                      {testParameters.map((param) => (
+                        <td
+                          key={param.testParameterId}
+                          className="px-4 py-2 border-b"
+                        >
+                          {row[`param-${param.testParameterId}`]}
+                        </td>
 
-                  {/* Total row */}
-                  <TableRow>
-                    <TableCell className="font-bold">Tổng cộng</TableCell>
-                    {sampleIds.map((id) => (
-                      <TableCell key={id} />
-                    ))}
-                    <TableCell className="text-center font-bold">
-                      {(testParameters.length * Math.PI).toFixed(2)}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </CardContent>
       </Card>
     </div>
   );
-}
+};
+
+export default ResultPage;

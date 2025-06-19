@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import type { BookingSchedule } from "@/types/booking";
-import type { User } from "@/types/user";
+import type { UserStaff } from "@/types/user";
 
 import { getAllBookingSchedule, getStaffForSchedule, AssignStaffForSchedule } from "@/services/booking_service";
 
@@ -20,7 +20,7 @@ export default function AppointmentsPage() {
   const [bookings, setBookings] = useState<BookingSchedule[]>([]);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [employees, setEmployees] = useState<User[]>([]);
+  const [employees, setEmployees] = useState<UserStaff[]>([]);
   const [assignedEmployee, setAssignedEmployee] = useState("");
 
   const filteredBookings = bookings.filter((b) => {

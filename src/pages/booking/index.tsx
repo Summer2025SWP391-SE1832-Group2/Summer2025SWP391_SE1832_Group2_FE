@@ -76,7 +76,7 @@ const BookingPage = () => {
     }
   }, [selectedMethod, form]);
 
-
+  // Get timeline steps based on selected method
   const getTimelineSteps = () => {
     switch (selectedMethod) {
       case 'TU_THU_MAU':
@@ -88,6 +88,7 @@ const BookingPage = () => {
     }
   };
 
+  // Handle form submission
   const onSubmit = async (values: BookingFormValues) => {
     if (!isAuthenticated) {
       showToast('Please login to book a service', 'error');
