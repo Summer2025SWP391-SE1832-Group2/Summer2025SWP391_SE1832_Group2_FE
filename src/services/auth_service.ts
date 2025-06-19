@@ -3,7 +3,6 @@ import type { LoginRequest, LoginResponse } from '@/types/login';
 import type { RegisterRequest, RegisterResponse } from '@/types/register';
 
 const loginService = async (data: LoginRequest) => {
-  
   const response = await axiosInstance.post<LoginResponse>('/api/Auth/login', data);
   return response.data;
 };
@@ -17,15 +16,28 @@ const registerService = async (data: RegisterRequest) => {
   return response.data;
 };
 
-const resetPasswordService = async (email: string, newPassword: string, verifyCode?: string) => {
-  let url = `/api/Auth/reset-password?email=${encodeURIComponent(
+// First step: Request reset password (no verification code)
+const requestResetPassword = async (data: { email: string; newPassword: string }) => {
+  const { email, newPassword } = data;
+  const url = `/api/Auth/reset-password?email=${encodeURIComponent(
     email,
-  )}&newPass=${encodeURIComponent(newPassword || '')}`;
-  if (verifyCode) {
-    url += `&VerifyCode=${encodeURIComponent(verifyCode)}`;
-  }
-  const response = await axiosInstance.put<String>(url);
+  )}&newPass=${encodeURIComponent(newPassword)}`;
+  const response = await axiosInstance.put<string>(url);
   return response.data;
 };
 
-export { loginService, registerService, resetPasswordService };
+// Second step: Confirm reset password with verification code
+const confirmResetPassword = async (data: {
+  email: string;
+  newPassword: string;
+  verifyCode: string;
+}) => {
+  const { email, newPassword, verifyCode } = data;
+  const url = `/api/Auth/reset-password?email=${encodeURIComponent(
+    email,
+  )}&newPass=${encodeURIComponent(newPassword)}&VerifyCode=${encodeURIComponent(verifyCode)}`;
+  const response = await axiosInstance.put<string>(url);
+  return response.data;
+};
+
+export { loginService, registerService, requestResetPassword, confirmResetPassword };

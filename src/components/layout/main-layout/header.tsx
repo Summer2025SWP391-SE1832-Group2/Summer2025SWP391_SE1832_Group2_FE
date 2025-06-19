@@ -82,12 +82,12 @@ const Header = () => {
                 </div>
               )}
 
-              {services && services.length > 0 ? (
+              {services && services.length > 0 && (
                 <div className='transition-all duration-300 delay-100'>
                   {services.map((service, index) => (
                     <Link
                       key={service.serviceId}
-                      to={paths.serviceDetail(service.serviceId.toString())}
+                      to={paths.booking(service.serviceId.toString())}
                       className={`block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 ${
                         isServiceMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
                       }`}
@@ -100,7 +100,8 @@ const Header = () => {
                     </Link>
                   ))}
                 </div>
-              ) : (
+              )}
+              {services && services.length === 0 && (
                 <EmptyState
                   title='No services found'
                   description='There are no services to display at this time.'
@@ -157,7 +158,7 @@ const Header = () => {
                 <DropdownMenuItem onClick={handleLogout} className='text-red-600'>
                   <LogOut className='h-4 w-4' />
                   Đăng xuất
-                  </DropdownMenuItem>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

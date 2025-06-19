@@ -9,9 +9,9 @@ const getAllBookings = async (): Promise<Booking[]> => {
 };
 
 const getAllBookingSchedule = async (): Promise<BookingSchedule[]> => {
-  const response = await axiosInstance.get<BookingSchedule[]>("/BookingWithSchedule()");
-  return response.data;
-};
+    const response = await axiosInstance.get<BookingSchedule[]>("/BookingWithSchedule");
+    return response.data;
+  };
 
 const getStaffForSchedule = async (id: number): Promise<UserStaff[]> => {
   const response = await axiosInstance.get<UserStaff[]>(`/api/SampleCollectionSchedule/${id}/available-staffs`);

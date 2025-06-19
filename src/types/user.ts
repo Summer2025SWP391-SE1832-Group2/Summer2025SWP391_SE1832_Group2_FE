@@ -1,32 +1,15 @@
-export type UserStaff = {
-  userId: number;
-  fullName: string;
-  email: string;
-  phone: string | null;
-  passwordHash: string;
-  role: "Staff" | "Admin" | "Customer" | string;
-  gender: "male" | "female" | string;
-  dateOfBirth: string;
-};
-
-type UserRequest = {
-  userId: number;
-  fullName: string;
-  email: string;
-  phone: string;
-  role: string;
-  gender: string;
-  dateOfBirth: string;
-  personalId: string;
-  address: string;
-};
-
 type User = {
   userId: number;
   fullName: string;
   email: string;
+  phone: string | null;
   role: UserRole;
+  gender: 'male' | 'female' | string;
+  dateOfBirth: string;
+  identityNumber: string;
+  address: string | null;
 };
 
 type UserRole = 'Guest' | 'Customer' | 'Staff' | 'Manager' | 'Admin';
-export type { UserRequest, UserRole, User };
+
+export type { User, UserRole };

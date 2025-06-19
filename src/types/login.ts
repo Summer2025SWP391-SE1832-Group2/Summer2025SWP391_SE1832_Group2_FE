@@ -1,3 +1,5 @@
+import type { UserRole } from './user';
+
 type LoginRequest = {
   email: string;
   password: string;
@@ -13,4 +15,11 @@ type LoginResponse = {
   };
 };
 
-export type { LoginRequest, LoginResponse };
+type JwtPayload = {
+  UserId: string;
+  FullName: string;
+  Email: string;
+  Role: UserRole;
+  exp: number;
+};
+export type { LoginRequest, LoginResponse, JwtPayload };
