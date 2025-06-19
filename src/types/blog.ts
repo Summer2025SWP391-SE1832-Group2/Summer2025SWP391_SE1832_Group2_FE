@@ -8,10 +8,10 @@
     updateAt : string;
     image: string;
   };
-   type Blogtype = {
+   type BlogType = {
       blogTypeId: number;
       title: string;
       description: string;
       img : string;
       };
-export type { Blog, Blogtype };
+export type { Blog, BlogType };

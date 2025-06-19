@@ -1,18 +1,24 @@
+import BlogPage from '@/pages/blog';
+import BlogTypePage from '@/pages/blog/blogType';
 import DashboardLayout from '@/components/layout/dashboard-layout/dashboard-layout';
 import MainLayout from '@/components/layout/main-layout/main-layout';
-import BlogPage from '@/pages/blog';
 import BlogType from '@/pages/blog/blogType';
 import DashboardPage from '@/pages/dashboard';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
 
-import AddResultPage from '@/pages/add-result';
+// import ServiceDetailPage from '@/pages/service-detail';
 import BookingPage from '@/pages/booking';
-import BookingDetailPage from '@/pages/booking-detail';
-import BookingHistoryPage from '@/pages/booking-history';
-import BookingListPage from '@/pages/booking-list';
-import AppointmentsPage from '@/pages/dashboard/appointments';
+import AppointmentsPage from '@/pages/appointments';
 import ServicePage from '@/pages/dashboard/service';
+import BookingHistoryPage from '@/pages/booking-history';
+import BookingDetailPage from '@/pages/booking-detail';
+import BookingListPage from '@/pages/booking-list';
+import AddResultPage from '@/pages/add-result';
+import StaffSchedulePage from '@/pages/staff-schedule';
+
+import BlogManagePage from '@/pages/blog-manage';
+import BlogCreatePage from '@/pages/blog-manage/blog-create';
 import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
@@ -22,6 +28,7 @@ import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
 import PublicRoute from './public-route';
+import BlogDetailPage from '@/pages/blog-manage/blog-detail';
 
 const router = createBrowserRouter([
   {
@@ -38,7 +45,7 @@ const router = createBrowserRouter([
       },
       {
         path: paths.blogType,
-        element: <BlogType />,
+        element: <BlogTypePage />,
       },
       {
         path: paths.paymentSuccess,
@@ -92,9 +99,9 @@ const router = createBrowserRouter([
   {
     path: paths.dashboard,
     element: (
-      <ProtectedRoute>
+      //<ProtectedRoute>
         <DashboardLayout />
-      </ProtectedRoute>
+      //</ProtectedRoute>
     ),
     children: [
       {
@@ -121,6 +128,23 @@ const router = createBrowserRouter([
         path: paths.addResult,
         element: <AddResultPage />,
       },
+      {
+        path: paths.staffschedule,
+        element: <StaffSchedulePage />,
+      },
+      {
+        path: paths.blogmanage,
+        element: <BlogManagePage />,
+       
+      },
+      {
+        path: paths.blogcreate,
+        element: <BlogCreatePage />,
+      },
+      {
+        path: paths.blogdetail(':blogId'),
+        element: <BlogDetailPage />,
+      }
 
       // Add other dashboard routes here
     ],

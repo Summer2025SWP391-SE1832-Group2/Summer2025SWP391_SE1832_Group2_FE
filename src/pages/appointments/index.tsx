@@ -37,6 +37,7 @@ export default function AppointmentsPage() {
     const fetchData = async () => {
       try {
         const data = await getAllBookingSchedule();
+        console.log("Fetched bookings:", data);
         setBookings(data);
       } catch (error) {
         console.error("Failed to fetch bookings:", error);
@@ -109,16 +110,20 @@ export default function AppointmentsPage() {
 
       {filteredBookings.map((booking) => (
         <Card
-          key={booking.bookingId}
-          className="hover:shadow-md cursor-pointer"
-          onClick={() => handleBookingClick(booking)}
-        >
+        key={booking.bookingId}
+        className={`hover:shadow-md cursor-pointer ${
+          booking.sampleCollectionSchedules?.[0]?.collectorId
+            ? "bg-green-50"
+            : "bg-red-50"
+        }`}
+        onClick={() => handleBookingClick(booking)}
+      >
           <CardContent className="py-6 px-6 space-y-2">
             <div className="text-lg font-semibold text-gray-800">
               Booking #{booking.bookingId} — Service Type #{booking.serviceTypeId}
             </div>
             <div className="text-sm text-gray-600">
-              User: {booking.userId} | Status: {booking.status} | Payment: {booking.paymentStatus}
+              User: {booking.userName} | Status: {booking.status} | Payment: {booking.paymentStatus}
             </div>
             <div className="text-sm text-gray-600">
               Booking Date: {new Date(booking.bookingDate).toLocaleDateString()} | Preferred Date: {new Date(booking.preferredDate).toLocaleDateString()}
