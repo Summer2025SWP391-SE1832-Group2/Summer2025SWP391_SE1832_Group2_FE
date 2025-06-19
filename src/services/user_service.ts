@@ -1,36 +1,29 @@
 import axiosInstance from '@/lib/api/axios';
-import { useAuthStore } from '@/stores/auth';
-import type { UserRequest } from '@/types/user';
+import type { User } from '@/types/user';
 
 // GET all UserRequests
-export const getAllUserRequests = async (): Promise<UserRequest[]> => {
-  const response = await axiosInstance.get<UserRequest[]>('/api/User');
+export const getAllUserRequests = async (): Promise<User[]> => {
+  const response = await axiosInstance.get<User[]>('/api/User');
   return response.data;
 };
 
 // GET current logged-in UserRequest by ID
-export const getUserRequestById = async (): Promise<UserRequest> => {
-  const { user } = useAuthStore.getState();
-  const userId = user?.userId;
-
+export const getUserRequestById = async (userId: number): Promise<User> => {
   if (!userId) {
     throw new Error('Chưa login hoặc thiếu userId');
   }
-
-  const response = await axiosInstance.get<UserRequest>(`/api/User/${userId}`);
+  const response = await axiosInstance.get<User>(`/api/User/${userId}`);
   return response.data;
 };
 
 // CREATE UserRequest
-export const createUserRequest = async (
-  data: UserRequest & { password: string },
-): Promise<boolean> => {
+export const createUserRequest = async (data: User & { password: string }): Promise<boolean> => {
   const response = await axiosInstance.post<boolean>('/api/User', data);
   return response.data;
 };
 
 // UPDATE UserRequest
-export const updateUserRequest = async (data: UserRequest): Promise<boolean> => {
+export const updateUserRequest = async (data: User): Promise<boolean> => {
   const response = await axiosInstance.put<boolean>('/api/User', data);
   return response.data;
 };

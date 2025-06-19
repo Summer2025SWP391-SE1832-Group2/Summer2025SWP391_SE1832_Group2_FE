@@ -1,62 +1,88 @@
-import type { User, UserRole } from '@/types/user';
-import { jwtDecode } from 'jwt-decode';
+import { getUserRequestById } from '@/services/user_service';
+import type { User } from '@/types/user';
+import { getUserIdFromToken, isTokenExpired } from '@/utils/helper';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-interface JwtPayload {
-  UserId: string;
-  FullName: string;
-  Email: string;
-  Role: UserRole;
-  exp: number;
-}
-
-interface AuthActions {
-  setAuth: (token: string) => void;
-  logout: () => void;
-  clearAuth: () => void;
-}
 
 interface AuthState {
   token: string | null;
   user: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
-const initialState = {
+interface AuthActions {
+  login: (token: string) => Promise<void>;
+  logout: () => void;
+  refreshUser: () => Promise<void>;
+}
+
+type AuthStore = AuthState & AuthActions;
+
+const initialState: AuthState = {
   token: null,
   user: null,
   isAuthenticated: false,
+  isLoading: false,
 };
 
-export const useAuthStore = create<AuthState & AuthActions>()(
+export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
-      setAuth: (token: string) => {
+
+      login: async (token: string) => {
         try {
-          const decoded = jwtDecode<JwtPayload>(token);
-          // Check if token is expired
-          if (decoded.exp * 1000 < Date.now()) {
+          // Validate token
+          if (isTokenExpired(token)) {
+            set(initialState);
+            throw new Error('Token is expired');
+          }
+
+          // Set token and auth state
+          set({ token, isAuthenticated: true, isLoading: true });
+
+          // Fetch user details
+          const userId = getUserIdFromToken(token);
+          const userDetails = await getUserRequestById(userId);
+
+          set({ user: userDetails, isLoading: false });
+        } catch (error) {
+          console.error('Login error:', error);
+          set(initialState);
+          throw error;
+        }
+      },
+
+      refreshUser: async () => {
+        const { token, isAuthenticated } = get();
+
+        if (!isAuthenticated || !token) {
+          console.warn('Cannot refresh user: not authenticated');
+          return;
+        }
+
+        try {
+          // Check if token is still valid
+          if (isTokenExpired(token)) {
             set(initialState);
             return;
           }
-          const user: User = {
-            userId: Number(decoded.UserId),
-            fullName: decoded.FullName,
-            email: decoded.Email,
-            role: decoded.Role,
-          };
-          set({ token, user, isAuthenticated: true });
+
+          set({ isLoading: true });
+
+          const userId = getUserIdFromToken(token);
+          const userDetails = await getUserRequestById(userId);
+
+          set({ user: userDetails, isLoading: false });
         } catch (error) {
-          console.error('Error decoding token:', error);
-          set(initialState);
+          console.error('Refresh user error:', error);
+          set({ isLoading: false });
+          // Don't logout on refresh error, just log it
         }
       },
+
       logout: () => {
-        set(initialState);
-      },
-      clearAuth: () => {
         set(initialState);
       },
     }),
@@ -64,9 +90,12 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       name: 'auth-storage',
       partialize: (state) => ({ token: state.token }),
       onRehydrateStorage: () => (state) => {
-        const token = state?.token;
-        if (token) {
-          state.setAuth(token);
+        if (state?.token) {
+          // Auto-login when browser reopens if token exists
+          state.login(state.token).catch(() => {
+            // If auto-login fails, clear the state
+            state.logout();
+          });
         }
       },
     },

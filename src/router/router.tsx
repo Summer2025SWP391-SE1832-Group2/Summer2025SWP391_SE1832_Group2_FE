@@ -7,14 +7,10 @@ import DashboardPage from '@/pages/dashboard';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
 
-import ServiceDetailPage from '@/pages/service-detail';
+// import ServiceDetailPage from '@/pages/service-detail';
 import BookingPage from '@/pages/booking';
 import AppointmentsPage from '@/pages/appointments';
 import ServicePage from '@/pages/dashboard/service';
-import {
-  //  PaymentFailedPage,
-  PaymentSuccessPage,
-} from '@/pages/payment';
 import BookingHistoryPage from '@/pages/booking-history';
 import BookingDetailPage from '@/pages/booking-detail';
 import BookingListPage from '@/pages/booking-list';
@@ -23,6 +19,7 @@ import StaffSchedulePage from '@/pages/staff-schedule';
 
 import BlogManagePage from '@/pages/blog-manage';
 import BlogCreatePage from '@/pages/blog-manage/blog-create';
+import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
 import ResetPasswordPage from '@/pages/reset-password';
@@ -54,6 +51,10 @@ const router = createBrowserRouter([
         element: <PaymentSuccessPage />,
       },
       {
+        path: paths.paymentFailed,
+        element: <PaymentFailedPage />,
+      },
+      {
         path: paths.bookingHistory,
         element: <BookingHistoryPage />,
       },
@@ -74,10 +75,7 @@ const router = createBrowserRouter([
         path: paths.booking(':serviceId'),
         element: <BookingPage />,
       },
-      // {
-      //   path: "/test",
-      //   element: < />,
-      // },
+
       {
         element: <PublicRoute />,
         children: [
@@ -106,12 +104,12 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: paths.dashboardProfile,
-        element: <ProfilePage />,
-      },
-      {
         index: true,
         element: <DashboardPage />,
+      },
+      {
+        path: paths.dashboardProfile,
+        element: <ProfilePage />,
       },
       {
         path: paths.appointments,

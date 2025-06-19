@@ -24,12 +24,14 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { loginMutation } = useAuth();
   const { showToast } = useToast();
-  const { setAuth } = useAuthStore();
+  const { login, isLoading: isLoadingAuth } = useAuthStore();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: loginFormDefaultValues,
   });
+
+  const isLoading = loginMutation.isPending || isLoadingAuth;
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -39,7 +41,7 @@ const LoginPage = () => {
     try {
       const response = await loginMutation.mutateAsync(data);
       if (!response.success) return;
-      setAuth(response.data.token);
+      login(response.data.token);
       showToast(response.message || 'Đăng nhập thành công!', 'success');
     } catch (error: any) {
       showToast(error?.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
@@ -127,8 +129,8 @@ const LoginPage = () => {
                 </Link>
               </div>
 
-              <Button type='submit' className='w-full' disabled={loginMutation.isPending}>
-                {loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              <Button type='submit' className='w-full' disabled={isLoading}>
+                {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
               </Button>
             </form>
           </Form>

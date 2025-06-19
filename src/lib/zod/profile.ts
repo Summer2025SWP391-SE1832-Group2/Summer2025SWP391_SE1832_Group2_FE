@@ -1,26 +1,27 @@
-// src/lib/zod/profile.ts
 import { z } from 'zod';
 
 export const profileFormSchema = z.object({
   fullName: z.string().min(1, 'Họ và tên không được để trống.'),
-  phone: z.string().optional().nullable().transform(e => e === '' ? null : e), // Optional, can be null, convert empty string to null
-  gender: z.union([
-    z.literal('male'),
-    z.literal('female'),
-    z.literal('other'),
-    z.literal(''), // Allow empty string for "Chọn giới tính" placeholder
-    z.null(), // Allow null
-  ]).optional().nullable(), // Optional, can be null or empty string
-
-  // dateOfBirth will be an ISO string if selected, or null
-  dateOfBirth: z.string().optional().nullable().transform(e => e === '' ? null : e),
+  phone: z
+    .string()
+    .min(1, 'Số điện thoại là bắt buộc')
+    .regex(
+      /^(0|\+84)[3-9][0-9]{8}$/,
+      'Số điện thoại không hợp lệ (VD: 0912345678 hoặc +84912345678)',
+    ),
+  gender: z.enum(['male', 'female', 'other']),
+  dateOfBirth: z.date(),
+  identityNumber: z.string().min(1, 'Số CMND/CCCD là bắt buộc'),
+  address: z.string().min(1, 'Địa chỉ là bắt buộc'),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export const profileFormDefaultValues: ProfileFormValues = {
   fullName: '',
-  phone: null,
-  gender: null, // Initialize with null to match the type system
-  dateOfBirth: null,
+  phone: '',
+  gender: 'male',
+  dateOfBirth: new Date(),
+  identityNumber: '',
+  address: '',
 };
