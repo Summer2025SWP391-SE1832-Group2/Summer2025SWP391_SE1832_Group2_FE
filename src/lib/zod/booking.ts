@@ -17,6 +17,14 @@ export const bookingSchema = z.object({
   time: z.string().min(1, { message: 'Vui lòng chọn khung giờ' }),
 });
 
+export const bookingDefaultValues = {
+  serviceId: 0,
+  method: 'TAI_CO_SO_Y_TE' as BookingFormValues['method'],
+  location: 'Cơ sở y tế',
+  buyKit: false,
+  time: TIME_SLOTS[0].value,
+};
+
 // Conditional schema that requires location field when method is StaffVisit
 export const bookingFormSchema = bookingSchema.refine(
   (data) => {
