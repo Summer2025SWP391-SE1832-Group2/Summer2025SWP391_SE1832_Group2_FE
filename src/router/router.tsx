@@ -28,6 +28,7 @@ import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
 import PublicRoute from './public-route';
+import BlogDetailPage from '@/pages/blog-manage/blog-detail';
 
 const router = createBrowserRouter([
   {
@@ -98,9 +99,9 @@ const router = createBrowserRouter([
   {
     path: paths.dashboard,
     element: (
-      <ProtectedRoute>
+      //<ProtectedRoute>
         <DashboardLayout />
-      </ProtectedRoute>
+      //</ProtectedRoute>
     ),
     children: [
       {
@@ -139,6 +140,10 @@ const router = createBrowserRouter([
       {
         path: paths.blogcreate,
         element: <BlogCreatePage />,
+      },
+      {
+        path: paths.blogdetail(':blogId'),
+        element: <BlogDetailPage />,
       }
 
       // Add other dashboard routes here

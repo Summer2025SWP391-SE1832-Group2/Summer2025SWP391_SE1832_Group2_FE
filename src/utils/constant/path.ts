@@ -27,6 +27,7 @@ export const paths = {
   staffschedule : '/dashboard/staffschedules',
   blogmanage : '/dashboard/blogmanage',
   blogcreate: '/dashboard/blogmanage/blogcreate',
+  blogdetail: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
 
 
   // Payment results
