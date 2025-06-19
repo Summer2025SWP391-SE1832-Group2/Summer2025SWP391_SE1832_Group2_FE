@@ -1,126 +1,143 @@
 import { useEffect, useState } from "react";
-import { getAllBookings } from "@/services/booking_service";
-import { getTestParametersByServiceId } from "@/services/parameters-service";
-import { getSamplesByBookingId } from "@/services/sample_service";
-import { createMultipleResultDetails } from "@/services/result-service";
-import type { ResultItem } from "@/types/resultdetail";
-import type { TestParameter } from "@/types/testparameters";
-import type { Sample } from "@/types/sample";
-
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useNavigate } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
 
-const AddResultPage = () => {
-  const serviceId = 1;
-  const navigate = useNavigate();
+import { getAllBookings } from "@/services/booking_service";
+import { getSamplesByBookingId } from "@/services/sample_service";
+import { getTestParametersByServiceId } from "@/services/parameters-service";
+import {
+  getResultDetailsByBookingId,
+  createMultipleResultDetails,
+} from "@/services/result-service";
 
+import type { Booking } from "@/types/booking";
+import type { Sample } from "@/types/sample";
+import type { TestParameter } from "@/types/testparameters";
+import type { ResultItem } from "@/types/resultdetail";
+
+const serviceId = 1;
+
+export default function AddResultPage() {
   const [bookingId, setBookingId] = useState<number | null>(null);
-  const [bookingOptions, setBookingOptions] = useState<number[]>([]);
-
-  const [testParameters, setTestParameters] = useState<TestParameter[]>([]);
+  const [bookingOptions, setBookingOptions] = useState<Booking[]>([]);
   const [samples, setSamples] = useState<Sample[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [testParameters, setTestParameters] = useState<TestParameter[]>([]);
   const [values, setValues] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  const [editable, setEditable] = useState(false);
 
-  // Lấy danh sách booking ID
   useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const bookings = await getAllBookings();
-        const ids = bookings.map((b) => b.bookingId);
-        setBookingOptions(ids);
-        if (ids.length > 0) setBookingId(ids[0]);
-      } catch (err) {
-        console.error("Lỗi khi lấy booking:", err);
-      }
+    const fetchInit = async () => {
+      const bookings = await getAllBookings();
+      const parameters = await getTestParametersByServiceId(serviceId);
+      setBookingOptions(bookings);
+      setTestParameters(parameters);
+      if (bookings.length > 0) setBookingId(bookings[0].bookingId);
     };
-    fetchBookings();
+    fetchInit();
   }, []);
 
-  // Lấy test parameters + sample mỗi khi chọn booking mới
-useEffect(() => {
-  if (!bookingId) return;
+  useEffect(() => {
+    if (!bookingId) return;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [sampleList, resultList] = await Promise.all([
+          getSamplesByBookingId(bookingId),
+          getResultDetailsByBookingId(bookingId),
+        ]);
+        setSamples(sampleList);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [params, sampleData] = await Promise.all([
-        getTestParametersByServiceId(serviceId),
-        getSamplesByBookingId(bookingId),
-      ]);
-      setTestParameters(params);
-      setSamples(sampleData);
-      setValues({});
+        const resultMap: Record<string, string> = {};
+        resultList.forEach((r) => {
+          const [v1, v2] = r.value.split("-");
+          resultMap[`${r.sampleId}-${r.testParameterId}-1`] = v1 || "";
+          resultMap[`${r.sampleId}-${r.testParameterId}-2`] = v2 || "";
+        });
 
-      // ⚠️ Nếu không có sample thì chuyển trang
-      if (sampleData.length === 0) {
-        alert("Booking chưa có mẫu. Vui lòng thêm sample trước.");
-        navigate("/dashboard/bookinglist");
+        setValues(resultMap);
+        setEditable(resultList.length === 0);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Lỗi khi tải dữ liệu:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    fetchData();
+  }, [bookingId]);
 
-  fetchData();
-}, [bookingId, serviceId]);
+  const buildKey = (sampleId: number, paramId: number, index: 1 | 2) =>
+    `${sampleId}-${paramId}-${index}`;
 
-
-  const handleChange = (sampleId: number, testParameterId: number, value: string) => {
-    setValues((prev) => ({
-      ...prev,
-      [`${sampleId}-${testParameterId}`]: value,
-    }));
+  const handleChange = (key: string, value: string) => {
+    if (!editable) return;
+    setValues((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSave = async () => {
     if (!bookingId) return;
+
     const resultItems: ResultItem[] = [];
 
     for (const sample of samples) {
       for (const param of testParameters) {
-        const key = `${sample.sampleId}-${param.testParameterId}`;
-        const value = values[key] || "";
+        const key1 = buildKey(sample.sampleId, param.testParameterId, 1);
+        const key2 = buildKey(sample.sampleId, param.testParameterId, 2);
+        let value = values[key1] || "";
+        if (values[key2]) {
+          value = `${value}-${values[key2]}`;
+        }
         resultItems.push({
+          sampleId: sample.sampleId,
           testParameterId: param.testParameterId,
           value,
-          sampleId: sample.sampleId,
         });
       }
     }
 
-    try {
-      await createMultipleResultDetails(bookingId, resultItems);
-      alert("Lưu kết quả thành công!");
-    } catch (error) {
-      console.error("Lỗi khi lưu:", error);
-      alert("Lỗi khi lưu kết quả.");
-    }
+    await createMultipleResultDetails({
+      bookingId,
+      results: resultItems,
+    });
+    alert("Lưu kết quả thành công!");
+    setEditable(false);
   };
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-6">
       <div className="max-w-sm">
         <label className="font-semibold mb-2 block">Chọn booking:</label>
-        <Select onValueChange={(val) => setBookingId(Number(val))} value={bookingId?.toString()}>
+        <Select
+          value={bookingId?.toString()}
+          onValueChange={(val: string) => setBookingId(Number(val))}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Chọn booking ID" />
           </SelectTrigger>
           <SelectContent>
-            {bookingOptions.map((id) => (
-              <SelectItem key={id} value={id.toString()}>
-                Booking #{id}
+            {bookingOptions.map((b) => (
+              <SelectItem key={b.bookingId} value={b.bookingId.toString()}>
+                Booking #{b.bookingId}
               </SelectItem>
             ))}
           </SelectContent>
@@ -128,59 +145,79 @@ useEffect(() => {
       </div>
 
       {bookingId && (
-        <Card className="rounded-2xl shadow-md">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold">
-              Nhập kết quả xét nghiệm (Booking: {bookingId})
-            </CardTitle>
+        <Card>
+          <CardHeader className="flex justify-between items-center">
+            <CardTitle>Kết quả xét nghiệm – Booking #{bookingId}</CardTitle>
+            {!editable && (
+              <Button variant="outline" onClick={() => setEditable(true)}>
+                Sửa kết quả
+              </Button>
+            )}
           </CardHeader>
           <CardContent>
             {loading ? (
               <Skeleton className="w-full h-[200px] rounded-md" />
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full table-auto border border-muted rounded-md">
-                  <thead className="bg-muted">
-                    <tr>
-                      <th className="px-4 py-2 border-b text-left">Sample</th>
-                      {testParameters.map((param) => (
-                        <th key={param.testParameterId} className="px-4 py-2 border-b text-left">
-                          {param.name}
-                        </th>
+                <Table className="min-w-[900px]">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[200px]">Chỉ số</TableHead>
+                      {samples.map((s) => (
+                        <TableHead key={s.sampleId} className="text-center">
+                          {s.participantName}
+                        </TableHead>
                       ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {samples.map((sample) => (
-                      <tr key={sample.sampleId} className="hover:bg-muted/40">
-                        <td className="px-4 py-2 border-b font-medium">
-                          {sample.participantName || `Sample ${sample.sampleId}`}
-                        </td>
-                        {testParameters.map((param) => (
-                          <td key={param.testParameterId} className="px-2 py-1 border-b">
-                            <Input
-                              value={values[`${sample.sampleId}-${param.testParameterId}`] || ""}
-                              onChange={(e) =>
-                                handleChange(sample.sampleId, param.testParameterId, e.target.value)
-                              }
-                              className="w-24"
-                            />
-                          </td>
-                        ))}
-                      </tr>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {testParameters.map((param) => (
+                      <TableRow key={param.testParameterId}>
+                        <TableCell className="font-medium whitespace-nowrap">
+                          {param.name}
+                        </TableCell>
+                        {samples.map((sample) => {
+                          const key1 = buildKey(sample.sampleId, param.testParameterId, 1);
+                          const key2 = buildKey(sample.sampleId, param.testParameterId, 2);
+                          return (
+                            <TableCell key={`${sample.sampleId}-${param.testParameterId}`} className="text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                <Input
+                                  className="w-16 text-center"
+                                  value={values[key1] || ""}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    handleChange(key1, e.target.value)
+                                  }
+                                  disabled={!editable}
+                                />
+                                <span>-</span>
+                                <Input
+                                  className="w-16 text-center"
+                                  value={values[key2] || ""}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    handleChange(key2, e.target.value)
+                                  }
+                                  disabled={!editable}
+                                />
+                              </div>
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             )}
-                <div className="mt-6 flex justify-end">
-                  <Button onClick={handleSave}>Lưu kết quả</Button>
-                </div>
+
+            {editable && (
+              <div className="mt-6 flex justify-end">
+                <Button onClick={handleSave}>Lưu kết quả</Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
     </div>
   );
-};
-
-export default AddResultPage;
+}

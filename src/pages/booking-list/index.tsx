@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getAllBookings } from '@/services/booking_service';
-import { getSamplesByBookingId, createSampleService } from '@/services/sample_service';
+import { getSamplesByBookingId } from '@/services/sample_service';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +24,7 @@ const BookingListPage: React.FC = () => {
   const [openDialogBookingId, setOpenDialogBookingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<Omit<NewSample, 'bookingId'>>({
     collectedBy: '',
-    collectedDate: new Date().toISOString(),
+    collectedDate: new Date().toISOString().slice(0, 16),
     sampleType: '',
     participantName: '',
     notes: '',
@@ -57,25 +57,31 @@ const BookingListPage: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleCreateSample = async () => {
-    if (openDialogBookingId) {
-      await createSampleService({
-        ...formData,
-        bookingId: openDialogBookingId,
-      });
-      const updatedSamples = await getSamplesByBookingId(openDialogBookingId);
-      setSampleMap(prev => ({ ...prev, [openDialogBookingId]: updatedSamples }));
-      setFormData({
-        collectedBy: '',
-        collectedDate: new Date().toISOString(),
-        sampleType: '',
-        participantName: '',
-        notes: '',
-        picture: '',
-        transport: '',
-      });
-      setOpenDialogBookingId(null);
+  const resetForm = () => {
+    setFormData({
+      collectedBy: '',
+      collectedDate: new Date().toISOString().slice(0, 16),
+      sampleType: '',
+      participantName: '',
+      notes: '',
+      picture: '',
+      transport: '',
+    });
+  };
+
+  const handleCreateSample = async (bookingId: number) => {
+    const currentSamples = sampleMap[bookingId] || [];
+    if (currentSamples.length >= 2) {
+      alert('Mỗi booking chỉ được tạo tối đa 2 mẫu.');
+      return;
     }
+
+
+
+    const updatedSamples = await getSamplesByBookingId(bookingId);
+    setSampleMap(prev => ({ ...prev, [bookingId]: updatedSamples }));
+    resetForm();
+    setOpenDialogBookingId(null);
   };
 
   return (
@@ -87,51 +93,63 @@ const BookingListPage: React.FC = () => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="font-semibold">Booking #{booking.bookingId}</p>
-                <p className="text-sm text-gray-600">Trang thái: {booking.status}</p>
-                <p className="text-sm text-gray-600">Dịch vụ: {booking.method}</p>
+                <p className="text-sm text-gray-600">Trạng thái: {booking.status}</p>
+                <p className="text-sm text-gray-600">Phương thức: {booking.method}</p>
               </div>
               <div className="space-x-2">
                 <Button variant="secondary" onClick={() => toggleSampleList(booking.bookingId)}>
                   {visibleSamples[booking.bookingId] ? 'Ẩn mẫu' : 'Xem mẫu'}
                 </Button>
-                <Dialog>
+                <Dialog open={openDialogBookingId === booking.bookingId} onOpenChange={(open) => {
+                  if (open) {
+                    setOpenDialogBookingId(booking.bookingId);
+                    resetForm();
+                  } else {
+                    setOpenDialogBookingId(null);
+                  }
+                }}>
                   <DialogTrigger asChild>
-                    <Button onClick={() => setOpenDialogBookingId(booking.bookingId)}>Add Sample</Button>
+                    <Button>Thêm mẫu</Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Thêm Sample cho Booking #{booking.bookingId}</DialogTitle>
+                      <DialogTitle>Thêm mẫu cho Booking #{booking.bookingId}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-3">
                       <div>
-                        <Label>Collected By</Label>
+                        <Label>Người thu mẫu</Label>
                         <Input name="collectedBy" value={formData.collectedBy} onChange={handleInputChange} />
                       </div>
                       <div>
-                        <Label>Collected Date</Label>
-                        <Input type="datetime-local" name="collectedDate" value={formData.collectedDate} onChange={handleInputChange} />
+                        <Label>Ngày thu mẫu</Label>
+                        <Input
+                          type="datetime-local"
+                          name="collectedDate"
+                          value={formData.collectedDate}
+                          onChange={handleInputChange}
+                        />
                       </div>
                       <div>
-                        <Label>Sample Type</Label>
+                        <Label>Loại mẫu</Label>
                         <Input name="sampleType" value={formData.sampleType} onChange={handleInputChange} />
                       </div>
                       <div>
-                        <Label>Participant Name</Label>
+                        <Label>Người tham gia</Label>
                         <Input name="participantName" value={formData.participantName} onChange={handleInputChange} />
                       </div>
                       <div>
-                        <Label>Transport</Label>
+                        <Label>Phương tiện vận chuyển</Label>
                         <Input name="transport" value={formData.transport} onChange={handleInputChange} />
                       </div>
                       <div>
-                        <Label>Picture</Label>
+                        <Label>Ảnh</Label>
                         <Input name="picture" value={formData.picture} onChange={handleInputChange} />
                       </div>
                       <div>
-                        <Label>Notes</Label>
+                        <Label>Ghi chú</Label>
                         <Input name="notes" value={formData.notes} onChange={handleInputChange} />
                       </div>
-                      <Button onClick={handleCreateSample}>Lưu</Button>
+                      <Button onClick={() => handleCreateSample(booking.bookingId)}>Lưu</Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -148,15 +166,14 @@ const BookingListPage: React.FC = () => {
                   sampleMap[booking.bookingId].map(sample => (
                     <div key={sample.sampleId} className="border p-2 rounded text-sm bg-white shadow-sm">
                       <p><strong>Sample ID:</strong> {sample.sampleId}</p>
-                      <p><strong>Type:</strong> {sample.sampleType}</p>
-                      <p><strong>By:</strong> {sample.collectedBy}</p>
-                      <p><strong>Participant:</strong> {sample.participantName}</p>
+                      <p><strong>Loại:</strong> {sample.sampleType}</p>
+                      <p><strong>Thu bởi:</strong> {sample.collectedBy}</p>
+                      <p><strong>Người tham gia:</strong> {sample.participantName}</p>
                     </div>
                   ))
                 )}
               </div>
             )}
-
           </div>
         ))}
       </div>

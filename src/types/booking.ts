@@ -31,6 +31,7 @@ type Booking = {
   method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
   preferredDate: string;
+  collectionDate: string;
   time: string;
   location: string;
   result: string;
