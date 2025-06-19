@@ -88,7 +88,6 @@ const BookingPage = () => {
     }
   }, [selectedMethod, form]);
 
-  // Get timeline steps based on selected method
   const getTimelineSteps = () => {
     switch (selectedMethod) {
       case 'TU_THU_MAU':

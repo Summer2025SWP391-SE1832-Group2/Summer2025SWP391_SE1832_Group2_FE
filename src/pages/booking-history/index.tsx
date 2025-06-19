@@ -1,129 +1,177 @@
 import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
 import { useAuthStore } from '@/stores/auth';
 import type { Booking } from '@/types/booking';
-import { getBookingsByUserId } from '@/services/booking_service';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { paths } from '@/utils/constant/path';
 import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { getBookingsByUserId } from '@/services/booking_service';
+
+const ITEMS_PER_PAGE = 10;
 
 const BookingHistoryPage = () => {
-    const { user } = useAuthStore();
-    const [bookings, setBookings] = useState<Booking[]>([]);
-    const [loading, setLoading] = useState(false);
+  const { user } = useAuthStore();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
-        const fetchBookings = async () => {
-            if (!user?.userId) return;
-            setLoading(true);
-            try {
-                const data = await getBookingsByUserId(user.userId);
-                setBookings(data);
-            } catch (err) {
-                console.error('Lỗi khi fetch bookings:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchBookings();
-    }, [user?.userId]);
-
-    const formatDate = (dateStr: string) => {
-        if (!dateStr || dateStr === '0001-01-01T00:00:00') return 'Chưa chọn';
-        return new Date(dateStr).toLocaleString();
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (!user?.userId) return;
+      try {
+        const data = await getBookingsByUserId(user.userId);
+        setBookings(data);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách booking:', error);
+      }
     };
 
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'ready':
-                return 'bg-green-100 text-green-700';
-            case 'in progress':
-                return 'bg-yellow-100 text-yellow-800';
-            case 'completed':
-                return 'bg-blue-100 text-blue-700';
-            case 'paid':
-                return 'bg-green-200 text-green-800';
-            case 'unpaid':
-                return 'bg-red-100 text-red-700';
-            case 'pending':
-                return 'bg-orange-100 text-orange-800';
-            case 'failed':
-                return 'bg-rose-100 text-rose-700';
-            case 'cancelled':
-                return 'bg-gray-200 text-gray-600';
-            default:
-                return 'bg-gray-100 text-gray-700';
-        }
-    };
-    
+    fetchBookings();
+  }, [user?.userId]);
 
-    return (
-        <div className="p-6">
-            <h2 className="text-2xl font-semibold mb-6">Lịch sử đặt lịch</h2>
+  const formatDate = (dateStr: string) => {
+    if (!dateStr || dateStr === '0001-01-01T00:00:00') return 'Chưa chọn';
+    return new Date(dateStr).toLocaleDateString('vi-VN');
+  };
 
-            {loading && (
-                <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                        <Skeleton key={i} className="w-full h-40 rounded-xl" />
-                    ))}
-                </div>
-            )}
+  const formatTime = (time: string) => {
+    if (!time) return 'Chưa có';
 
-            {!loading && bookings.length === 0 && (
-                <p className="text-muted-foreground">Bạn chưa có lịch sử booking nào.</p>
-            )}
+    // Nếu là dạng "HH:mm:ss-HH:mm:ss"
+    if (time.includes('-')) {
+      const [start, end] = time.split('-');
+      return `${start.split(':').slice(0, 2).join(':')} - ${end.split(':').slice(0, 2).join(':')}`;
+    }
 
-            {!loading && bookings.length > 0 && (
-               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-               {bookings.map((booking) => (
-                <Card className="rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 p-4 space-y-4 bg-white">
-                   <div className="flex items-center justify-between">
-                     <div>
-                       <p className="font-semibold text-sm text-muted-foreground">Mã đơn #{booking.bookingId}</p>
-                       <p className="text-base font-medium">{user?.fullName ?? 'Khách hàng'}</p>
-                     </div>
-                     <div className="flex gap-2 items-center">
-                       <Badge className={getStatusColor(booking.status)}>
-                         {booking.status}
-                       </Badge>
-                       <Badge className={getStatusColor(booking.paymentStatus)} variant="secondary">
-                         {booking.paymentStatus}
-                       </Badge>
-                     </div>
-                   </div>
-             
-                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-                     {/* Block: Ngày đặt - Ngày mong muốn - Thời gian */}
-                     <div className="space-y-1">
-                       <p><strong>Ngày đặt:</strong> {formatDate(booking.bookingDate)}</p>
-                       <p><strong>Ngày trả kết quả :</strong> {formatDate(booking.preferredDate)}</p>
-                       <p><strong>Thời gian:</strong> {booking.time || 'Chưa có'}</p>
-                     </div>
-             
-                     {/* Block: Phương thức - Địa điểm */}
-                     <div className="space-y-1">
-                       <p><strong>Phương thức:</strong> {booking.method}</p>
-                       <p>
-  <strong>Địa điểm:</strong>{' '}
-  {booking.method === 'AtFacility' ? 'Cơ sở y tế tại SWP391' : (booking.location || 'Chưa có')}
-</p>                     </div>
-                   </div>
-             
-                   <div className="flex justify-between">
-                     <Link to={paths.bookingDetail(String(booking.bookingId))}>
-                       <Button variant="outline" size="sm">Chi tiết</Button>
-                     </Link>
-                   </div>
-                 </Card>
-               ))}
-             </div>
-             
-            )}
-        </div>
-    );
+    // Nếu chỉ có một mốc thời gian dạng "HH:mm:ss"
+    if (time.match(/^\d{2}:\d{2}:\d{2}$/)) {
+      return time.split(':').slice(0, 2).join(':');
+    }
+
+    return time;
+  };
+
+
+  const methodMap: Record<string, string> = {
+    TAI_CO_SO_Y_TE: 'Cơ sở y tế tại SWP391',
+    NHAN_VIEN_DEN_NHA: 'Nhân viên đến nhà',
+    TU_THU_MAU: 'Tự thu mẫu',
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'bg-blue-100 text-blue-700';
+      case 'pending':
+        return 'bg-orange-100 text-orange-800';
+      case 'cancelled':
+        return 'bg-gray-200 text-gray-600';
+      case 'paid':
+        return 'bg-green-200 text-green-800';
+      case 'unpaid':
+        return 'bg-red-100 text-red-700';
+      case 'failed':
+        return 'bg-rose-100 text-rose-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
+  const reversedBookings = [...bookings].reverse();
+  const currentBookings = reversedBookings.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-semibold mb-6">Lịch sử đặt lịch</h2>
+
+      {bookings.length === 0 ? (
+        <p className="text-muted-foreground">Bạn chưa có lịch sử booking nào.</p>
+      ) : (
+        <>
+          <div className="overflow-x-auto rounded-lg border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Mã đơn</TableHead>
+                  <TableHead>Khách hàng</TableHead>
+                  <TableHead>Trạng thái</TableHead>
+                  <TableHead>Thanh toán</TableHead>
+                  <TableHead>Ngày đặt</TableHead>
+                  <TableHead>Ngày trả</TableHead>
+                  <TableHead>Thời gian</TableHead>
+                  <TableHead>Phương thức</TableHead>
+                  <TableHead>Địa điểm</TableHead>
+                  <TableHead className="text-right">Hành động</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {currentBookings.map((booking) => (
+                  <TableRow key={booking.bookingId}>
+                    <TableCell>#{booking.bookingId}</TableCell>
+                    <TableCell>{user?.fullName ?? 'Khách hàng'}</TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(booking.paymentStatus)} variant="secondary">
+                        {booking.paymentStatus}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{formatDate(booking.bookingDate)}</TableCell>
+                    <TableCell>{formatDate(booking.preferredDate)}</TableCell>
+                    <TableCell>{formatTime(booking.time)}</TableCell>
+                    <TableCell>{methodMap[booking.method] ?? booking.method}</TableCell>
+                    <TableCell>{booking.location || 'Chưa có'}</TableCell>
+                    <TableCell className="text-right">
+                      <Link to={paths.bookingDetail(String(booking.bookingId))}>
+                        <Button variant="outline" size="sm">
+                          Chi tiết
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <Pagination className="mt-4 justify-center">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious onClick={handlePrevPage} />
+              </PaginationItem>
+              <PaginationItem>
+                <span className="text-sm text-muted-foreground px-4">
+                  Trang {currentPage} / {totalPages}
+                </span>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext onClick={handleNextPage} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </>
+      )}
+    </div>
+  );
 };
 
 export default BookingHistoryPage;
