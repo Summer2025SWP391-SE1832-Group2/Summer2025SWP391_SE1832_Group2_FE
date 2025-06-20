@@ -28,18 +28,7 @@ export const useProfile = () => {
   });
 
   return {
-    // Profile data
-    profile: profileQuery.data,
-    isLoading: profileQuery.isLoading,
-    isError: profileQuery.isError,
-    error: profileQuery.error,
-
-    // Update mutation
-    updateProfile: updateProfileMutation.mutateAsync,
-    isUpdating: updateProfileMutation.isPending,
-    updateError: updateProfileMutation.error,
-
-    // Query object for manual refetch if needed
-    refetch: profileQuery.refetch,
+    profileQuery,
+    updateProfileMutation,
   };
 };

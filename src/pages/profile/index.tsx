@@ -34,28 +34,41 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const ProfilePage = () => {
-  const { profile, isLoading, isError, error, updateProfile, isUpdating, updateError } =
-    useProfile();
+  const { profileQuery, updateProfileMutation } = useProfile();
+  const { data: profile, isLoading, isError, error } = profileQuery;
+  const {
+    mutateAsync: updateProfile,
+    isPending: isUpdating,
+    error: updateError,
+  } = updateProfileMutation;
   const { showToast } = useToast();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: profileFormDefaultValues,
   });
-
+  const { isDirty } = form.formState;
   // Populate form when profile data is loaded
   useEffect(() => {
     if (profile) {
-      form.reset({
+      const formData = {
         fullName: profile.fullName || '',
         phone: profile.phone || '',
-        gender: (profile.gender as 'male' | 'female' | 'other') || '',
-        dateOfBirth: new Date(profile.dateOfBirth) || new Date(),
+        gender: profile.gender,
+        dateOfBirth: profile.dateOfBirth ? new Date(profile.dateOfBirth) : new Date(),
         identityNumber: profile.identityNumber || '',
         address: profile.address || '',
-      });
+      };
+
+      form.reset(formData);
     }
-  }, [profile, form]);
+  }, [profile]);
+
+  useEffect(() => {
+    if (!form.getValues('gender')) {
+      form.setValue('gender', profile?.gender ?? 'male');
+    }
+  }, [form.getValues('gender')]);
 
   const onSubmit = async (data: ProfileFormValues) => {
     if (!profile) return;
@@ -68,6 +81,7 @@ const ProfilePage = () => {
       };
 
       await updateProfile(updateData);
+
       showToast('Cập nhật thông tin thành công!', 'success');
     } catch (error: any) {
       const errorMessage =
@@ -177,7 +191,7 @@ const ProfilePage = () => {
                       <FormLabel>Giới tính</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        value={field.value || ''}
+                        value={field.value}
                         disabled={isUpdating}
                       >
                         <FormControl>
@@ -274,7 +288,11 @@ const ProfilePage = () => {
               />
 
               <div className='pt-4'>
-                <Button type='submit' className='w-full md:w-auto' disabled={isUpdating}>
+                <Button
+                  type='submit'
+                  className='w-full md:w-auto'
+                  disabled={isUpdating || !isDirty}
+                >
                   <Save className='h-4 w-4 mr-2' />
                   {isUpdating ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
                 </Button>
