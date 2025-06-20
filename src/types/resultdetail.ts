@@ -1,10 +1,12 @@
 export type ResultDetail = {
-  resultDetailId: number;
-  bookingId: number;
   testParameterId: number;
+  name: string;
   value: string;
   sampleId: number;
+  unit: string;
+  description: string;
 };
+
 export type ResultItem = {
   testParameterId: number;
   value: string;

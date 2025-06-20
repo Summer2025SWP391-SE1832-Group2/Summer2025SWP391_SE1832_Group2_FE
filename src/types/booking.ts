@@ -9,6 +9,7 @@ type SampleCollectionSchedule = {
   location: string;
   status: string;
 };
+
 type BookingSchedule = {
   bookingId: number;
   serviceTypeId: number;
@@ -21,6 +22,10 @@ type BookingSchedule = {
   result: string;
   sampleCollectionSchedules: SampleCollectionSchedule[];
 };
+
+type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
+type PaymentStatus = 'Unpaid' | 'Processing' | 'Paid' | 'Failed';
+
 type Booking = {
   bookingId: number;
   serviceId: number;
@@ -35,9 +40,6 @@ type Booking = {
   location: string;
   result: string;
 };
-//   export type { Booking,BookingSchedule, SampleCollectionSchedule };
-type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
-type PaymentStatus = 'Unpaid' | 'Processing' | 'Paid' | 'Failed';
 
 type BookingRequest = {
   bookingId?: number;
@@ -51,6 +53,21 @@ type BookingRequest = {
   collectionDate: string;
   time: string;
   location: string;
+};
+
+// ✅ Mapping trạng thái sang tiếng Việt
+export const bookingStatusMap: Record<BookingStatus, string> = {
+  Pending: 'Đang chờ',
+  Confirmed: 'Đã xác nhận',
+  Completed: 'Hoàn thành',
+  Cancelled: 'Đã hủy',
+};
+
+export const paymentStatusMap: Record<PaymentStatus, string> = {
+  Unpaid: 'Chưa thanh toán',
+  Processing: 'Đang xử lý',
+  Paid: 'Đã thanh toán',
+  Failed: 'Thanh toán thất bại',
 };
 
 export {

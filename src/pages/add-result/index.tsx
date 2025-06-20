@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { getAllBookings } from "@/services/booking_service";
-import { getTestParametersByServiceId } from "@/services/parameters-service";
 import { getSamplesByBookingId } from "@/services/sample_service";
-import { createMultipleResultDetails } from "@/services/result-service";
-import type { ResultItem } from "@/types/resultdetail";
-import type { TestParameter } from "@/types/testparameters";
+import { createMultipleResultDetails, getResultDetailsByBookingId } from "@/services/result-service";
+
+import type { ResultItem, ResultDetail } from "@/types/resultdetail";
 import type { Sample } from "@/types/sample";
 
 import {
@@ -16,20 +17,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AddResultPage = () => {
-  const serviceId = 1;
   const navigate = useNavigate();
 
   const [bookingId, setBookingId] = useState<number | null>(null);
   const [bookingOptions, setBookingOptions] = useState<number[]>([]);
-
-  const [testParameters, setTestParameters] = useState<TestParameter[]>([]);
+  const [testParameters, setTestParameters] = useState<{ testParameterId: number; name: string }[]>([]);
   const [samples, setSamples] = useState<Sample[]>([]);
   const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState<Record<string, string>>({});
+  const [values, setValues] = useState<Record<string, [string, string]>>({});
 
   // Lấy danh sách booking ID
   useEffect(() => {
@@ -46,56 +50,85 @@ const AddResultPage = () => {
     fetchBookings();
   }, []);
 
-  // Lấy test parameters + sample mỗi khi chọn booking mới
-useEffect(() => {
-  if (!bookingId) return;
+  useEffect(() => {
+    if (!bookingId) return;
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [params, sampleData] = await Promise.all([
-        getTestParametersByServiceId(serviceId),
-        getSamplesByBookingId(bookingId),
-      ]);
-      setTestParameters(params);
-      setSamples(sampleData);
-      setValues({});
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [sampleData, resultDetails] = await Promise.all([
+          getSamplesByBookingId(bookingId),
+          getResultDetailsByBookingId(bookingId),
+        ]);
 
-      // ⚠️ Nếu không có sample thì chuyển trang
-      if (sampleData.length === 0) {
-        alert("Booking chưa có mẫu. Vui lòng thêm sample trước.");
-        navigate("/dashboard/bookinglist");
+        const testParamsMap = new Map<number, string>();
+        resultDetails.forEach((r) => {
+          if (!testParamsMap.has(r.testParameterId)) {
+            testParamsMap.set(r.testParameterId, r.name);
+          }
+        });
+
+        setTestParameters(
+          Array.from(testParamsMap.entries()).map(([id, name]) => ({
+            testParameterId: id,
+            name,
+          }))
+        );
+
+        setSamples(sampleData);
+
+        const newValues: Record<string, [string, string]> = {};
+        resultDetails.forEach((r) => {
+          const key = `${r.testParameterId}-${r.sampleId}`;
+          const split = r.value.split(",");
+          newValues[key] = [split[0] || "", split[1] || ""];
+        });
+
+        setValues(newValues);
+
+        if (sampleData.length === 0) {
+          alert("Booking chưa có mẫu. Vui lòng thêm sample trước.");
+          navigate("/dashboard/bookinglist");
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải dữ liệu:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Lỗi khi tải dữ liệu:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchData();
-}, [bookingId, serviceId]);
+    fetchData();
+  }, [bookingId]);
 
-
-  const handleChange = (sampleId: number, testParameterId: number, value: string) => {
-    setValues((prev) => ({
-      ...prev,
-      [`${sampleId}-${testParameterId}`]: value,
-    }));
+  const handleChange = (
+    sampleId: number,
+    testParameterId: number,
+    index: 0 | 1,
+    value: string
+  ) => {
+    const key = `${testParameterId}-${sampleId}`;
+    setValues((prev) => {
+      const existing = prev[key] || ["", ""];
+      const updated: [string, string] = [...existing] as [string, string];
+      updated[index] = value;
+      return { ...prev, [key]: updated };
+    });
   };
 
   const handleSave = async () => {
     if (!bookingId) return;
     const resultItems: ResultItem[] = [];
 
-    for (const sample of samples) {
-      for (const param of testParameters) {
-        const key = `${sample.sampleId}-${param.testParameterId}`;
-        const value = values[key] || "";
+    for (const param of testParameters) {
+      for (const sample of samples) {
+        const key = `${param.testParameterId}-${sample.sampleId}`;
+        const valPair = values[key] || ["", ""];
+        const value = valPair.filter(Boolean).join(",");
+
         resultItems.push({
           testParameterId: param.testParameterId,
-          value,
           sampleId: sample.sampleId,
+          value,
         });
       }
     }
@@ -142,40 +175,50 @@ useEffect(() => {
                 <table className="min-w-full table-auto border border-muted rounded-md">
                   <thead className="bg-muted">
                     <tr>
-                      <th className="px-4 py-2 border-b text-left">Sample</th>
-                      {testParameters.map((param) => (
-                        <th key={param.testParameterId} className="px-4 py-2 border-b text-left">
-                          {param.name}
+                      <th className="px-4 py-2 border-b text-left">Chỉ số</th>
+                      {samples.map((sample) => (
+                        <th key={sample.sampleId} className="px-4 py-2 border-b text-left">
+                          {sample.participantName || `Sample ${sample.sampleId}`}
                         </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {samples.map((sample) => (
-                      <tr key={sample.sampleId} className="hover:bg-muted/40">
-                        <td className="px-4 py-2 border-b font-medium">
-                          {sample.participantName || `Sample ${sample.sampleId}`}
-                        </td>
-                        {testParameters.map((param) => (
-                          <td key={param.testParameterId} className="px-2 py-1 border-b">
-                            <Input
-                              value={values[`${sample.sampleId}-${param.testParameterId}`] || ""}
-                              onChange={(e) =>
-                                handleChange(sample.sampleId, param.testParameterId, e.target.value)
-                              }
-                              className="w-24"
-                            />
-                          </td>
-                        ))}
+                    {testParameters.map((param) => (
+                      <tr key={param.testParameterId} className="hover:bg-muted/30">
+                        <td className="border p-2 whitespace-nowrap">{param.name}</td>
+                        {samples.map((sample) => {
+                          const key = `${param.testParameterId}-${sample.sampleId}`;
+                          const valPair = values[key] || ["", ""];
+
+                          return (
+                            <td key={sample.sampleId} className="border p-2">
+                              <div className="flex gap-2">
+                                <Input
+                                  placeholder="1"
+                                  value={valPair[0]}
+                                  onChange={(e) => handleChange(sample.sampleId, param.testParameterId, 0, e.target.value)}
+                                  className="w-20"
+                                />
+                                <Input
+                                  placeholder="2"
+                                  value={valPair[1]}
+                                  onChange={(e) => handleChange(sample.sampleId, param.testParameterId, 1, e.target.value)}
+                                  className="w-20"
+                                />
+                              </div>
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             )}
-                <div className="mt-6 flex justify-end">
-                  <Button onClick={handleSave}>Lưu kết quả</Button>
-                </div>
+            <div className="mt-6 flex justify-end">
+              <Button onClick={handleSave}>Lưu kết quả</Button>
+            </div>
           </CardContent>
         </Card>
       )}
