@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getAllBookings } from "@/services/booking_service";
 import { getSamplesByBookingId } from "@/services/sample_service";
@@ -27,32 +27,24 @@ import {
 
 const AddResultPage = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const bookingId = Number(id);
 
-  const [bookingId, setBookingId] = useState<number | null>(null);
-  const [bookingOptions, setBookingOptions] = useState<number[]>([]);
+
+
   const [testParameters, setTestParameters] = useState<{ testParameterId: number; name: string }[]>([]);
   const [samples, setSamples] = useState<Sample[]>([]);
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState<Record<string, [string, string]>>({});
+  const [finalResult, setFinalResult] = useState<string>("");
 
-  // Lấy danh sách booking ID
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const bookings = await getAllBookings();
-        const ids = bookings.map((b) => b.bookingId);
-        setBookingOptions(ids);
-        if (ids.length > 0) setBookingId(ids[0]);
-      } catch (err) {
-        console.error("Lỗi khi lấy booking:", err);
-      }
-    };
-    fetchBookings();
-  }, []);
 
   useEffect(() => {
-    if (!bookingId) return;
-
+    if (!bookingId || isNaN(bookingId)) {
+      alert("Booking ID không hợp lệ.");
+      navigate("/dashboard/bookinglist");
+      return;
+    }
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -80,6 +72,7 @@ const AddResultPage = () => {
         const newValues: Record<string, [string, string]> = {};
         resultDetails.forEach((r) => {
           const key = `${r.testParameterId}-${r.sampleId}`;
+          const existing = newValues[key] || ["", ""];
           const split = r.value.split(",");
           newValues[key] = [split[0] || "", split[1] || ""];
         });
@@ -117,6 +110,7 @@ const AddResultPage = () => {
 
   const handleSave = async () => {
     if (!bookingId) return;
+
     const resultItems: ResultItem[] = [];
 
     for (const param of testParameters) {
@@ -134,7 +128,17 @@ const AddResultPage = () => {
     }
 
     try {
-      await createMultipleResultDetails(bookingId, resultItems);
+     await createMultipleResultDetails({
+  bookingId,
+  finalResult,
+  results: resultItems.map((item) => ({
+    ...item,
+    resultDetailId: 0,
+    bookingId,
+    parameterName: testParameters.find(p => p.testParameterId === item.testParameterId)?.name || "",
+  })),
+});
+
       alert("Lưu kết quả thành công!");
     } catch (error) {
       console.error("Lỗi khi lưu:", error);
@@ -145,19 +149,7 @@ const AddResultPage = () => {
   return (
     <div className="p-6 space-y-4">
       <div className="max-w-sm">
-        <label className="font-semibold mb-2 block">Chọn booking:</label>
-        <Select onValueChange={(val) => setBookingId(Number(val))} value={bookingId?.toString()}>
-          <SelectTrigger>
-            <SelectValue placeholder="Chọn booking ID" />
-          </SelectTrigger>
-          <SelectContent>
-            {bookingOptions.map((id) => (
-              <SelectItem key={id} value={id.toString()}>
-                Booking #{id}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <label className="font-semibold mb-2 block">Booking ID:#{bookingId}</label>
       </div>
 
       {bookingId && (
@@ -177,7 +169,7 @@ const AddResultPage = () => {
                     <tr>
                       <th className="px-4 py-2 border-b text-left">Chỉ số</th>
                       {samples.map((sample) => (
-                        <th key={sample.sampleId} className="px-4 py-2 border-b text-left">
+                        <th key={sample.sampleId} className="px-4 py-2 border-b text-center">
                           {sample.participantName || `Sample ${sample.sampleId}`}
                         </th>
                       ))}
@@ -193,21 +185,22 @@ const AddResultPage = () => {
 
                           return (
                             <td key={sample.sampleId} className="border p-2">
-                              <div className="flex gap-2">
+                              <div className="flex gap-2 justify-center">
                                 <Input
-                                  placeholder="1"
+
                                   value={valPair[0]}
                                   onChange={(e) => handleChange(sample.sampleId, param.testParameterId, 0, e.target.value)}
                                   className="w-20"
                                 />
                                 <Input
-                                  placeholder="2"
+
                                   value={valPair[1]}
                                   onChange={(e) => handleChange(sample.sampleId, param.testParameterId, 1, e.target.value)}
                                   className="w-20"
                                 />
                               </div>
                             </td>
+
                           );
                         })}
                       </tr>
@@ -216,6 +209,15 @@ const AddResultPage = () => {
                 </table>
               </div>
             )}
+            <div className="mt-6">
+              <label className="block font-medium mb-1">Nhận định của bác sĩ:</label>
+              <Input
+                value={finalResult}
+                onChange={(e) => setFinalResult(e.target.value)}
+                placeholder="Nhập nhận định tổng quát"
+              />
+            </div>
+
             <div className="mt-6 flex justify-end">
               <Button onClick={handleSave}>Lưu kết quả</Button>
             </div>
@@ -227,3 +229,4 @@ const AddResultPage = () => {
 };
 
 export default AddResultPage;
+

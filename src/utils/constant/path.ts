@@ -23,7 +23,7 @@ export const paths = {
   services: '/dashboard/services',
   dashboardProfile: '/dashboard/profile',
   bookingList: '/dashboard/bookinglist',
-  addResult: '/dashboard/addresult',
+  addResult: '/dashboard/result/add/:id',
 
   // Payment results
   paymentSuccess: '/payment/success',
