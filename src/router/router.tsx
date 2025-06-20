@@ -5,7 +5,6 @@ import BlogType from '@/pages/blog/blogType';
 import DashboardPage from '@/pages/dashboard';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
-
 import AddResultPage from '@/pages/add-result';
 import BookingPage from '@/pages/booking';
 import BookingDetailPage from '@/pages/booking-detail';
