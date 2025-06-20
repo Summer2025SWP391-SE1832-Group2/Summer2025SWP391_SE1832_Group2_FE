@@ -13,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 // import BlogTypeEditorDialog from './blog-type-edit-dialog';
 import { paths } from '@/utils/constant/path';
+import BlogTypeEditorDialog from './blog-type-edit-dialog';
 export default function BlogManagementPage() {
   const [blogTypes, setBlogTypes] = useState<Blogtype[]>([]);
   const [selectedBlogType, setSelectedBlogType] = useState<Blogtype | null>(null);
@@ -155,12 +156,12 @@ export default function BlogManagementPage() {
         )}
       </div>
 
-      {/* <BlogTypeEditorDialog
+      <BlogTypeEditorDialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         onSave={handleSaveBlogType}
         initialData={editBlogType}
-      /> */}
+      />
     </div>
   );
 }
