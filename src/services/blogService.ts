@@ -37,6 +37,11 @@ const deleteBlog = async (id: number): Promise<void> => {
   await axiosInstance.delete( `/api/Blog/${id}`);
 };
 
+const updateBlogType = async ( data: Partial<Blogtype>): Promise<Blogtype> => {
+  const response = await axiosInstance.put<Blogtype>(`/api/BlogsType`, data);
+  return response.data;
+};
+
 export {
   getAllBlogs,
   getBlogById,
@@ -44,5 +49,6 @@ export {
   updateBlog,
   deleteBlog,
   getAllBlogByBlogTypeID,
-  getAllBlogtype
+  getAllBlogtype,
+  updateBlogType
 };
