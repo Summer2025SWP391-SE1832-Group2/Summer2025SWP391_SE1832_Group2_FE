@@ -133,7 +133,7 @@ export default function AppointmentsPage() {
 
             <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
           <div className="text-sm text-gray-600 p-2">
-              User: {booking.userName} 
+              User: {booking.userId} 
             </div>
             <div className="text-sm text-gray-600 p-2">
               Sample Method: {booking.sampleMethod} 

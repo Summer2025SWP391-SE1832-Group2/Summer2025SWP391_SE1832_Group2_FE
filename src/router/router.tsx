@@ -24,6 +24,7 @@ import ProtectedRoute from './protected-route';
 import PublicRoute from './public-route';
 import BlogDetailManagePage from '@/pages/blog-manage/blog-detail';
 import BlogDetailHomePage from '@/pages/blog/blogDetail';
+import BlogCreatePage from '@/pages/blog-manage/blog-create';
 
 const router = createBrowserRouter([
   {
@@ -127,15 +128,15 @@ const router = createBrowserRouter([
         path: paths.addResult,
         element: <AddResultPage />,
       },
-      {
-        path: paths.staffschedule,
-        element: <StaffSchedulePage />,
-      },
-      {
-        path: paths.blogmanage,
-        element: <BlogManagePage />,
+      // {
+      //   path: paths.staffschedule,
+      //   element: <StaffSchedulePage />,
+      // },
+      // {
+      //   path: paths.blogmanage,
+      //   element: <BlogManagePage />,
        
-      },
+      // },
       {
         path: paths.blogcreate,
         element: <BlogCreatePage />,

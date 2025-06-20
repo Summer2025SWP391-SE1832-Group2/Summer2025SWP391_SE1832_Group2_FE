@@ -30,7 +30,7 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { createBlog, getAllBlogtype } from "@/services/blogService";
-import type { BlogType } from "@/types/blog";
+import type { Blogtype } from "@/types/blog";
 
 export default function BlogCreatePage() {
   const [title, setTitle] = useState("");
@@ -39,7 +39,7 @@ export default function BlogCreatePage() {
   const [showHTMLPreview, setShowHTMLPreview] = useState(false);
   const [imageURL, setImageURL] = useState("");
   const [thumbnail, setThumbnail] = useState("");
-  const [blogTypes, setBlogTypes] = useState<BlogType[]>([]);
+  const [blogTypes, setBlogTypes] = useState<Blogtype[]>([]);
 
   useEffect(() => {
     const fetchBlogTypes = async () => {
