@@ -33,6 +33,7 @@ export default function AppointmentsPage() {
     return statusMatch && b.bookingId.toString().includes(search);
   });
 
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -119,17 +120,46 @@ export default function AppointmentsPage() {
         onClick={() => handleBookingClick(booking)}
       >
           <CardContent className="py-6 px-6 space-y-2">
+
             <div className="text-lg font-semibold text-gray-800">
               Booking #{booking.bookingId} — Service Type #{booking.serviceTypeId}
             </div>
-            <div className="text-sm text-gray-600">
-              User: {booking.userName} | Status: {booking.status} | Payment: {booking.paymentStatus}
+
+            <div className="flex flex-row items-center gap-x-4">
+
+            <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+            <div className="text-sm text-gray-600 p-2">
+              Status: {booking.status} 
             </div>
-            <div className="text-sm text-gray-600">
-              Booking Date: {new Date(booking.bookingDate).toLocaleDateString()} | Preferred Date: {new Date(booking.preferredDate).toLocaleDateString()}
+            <div className="text-sm text-gray-600 p-2">
+              Payment: {booking.paymentStatus}
             </div>
+            </div>
+
+            <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+          <div className="text-sm text-gray-600 p-2">
+              User: {booking.userName} 
+            </div>
+            <div className="text-sm text-gray-600 p-2">
+              Sample Method: {booking.sampleMethod} 
+            </div>
+          </div>
+
+          <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+         
+            <div className="text-sm text-gray-600 p-2">
+              Booking Date: {new Date(booking.bookingDate).toLocaleDateString()} 
+            </div>
+            <div className="text-sm text-gray-600 p-2">
+           Preferred Date: {new Date(booking.preferredDate).toLocaleDateString()}
+            </div>
+            
+          </div>
+
+            </div>
+
             <div className="text-sm text-gray-600">
-              Sample Method: {booking.sampleMethod} | Result: {booking.result}
+              Result: {booking.result}
             </div>
           </CardContent>
         </Card>

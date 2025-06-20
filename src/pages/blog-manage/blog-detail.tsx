@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { getBlogById } from '@/services/blogService'; 
 import type { Blog } from '@/types/blog';
 
-export default function BlogDetailPage() {
+export default function BlogDetailManagePage() {
   const { blogId } = useParams<{ blogId: string }>(); 
   const [blog, setBlog] = useState<Blog | null>(null);
   const navigate = useNavigate();

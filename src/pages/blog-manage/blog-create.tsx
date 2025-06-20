@@ -29,7 +29,6 @@ import {
   SelectValue,
   SelectContent,
 } from "@/components/ui/select";
-import { toast } from "sonner";
 import { createBlog, getAllBlogtype } from "@/services/blogService";
 import type { BlogType } from "@/types/blog";
 
@@ -49,7 +48,7 @@ export default function BlogCreatePage() {
         setBlogTypes(data);
         if (data.length > 0) setBlogTypeId(data[0].blogTypeId.toString());
       } catch (err) {
-        toast.error("Không thể tải danh sách loại blog");
+        console.error("Error fetching blog types:", err);
       }
     };
     fetchBlogTypes();
@@ -98,10 +97,8 @@ export default function BlogCreatePage() {
     };
     try {
       await createBlog(blogData);
-      toast.success("Tạo blog thành công!");
     } catch (err) {
-      toast.error("Tạo blog thất bại");
-    }
+      console.error("Error creating blog:", err);}
   };
 
   const headingLevels: (1 | 2 | 3 | 4)[] = [1, 2, 3, 4];
