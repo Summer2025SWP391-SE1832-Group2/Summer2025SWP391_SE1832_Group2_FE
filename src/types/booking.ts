@@ -13,7 +13,6 @@ type BookingSchedule = {
   bookingId: number;
   serviceTypeId: number;
   userId: number;
-  userName: string;
   bookingDate: string;
   sampleMethod: string;
   status: string;
@@ -32,6 +31,7 @@ type Booking = {
   method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
   preferredDate: string;
+  collectionDate: string;
   time: string;
   location: string;
   result: string;

@@ -6,4 +6,9 @@ const createBooking = async (data: BookingRequest) => {
   return response.data;
 };
 
-export { createBooking };
+const checkExistingNearBooking = async (userId: number) => {
+  const response = await axiosInstance.get<boolean>(`checkPending?userId=${userId}`);
+  return response.data;
+};
+
+export { createBooking, checkExistingNearBooking };

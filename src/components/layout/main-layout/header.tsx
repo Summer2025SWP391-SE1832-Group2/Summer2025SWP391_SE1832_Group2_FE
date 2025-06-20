@@ -22,7 +22,6 @@ const Header = () => {
   const [isServiceMenuOpen, setIsServiceMenuOpen] = useState(false);
   const { queryServices } = useService();
   const { data: services, isLoading, error, refetch } = queryServices;
-
   const handleLogout = () => {
     logout();
   };
@@ -133,35 +132,44 @@ const Header = () => {
         <div className='flex items-center space-x-4'>
           {isAuthenticated && user ? (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger>
                 <div className='flex items-center gap-2 cursor-pointer'>
                   <Avatar>
-                    <AvatarFallback>{user.fullName.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{user?.fullName?.charAt(0) ?? ''}</AvatarFallback>
                   </Avatar>
                   <span className='hidden lg:block text-sm font-medium'>{user.fullName}</span>
                   <ChevronDown className='h-4 w-4' />
                 </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className='w-56' align='end' forceMount>
-                <DropdownMenuItem className='flex flex-col items-start w-full'>
-                  <Link to={paths.profile} className='flex items-center gap-2 w-full'>
-                    <User className='h-4 w-4' />
-                    Hồ sơ
+              <DropdownMenuContent className='w-56' align='end'>
+                <DropdownMenuItem asChild>
+                  <Link to={paths.profile}>
+                    <span className='flex items-center gap-2 w-full'>
+                      <User className='h-4 w-4' />
+                      Hồ sơ
+                    </span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='flex flex-col items-start w-full'>
-                  <Link to={paths.bookingHistory} className='flex items-center gap-2 w-full'>
-                    <Clock className='h-4 w-4' />
-                    lịch sử đặt lịch
+                <DropdownMenuItem asChild>
+                  <Link to={paths.bookingHistory}>
+                    <span className='flex items-center gap-2 w-full'>
+                      <Clock className='h-4 w-4' />
+                      lịch sử đặt lịch
+                    </span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='flex flex-col items-start w-full'>
-                  <Link to={paths.result} className='flex items-center gap-2 w-full'>
-                    <Clock className='h-4 w-4' />
-                    xem kết quả
+                <DropdownMenuItem asChild>
+                  <Link to={paths.result}>
+                    <span className='flex items-center gap-2 w-full'>
+                      <Clock className='h-4 w-4' />
+                      xem kết quả
+                    </span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className='text-red-600'>
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className='text-red-600 flex items-center gap-2 w-full'
+                >
                   <LogOut className='h-4 w-4' />
                   Đăng xuất
                 </DropdownMenuItem>

@@ -8,9 +8,10 @@ const baseRegisterSchema = z.object({
     .min(2, 'Họ và tên phải có ít nhất 2 ký tự')
     .max(50, 'Họ và tên không được quá 50 ký tự')
     .trim(),
-  email: z.string().min(1, 'Email là bắt buộc').email('Email không hợp lệ'),
+  email: z.string().trim().min(1, 'Email là bắt buộc').email('Email không hợp lệ'),
   phoneNumber: z
     .string()
+    .trim()
     .min(1, 'Số điện thoại là bắt buộc')
     .regex(
       /^(0|\+84)[3-9][0-9]{8}$/,

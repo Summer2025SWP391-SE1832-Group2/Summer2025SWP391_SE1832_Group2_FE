@@ -1,24 +1,18 @@
-import BlogPage from '@/pages/blog';
-import BlogTypePage from '@/pages/blog/blogType';
 import DashboardLayout from '@/components/layout/dashboard-layout/dashboard-layout';
 import MainLayout from '@/components/layout/main-layout/main-layout';
+import BlogPage from '@/pages/blog';
 import BlogType from '@/pages/blog/blogType';
 import DashboardPage from '@/pages/dashboard';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
 
-// import ServiceDetailPage from '@/pages/service-detail';
-import BookingPage from '@/pages/booking';
-import AppointmentsPage from '@/pages/appointments';
-import ServicePage from '@/pages/dashboard/service';
-import BookingHistoryPage from '@/pages/booking-history';
-import BookingDetailPage from '@/pages/booking-detail';
-import BookingListPage from '@/pages/booking-list';
 import AddResultPage from '@/pages/add-result';
-import StaffSchedulePage from '@/pages/staff-schedule';
-
-import BlogManagePage from '@/pages/blog-manage';
-import BlogCreatePage from '@/pages/blog-manage/blog-create';
+import BookingPage from '@/pages/booking';
+import BookingDetailPage from '@/pages/booking-detail';
+import BookingHistoryPage from '@/pages/booking-history';
+import BookingListPage from '@/pages/booking-list';
+import AppointmentsPage from '@/pages/dashboard/appointments';
+import ServicePage from '@/pages/dashboard/service';
 import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
@@ -46,7 +40,7 @@ const router = createBrowserRouter([
       },
       {
         path: paths.blogType,
-        element: <BlogTypePage />,
+        element: <BlogType />,
       },
       {
         path: paths.paymentSuccess,
@@ -104,9 +98,9 @@ const router = createBrowserRouter([
   {
     path: paths.dashboard,
     element: (
-      //<ProtectedRoute>
+      <ProtectedRoute>
         <DashboardLayout />
-      //</ProtectedRoute>
+      </ProtectedRoute>
     ),
     children: [
       {

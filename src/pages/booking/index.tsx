@@ -4,6 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
   Form,
   FormControl,
   FormField,
@@ -27,7 +35,12 @@ import ServiceMethodOption from '@/feature/booking/service-method-option';
 import { useBooking } from '@/hooks/useBooking';
 import { useService } from '@/hooks/useService';
 import { cn } from '@/lib/utils';
-import { bookingFormSchema, type BookingFormValues, TIME_SLOTS } from '@/lib/zod/booking';
+import {
+  bookingDefaultValues,
+  bookingFormSchema,
+  type BookingFormValues,
+  TIME_SLOTS,
+} from '@/lib/zod/booking';
 import { useAuthStore } from '@/stores/auth';
 import { paths } from '@/utils/constant/path';
 import {
@@ -37,8 +50,8 @@ import {
 } from '@/utils/constant/timeline-services';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, formatISO } from 'date-fns';
-import { CalendarIcon, Home, MapPin, Package } from 'lucide-react';
-import { useEffect } from 'react';
+import { AlertTriangle, CalendarIcon, Home, MapPin, Package } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -46,37 +59,35 @@ const BookingPage = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuthStore();
-  const { createBookingMutation } = useBooking();
+  const { createBookingMutation, checkExistingNearBookingQuery } = useBooking();
   const { showToast } = useToast();
   const { queryServiceById } = useService(Number(serviceId));
   const { data: service, isLoading, error, refetch } = queryServiceById;
 
+  // Dialog state
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
+  const [pendingBookingData, setPendingBookingData] = useState<BookingFormValues | null>(null);
   // Form setup with Zod validation
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
+      ...bookingDefaultValues,
       serviceId: Number(serviceId),
-      method: 'TAI_CO_SO_Y_TE',
-      location: user?.address ?? 'Medical Facility',
-      buyKit: false,
-      time: TIME_SLOTS[0].value,
     },
   });
-
+  console.log(form.formState.errors);
   const selectedMethod = form.watch('method');
 
   // Update values when method changes
   useEffect(() => {
     form.setValue('buyKit', selectedMethod === 'TU_THU_MAU');
-
-    if (selectedMethod === 'TAI_CO_SO_Y_TE') {
-      form.setValue('location', 'Medical Facility');
+    if (selectedMethod === 'TU_THU_MAU' || selectedMethod === 'NHAN_VIEN_DEN_NHA') {
+      form.setValue('location', user?.address ?? '');
     } else {
-      form.setValue('location', '');
+      form.setValue('location', 'Cơ sở y tế');
     }
   }, [selectedMethod, form]);
 
-  // Get timeline steps based on selected method
   const getTimelineSteps = () => {
     switch (selectedMethod) {
       case 'TU_THU_MAU':
@@ -88,14 +99,8 @@ const BookingPage = () => {
     }
   };
 
-  // Handle form submission
-  const onSubmit = async (values: BookingFormValues) => {
-    if (!isAuthenticated) {
-      showToast('Please login to book a service', 'error');
-      navigate(paths.login);
-      return;
-    }
-
+  // Handle actual booking creation
+  const createBooking = async (values: BookingFormValues) => {
     try {
       const resposne = await createBookingMutation.mutateAsync({
         ...values,
@@ -115,6 +120,41 @@ const BookingPage = () => {
     } catch (error: any) {
       showToast(error?.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
     }
+  };
+
+  // Handle form submission
+  const onSubmit = async (values: BookingFormValues) => {
+    if (!isAuthenticated) {
+      showToast('Please login to book a service', 'error');
+      navigate(paths.login);
+      return;
+    }
+
+    const isExistingNearBooking = checkExistingNearBookingQuery.data;
+    if (isExistingNearBooking) {
+      // Show warning dialog if there's an existing near booking
+      setPendingBookingData(values);
+      setShowWarningDialog(true);
+      return;
+    }
+
+    // Proceed with booking if no existing near booking
+    await createBooking(values);
+  };
+
+  // Handle confirmation from dialog
+  const handleConfirmBooking = async () => {
+    if (pendingBookingData) {
+      setShowWarningDialog(false);
+      await createBooking(pendingBookingData);
+      setPendingBookingData(null);
+    }
+  };
+
+  // Handle cancel from dialog
+  const handleCancelBooking = () => {
+    setShowWarningDialog(false);
+    setPendingBookingData(null);
   };
 
   // Loading state
@@ -386,6 +426,32 @@ const BookingPage = () => {
           </Form>
         </Card>
       </div>
+
+      {/* Warning Dialog */}
+      <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
+        <DialogContent className='sm:max-w-md'>
+          <DialogHeader>
+            <DialogTitle className='flex items-center gap-2'>
+              <AlertTriangle className='h-5 w-5 text-amber-500' />
+              Cảnh báo lịch đặt trùng lặp
+            </DialogTitle>
+            <DialogDescription className='text-left'>
+              Bạn đã có một lịch đặt gần đây. Việc đặt thêm lịch mới có thể gây xung đột thời gian.
+              <br />
+              <br />
+              Bạn có chắc chắn muốn tiếp tục đặt lịch mới không?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className='flex flex-col-reverse sm:flex-row gap-2'>
+            <Button variant='outline' onClick={handleCancelBooking}>
+              Hủy bỏ
+            </Button>
+            <Button onClick={handleConfirmBooking} disabled={createBookingMutation.isPending}>
+              {createBookingMutation.isPending ? 'Đang xử lý...' : 'Tiếp tục đặt lịch'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

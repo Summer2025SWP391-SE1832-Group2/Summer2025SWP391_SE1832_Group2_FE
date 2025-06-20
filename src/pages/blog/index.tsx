@@ -4,6 +4,38 @@ import { paths } from '@/utils/constant/path';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+// const posts: Post[] = [
+//   {
+//     id: 2,
+//     category: "Sport",
+//     date: "Jul 5th '22",
+//     title: "Let’s Get Back to Work, New York",
+//     image: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/494524518_122125510058831091_2398413459099684334_n.jpg?stp=dst-jpg_s640x640_tt6&_nc_cat=108&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFxDGQvgaeVXCNnQnqOkmD1h7l1P6_2jUyHuXU_r_aNTCMVGKSCkQ4TpXWBjPW3TXk_jGhKuX8xyhUae_tMGABQ&_nc_ohc=ffjH-pM_WUAQ7kNvwFKoGnC&_nc_oc=AdnH-T9SYVV-ggqU13TPEo7upD4pvTpahN2nxFaMx4TC_PXdnnLJi7tRrBeiZBWElhyv8tOrkYqjpF-p15TAUMmT&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=mrHh40-MuDBCqdRF23cVug&oh=00_AfIFvXnq63wWL2A9ulPlkNULTYXS3vWPbAZKsqp3ALxGag&oe=684388A0",
+//   },
+//   {
+//     id: 3,
+//     category: "Business",
+//     date: "Jul 5th '22",
+//     title: "6 Easy Steps To Create Your Own Cute Merch For Instagram",
+//     image: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/494524518_122125510058831091_2398413459099684334_n.jpg?stp=dst-jpg_s640x640_tt6&_nc_cat=108&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFxDGQvgaeVXCNnQnqOkmD1h7l1P6_2jUyHuXU_r_aNTCMVGKSCkQ4TpXWBjPW3TXk_jGhKuX8xyhUae_tMGABQ&_nc_ohc=ffjH-pM_WUAQ7kNvwFKoGnC&_nc_oc=AdnH-T9SYVV-ggqU13TPEo7upD4pvTpahN2nxFaMx4TC_PXdnnLJi7tRrBeiZBWElhyv8tOrkYqjpF-p15TAUMmT&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=mrHh40-MuDBCqdRF23cVug&oh=00_AfIFvXnq63wWL2A9ulPlkNULTYXS3vWPbAZKsqp3ALxGag&oe=684388A0",
+//   },
+//   {
+//     id: 4,
+//     category: "Food",
+//     date: "Jul 17th '22",
+//     title: "How to Avoid Distraction and Stay Focused During Video Calls?",
+//     image: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/494524518_122125510058831091_2398413459099684334_n.jpg?stp=dst-jpg_s640x640_tt6&_nc_cat=108&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFxDGQvgaeVXCNnQnqOkmD1h7l1P6_2jUyHuXU_r_aNTCMVGKSCkQ4TpXWBjPW3TXk_jGhKuX8xyhUae_tMGABQ&_nc_ohc=ffjH-pM_WUAQ7kNvwFKoGnC&_nc_oc=AdnH-T9SYVV-ggqU13TPEo7upD4pvTpahN2nxFaMx4TC_PXdnnLJi7tRrBeiZBWElhyv8tOrkYqjpF-p15TAUMmT&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=mrHh40-MuDBCqdRF23cVug&oh=00_AfIFvXnq63wWL2A9ulPlkNULTYXS3vWPbAZKsqp3ALxGag&oe=684388A0",
+//   },
+//   {
+//     id: 5,
+//     category: "Tech",
+//     date: "Mar 1st '22",
+//     title: "10 Life-Changing Hacks Every Working Mom Should Know",
+//     image: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/494524518_122125510058831091_2398413459099684334_n.jpg?stp=dst-jpg_s640x640_tt6&_nc_cat=108&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFxDGQvgaeVXCNnQnqOkmD1h7l1P6_2jUyHuXU_r_aNTCMVGKSCkQ4TpXWBjPW3TXk_jGhKuX8xyhUae_tMGABQ&_nc_ohc=ffjH-pM_WUAQ7kNvwFKoGnC&_nc_oc=AdnH-T9SYVV-ggqU13TPEo7upD4pvTpahN2nxFaMx4TC_PXdnnLJi7tRrBeiZBWElhyv8tOrkYqjpF-p15TAUMmT&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=mrHh40-MuDBCqdRF23cVug&oh=00_AfIFvXnq63wWL2A9ulPlkNULTYXS3vWPbAZKsqp3ALxGag&oe=684388A0",
+//   },
+ 
+// ];
+
 const BlogPage: React.FC = () => {
   const { blogTypeId } = useParams();
   const [blogs, setBlogs] = useState<Blog[]>([]);

@@ -1,11 +1,11 @@
 import { getAllBlogtype } from '@/services/blogService';
-import type { BlogType } from '@/types/blog';
+import type { Blogtype } from '@/types/blog';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const BlogTypePage: React.FC = () => {
+const BlogType: React.FC = () => {
   const navigate = useNavigate();
-  const [blogTypes, setBlogTypes] = useState<BlogType[]>([]);
+  const [blogTypes, setBlogTypes] = useState<Blogtype[]>([]);
 
   useEffect(() => {
     const fetchBlogTypes = async () => {
@@ -46,4 +46,4 @@ const BlogTypePage: React.FC = () => {
   );
 };
 
-export default BlogTypePage;
+export default BlogType;
