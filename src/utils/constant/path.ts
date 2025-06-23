@@ -12,7 +12,7 @@ export const paths = {
   resetPassword: '/reset-password',
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
-  result: '/result/:id',
+
   bookingHistory: '/bookinghistory',
   booking: (serviceId: string) => `/booking/${serviceId}`,
   bookingDetail: (bookingId: string) => `/bookingdetail/${bookingId}`,

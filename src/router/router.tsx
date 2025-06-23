@@ -16,7 +16,6 @@ import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
 import ResetPasswordPage from '@/pages/reset-password';
-import ResultPage from '@/pages/result';
 import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
@@ -64,10 +63,6 @@ const router = createBrowserRouter([
       {
         path: paths.profile,
         element: <ProfilePage />,
-      },
-      {
-        path: paths.result,
-        element: <ResultPage />,
       },
       {
         path: paths.booking(':serviceId'),

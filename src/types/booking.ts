@@ -27,6 +27,7 @@ type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
 type PaymentStatus = 'Unpaid' | 'Processing' | 'Paid' | 'Failed';
 
 type Booking = {
+  fullName: string;
   bookingId: number;
   serviceId: number;
   userId: number;
@@ -39,7 +40,8 @@ type Booking = {
   collectionDate: string;
   time: string;
   location: string;
-  result: string;
+  resultDetails: [];
+  finalResult: string;
 };
 
 type BookingRequest = {
