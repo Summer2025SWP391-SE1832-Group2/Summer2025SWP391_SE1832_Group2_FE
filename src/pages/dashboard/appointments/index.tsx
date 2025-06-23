@@ -33,6 +33,7 @@ export default function AppointmentsPage() {
     return statusMatch && b.bookingId.toString().includes(search);
   });
 
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -107,24 +108,57 @@ export default function AppointmentsPage() {
         </Select>
       </div>
 
-      {filteredBookings.map((booking) => (
+      {[...filteredBookings].reverse().map((booking) => (
         <Card
           key={booking.bookingId}
-          className="hover:shadow-md cursor-pointer"
+          className={`hover:shadow-md cursor-pointer ${
+            booking.sampleCollectionSchedules?.[0]?.collectorId
+              ? "bg-green-50"
+              : "bg-red-50"
+          }`}
           onClick={() => handleBookingClick(booking)}
         >
           <CardContent className="py-6 px-6 space-y-2">
+
             <div className="text-lg font-semibold text-gray-800">
-              Booking #{booking.bookingId} — Service Type #{booking.serviceTypeId}
+              Booking #{booking.bookingId} — Loại dịch vụ #{booking.serviceTypeId}
             </div>
-            <div className="text-sm text-gray-600">
-              User: {booking.userId} | Status: {booking.status} | Payment: {booking.paymentStatus}
+
+            <div className="flex flex-row items-center gap-x-4">
+
+            <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+            <div className="text-sm text-gray-600 p-2">
+              Trạng Thái: {booking.status} 
             </div>
-            <div className="text-sm text-gray-600">
-              Booking Date: {new Date(booking.bookingDate).toLocaleDateString()} | Preferred Date: {new Date(booking.preferredDate).toLocaleDateString()}
+            <div className="text-sm text-gray-600 p-2">
+              Thanh Toán: {booking.paymentStatus}
             </div>
+            </div>
+
+            <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+          <div className="text-sm text-gray-600 p-2">
+              Tên : {booking.userId} 
+            </div>
+            <div className="text-sm text-gray-600 p-2">
+              Loại Mẫu: {booking.sampleMethod} 
+            </div>
+          </div>
+
+          <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+         
+            <div className="text-sm text-gray-600 p-2">
+              Ngày Đặt: {new Date(booking.bookingDate).toLocaleDateString()} 
+            </div>
+            <div className="text-sm text-gray-600 p-2">
+           Ngày Dự Kiến: {new Date(booking.preferredDate).toLocaleDateString()}
+            </div>
+            
+          </div>
+
+            </div>
+
             <div className="text-sm text-gray-600">
-              Sample Method: {booking.sampleMethod} | Result: {booking.result}
+              Kết Quả: {booking.result ? booking.result : "Chưa có kết quả"} 
             </div>
           </CardContent>
         </Card>
@@ -193,10 +227,10 @@ export default function AppointmentsPage() {
 
           <div className="flex justify-end gap-3 mt-6">
             <Button className="px-5 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition" onClick={handleSaveAssignment}>
-              Save Changes
+              Lưu thay đổi
             </Button>
             <Button className="px-5 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition" onClick={() => setSelectedBooking(null)}>
-              Cancel
+              Hủy
             </Button>
           </div>
         </DialogContent>

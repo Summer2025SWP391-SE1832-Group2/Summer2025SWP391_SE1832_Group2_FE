@@ -5,7 +5,6 @@ import BlogType from '@/pages/blog/blogType';
 import DashboardPage from '@/pages/dashboard';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
-
 import AddResultPage from '@/pages/add-result';
 import BookingPage from '@/pages/booking';
 import BookingDetailPage from '@/pages/booking-detail';
@@ -22,6 +21,11 @@ import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
 import PublicRoute from './public-route';
+import BlogDetailManagePage from '@/pages/blog-manage/blog-detail';
+import BlogDetailHomePage from '@/pages/blog/blogDetail';
+import BlogCreatePage from '@/pages/blog-manage/blog-create';
+import StaffSchedulePage from '@/pages/staff-schedule';
+import BlogManagementPage from '@/pages/blog-manage';
 
 const router = createBrowserRouter([
   {
@@ -68,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: paths.booking(':serviceId'),
         element: <BookingPage />,
+      },
+      {
+        path: paths.blogdetail(':blogId'),
+        element: <BlogDetailHomePage />,
       },
 
       {
@@ -121,6 +129,23 @@ const router = createBrowserRouter([
         path: paths.addResult,
         element: <AddResultPage />,
       },
+      {
+        path: paths.staffschedule,
+        element: <StaffSchedulePage />,
+      },
+      {
+        path: paths.blogmanage,
+        element: <BlogManagementPage />,
+       
+      },
+      {
+        path: paths.blogcreate,
+        element: <BlogCreatePage />,
+      },
+      {
+        path: paths.blogdetailManage(':blogId'),
+        element: <BlogDetailManagePage />,
+      }
 
       // Add other dashboard routes here
     ],

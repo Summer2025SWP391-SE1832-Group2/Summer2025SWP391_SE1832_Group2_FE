@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { getBlogById } from '@/services/blogService'; 
 import type { Blog } from '@/types/blog';
 
-export default function BlogDetailHomePage() {
+export default function BlogDetailManagePage() {
   const { blogId } = useParams<{ blogId: string }>(); 
   const [blog, setBlog] = useState<Blog | null>(null);
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export default function BlogDetailHomePage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <div className="max-w-3xl mx-auto p-6 space-y-6">
       <Button variant="ghost" onClick={() => navigate(-1)}>
         <ArrowLeft className="w-4 h-4 mr-2" />
         Quay lại

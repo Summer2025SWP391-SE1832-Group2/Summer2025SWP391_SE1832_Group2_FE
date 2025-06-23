@@ -16,6 +16,8 @@ export const paths = {
   bookingHistory: '/bookinghistory',
   booking: (serviceId: string) => `/booking/${serviceId}`,
   bookingDetail: (bookingId: string) => `/bookingdetail/${bookingId}`,
+  blogdetail: (blogId: string) => `/viewblog/${blogId}`,
+
 
   // Protected routes
   dashboard: '/dashboard',
@@ -24,6 +26,11 @@ export const paths = {
   dashboardProfile: '/dashboard/profile',
   bookingList: '/dashboard/bookinglist',
   addResult: '/dashboard/result/add/:id',
+  staffschedule : '/dashboard/staffschedules',
+  blogmanage : '/dashboard/blogmanage',
+  blogcreate: '/dashboard/blogmanage/blogcreate',
+  blogdetailManage: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
+
 
   // Payment results
   paymentSuccess: '/payment/success',

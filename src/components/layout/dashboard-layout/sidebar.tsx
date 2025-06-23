@@ -67,6 +67,12 @@ const sidebarLinks: SidebarLink[] = [
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
+    title: 'Lịch Làm việc',
+    href: '/dashboard/staffschedules',
+    icon: <Calendar className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
     title: 'Xét nghiệm',
     href: '/dashboard/tests',
     icon: <TestTube className='h-5 w-5' />,
@@ -97,6 +103,12 @@ const sidebarLinks: SidebarLink[] = [
     href: '/dashboard/reports',
     icon: <FileText className='h-5 w-5' />,
     roles: ['Manager', 'Admin'],
+  },
+  {
+    title: 'Blogs',
+    href: '/dashboard/blogmanage',
+    icon: <FileText className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
   },
   {
     title: 'Người dùng',
