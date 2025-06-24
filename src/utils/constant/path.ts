@@ -27,6 +27,7 @@ export const paths = {
   bookingList: '/dashboard/bookinglist',
   addResult: '/dashboard/addresult',
   staffschedule : '/dashboard/staffschedules',
+  scheduleforstaff : '/dashboard/schedules',
   blogmanage : '/dashboard/blogmanage',
   blogcreate: '/dashboard/blogmanage/blogcreate',
   blogdetailManage: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
