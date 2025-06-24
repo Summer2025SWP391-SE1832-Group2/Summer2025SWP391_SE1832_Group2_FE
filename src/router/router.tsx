@@ -26,6 +26,7 @@ import BlogDetailHomePage from '@/pages/blog/blogDetail';
 import BlogCreatePage from '@/pages/blog-manage/blog-create';
 import StaffSchedulePage from '@/pages/staff-schedule';
 import BlogManagementPage from '@/pages/blog-manage';
+import UserSchedulePage from '@/pages/staff-schedule/user_chedulePage';
 
 const router = createBrowserRouter([
   {
@@ -145,6 +146,10 @@ const router = createBrowserRouter([
       {
         path: paths.blogdetailManage(':blogId'),
         element: <BlogDetailManagePage />,
+      },
+      {
+        path: paths.scheduleforstaff,
+        element: <UserSchedulePage />,
       }
 
       // Add other dashboard routes here
