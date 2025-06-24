@@ -83,20 +83,20 @@ const sidebarLinks: SidebarLink[] = [
     href: '/dashboard/bookinglist',
     icon: <Package className='h-5 w-5' />,
     roles: ['Staff', 'Manager', 'Admin'],
-    children: [
-      {
-        title: 'Nhập thông số sample',
-        href: '/dashboard/bookinglist',
-        icon: <Package className='h-5 w-5' />,
-        roles: ['Staff', 'Manager', 'Admin'],
-      },
-      {
-        title: 'Nhập kết quả',
-        href: '/dashboard/addresult',
-        icon: <Package className='h-5 w-5' />,
-        roles: ['Staff', 'Manager', 'Admin'],
-      },
-    ],
+    // children: [
+    //   {
+    //     title: 'Nhập thông số sample',
+    //     href: '/dashboard/bookinglist',
+    //     icon: <Package className='h-5 w-5' />,
+    //     roles: ['Staff', 'Manager', 'Admin'],
+    //   },
+    //   {
+    //     title: 'Nhập kết quả',
+    //     href: '/dashboard/addresult',
+    //     icon: <Package className='h-5 w-5' />,
+    //     roles: ['Staff', 'Manager', 'Admin'],
+    //   },
+    // ],
   },
   {
     title: 'Báo cáo',

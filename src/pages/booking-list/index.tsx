@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getAllBookings } from '@/services/booking_service';
-import { getSamplesByBookingId } from '@/services/sample_service';
+import { createSampleService, getSamplesByBookingId } from '@/services/sample_service';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -16,12 +16,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { Booking } from '@/types/booking';
 import type { Sample, NewSample } from '@/types/sample';
+import { Link } from 'react-router-dom';
+import { paths } from '@/utils/constant/path';
 
 const BookingListPage: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [sampleMap, setSampleMap] = useState<Record<number, Sample[]>>({});
   const [visibleSamples, setVisibleSamples] = useState<Record<number, boolean>>({});
   const [openDialogBookingId, setOpenDialogBookingId] = useState<number | null>(null);
+
   const [formData, setFormData] = useState<Omit<NewSample, 'bookingId'>>({
     collectedBy: '',
     collectedDate: new Date().toISOString().slice(0, 16),
@@ -32,10 +35,13 @@ const BookingListPage: React.FC = () => {
     transport: '',
   });
 
+  const getAddResultPath = (id: number) =>
+    paths.addResult.replace(':id', id.toString());
+
   useEffect(() => {
     const fetchBookings = async () => {
       const data = await getAllBookings();
-      setBookings(data);
+      setBookings([...data].reverse()); 
     };
     fetchBookings();
   }, []);
@@ -72,16 +78,26 @@ const BookingListPage: React.FC = () => {
   const handleCreateSample = async (bookingId: number) => {
     const currentSamples = sampleMap[bookingId] || [];
     if (currentSamples.length >= 2) {
-      alert('Mỗi booking chỉ được tạo tối đa 2 mẫu.');
+      alert("Mỗi booking chỉ được tạo tối đa 2 mẫu.");
       return;
     }
 
+    try {
+      const newSample = {
+        sampleId: 0, // mặc định 0 để backend xử lý
+        bookingId,
+        ...formData,
+      };
 
-
-    const updatedSamples = await getSamplesByBookingId(bookingId);
-    setSampleMap(prev => ({ ...prev, [bookingId]: updatedSamples }));
-    resetForm();
-    setOpenDialogBookingId(null);
+      await createSampleService(newSample); // gửi đúng định dạng Sample
+      const updatedSamples = await getSamplesByBookingId(bookingId);
+      setSampleMap((prev) => ({ ...prev, [bookingId]: updatedSamples }));
+      resetForm();
+      setOpenDialogBookingId(null);
+    } catch (error) {
+      console.error("Lỗi tạo mẫu:", error);
+      alert("Không thể tạo mẫu.");
+    }
   };
 
   return (
@@ -97,9 +113,10 @@ const BookingListPage: React.FC = () => {
                 <p className="text-sm text-gray-600">Phương thức: {booking.method}</p>
               </div>
               <div className="space-x-2">
-                <Button variant="secondary" onClick={() => toggleSampleList(booking.bookingId)}>
+                <Button variant="black" onClick={() => toggleSampleList(booking.bookingId)}>
                   {visibleSamples[booking.bookingId] ? 'Ẩn mẫu' : 'Xem mẫu'}
                 </Button>
+
                 <Dialog open={openDialogBookingId === booking.bookingId} onOpenChange={(open) => {
                   if (open) {
                     setOpenDialogBookingId(booking.bookingId);
@@ -109,17 +126,26 @@ const BookingListPage: React.FC = () => {
                   }
                 }}>
                   <DialogTrigger asChild>
-                    <Button>Thêm mẫu</Button>
+                    <Button variant="black">Thêm mẫu</Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>Thêm mẫu cho Booking #{booking.bookingId}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-3">
-                      <div>
-                        <Label>Người thu mẫu</Label>
-                        <Input name="collectedBy" value={formData.collectedBy} onChange={handleInputChange} />
-                      </div>
+                      {[
+                        { label: 'Người thu mẫu', name: 'collectedBy' },
+                        { label: 'Loại mẫu', name: 'sampleType' },
+                        { label: 'Người tham gia', name: 'participantName' },
+                        { label: 'Phương tiện vận chuyển', name: 'transport' },
+                        { label: 'Ảnh', name: 'picture' },
+                        { label: 'Ghi chú', name: 'notes' },
+                      ].map(({ label, name }) => (
+                        <div key={name}>
+                          <Label>{label}</Label>
+                          <Input name={name} value={(formData as any)[name]} onChange={handleInputChange} />
+                        </div>
+                      ))}
                       <div>
                         <Label>Ngày thu mẫu</Label>
                         <Input
@@ -129,30 +155,14 @@ const BookingListPage: React.FC = () => {
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div>
-                        <Label>Loại mẫu</Label>
-                        <Input name="sampleType" value={formData.sampleType} onChange={handleInputChange} />
-                      </div>
-                      <div>
-                        <Label>Người tham gia</Label>
-                        <Input name="participantName" value={formData.participantName} onChange={handleInputChange} />
-                      </div>
-                      <div>
-                        <Label>Phương tiện vận chuyển</Label>
-                        <Input name="transport" value={formData.transport} onChange={handleInputChange} />
-                      </div>
-                      <div>
-                        <Label>Ảnh</Label>
-                        <Input name="picture" value={formData.picture} onChange={handleInputChange} />
-                      </div>
-                      <div>
-                        <Label>Ghi chú</Label>
-                        <Input name="notes" value={formData.notes} onChange={handleInputChange} />
-                      </div>
                       <Button onClick={() => handleCreateSample(booking.bookingId)}>Lưu</Button>
                     </div>
                   </DialogContent>
                 </Dialog>
+
+                <Link to={getAddResultPath(booking.bookingId)}>
+                  <Button>Nhập kết quả</Button>
+                </Link>
               </div>
             </div>
 
