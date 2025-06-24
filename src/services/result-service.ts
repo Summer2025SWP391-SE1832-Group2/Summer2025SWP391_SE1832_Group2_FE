@@ -1,6 +1,6 @@
 import axiosInstance from '@/lib/api/axios';
 import type { CreateResultDetail } from '@/types/resultdetail';
-import type { ResultDetail, ResultItem } from '@/types/resultdetail';
+import type { ResultDetail } from '@/types/resultdetail';
 
 export const getResultDetailsByBookingId = async (
   bookingId: number

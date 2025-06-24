@@ -30,6 +30,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { getTestParametersByBookingId } from "@/services/parameters-service";
+import type { TestParameter } from "@/types/testparameters";
 
 const AddResultPage = () => {
   const navigate = useNavigate();
@@ -37,10 +39,11 @@ const AddResultPage = () => {
   const bookingId = Number(id);
 
   const [samples, setSamples] = useState<Sample[]>([]);
-  const [testParameters, setTestParameters] = useState<{ testParameterId: number; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState<Record<string, [string, string]>>({});
   const [finalResult, setFinalResult] = useState<string>("");
+  const [testParameters, setTestParameters] = useState<TestParameter[]>([]);
+
 
   const [sampleForm, setSampleForm] = useState<Omit<Sample, "sampleId" | "serviceId">>({
     bookingId,
@@ -63,26 +66,14 @@ const AddResultPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [sampleData, resultDetails] = await Promise.all([
+        const [sampleData, resultDetails, fetchedTestParams] = await Promise.all([
           getSamplesByBookingId(bookingId),
           getResultDetailsByBookingId(bookingId),
+          getTestParametersByBookingId(bookingId),
         ]);
 
-        const testParamsMap = new Map<number, string>();
-        resultDetails.forEach((r) => {
-          if (!testParamsMap.has(r.testParameterId)) {
-            testParamsMap.set(r.testParameterId, r.name);
-          }
-        });
-
-        setTestParameters(
-          Array.from(testParamsMap.entries()).map(([id, name]) => ({
-            testParameterId: id,
-            name,
-          }))
-        );
-
         setSamples(sampleData);
+        setTestParameters(fetchedTestParams);
 
         const newValues: Record<string, [string, string]> = {};
         resultDetails.forEach((r) => {
@@ -102,6 +93,7 @@ const AddResultPage = () => {
         setLoading(false);
       }
     };
+
 
     fetchData();
   }, [bookingId]);
@@ -160,11 +152,7 @@ const AddResultPage = () => {
         const valPair = values[key] || ["", ""];
         const value = valPair.filter(Boolean).join(",");
 
-        resultItems.push({
-          testParameterId: param.testParameterId,
-          sampleId: sample.sampleId,
-          value,
-        });
+ 
       }
     }
 
@@ -200,11 +188,11 @@ const AddResultPage = () => {
 
             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
               {[{ label: "Người thu mẫu", name: "collectedBy" },
-                { label: "Loại mẫu", name: "sampleType" },
-                { label: "Người tham gia", name: "participantName" },
-                { label: "Phương tiện vận chuyển", name: "transport" },
-                { label: "Ảnh (url)", name: "picture" },
-                { label: "Ghi chú", name: "notes" },
+              { label: "Loại mẫu", name: "sampleType" },
+              { label: "Người tham gia", name: "participantName" },
+              { label: "Phương tiện vận chuyển", name: "transport" },
+              { label: "Ảnh (url)", name: "picture" },
+              { label: "Ghi chú", name: "notes" },
               ].map(({ label, name }) => (
                 <div key={name}>
                   <Label className="text-sm">{label}</Label>
