@@ -40,7 +40,7 @@ type Booking = {
 };
 
 type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
-type PaymentStatus = 'Unpaid' | 'Paid' | 'Failed';
+type PaymentStatus = 'Đã thanh toán' | 'Chưa thanh toán';
 
 type BookingRequest = {
   bookingId?: number;

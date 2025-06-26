@@ -60,6 +60,13 @@ const checkExistingNearBooking = async (userId: number) => {
   return response.data;
 };
 
+const regeneratePaymentQR = async (bookingId: number) => {
+  const response = await axiosInstance.post<{ paymentUrl: string }>(
+    `/api/Booking/regenerate-qr/${bookingId}`,
+  );
+  return response.data;
+};
+
 export {
   AssignStaffForSchedule,
   createBooking,
@@ -71,4 +78,5 @@ export {
   getStaffForSchedule,
   updateBooking,
   checkExistingNearBooking,
+  regeneratePaymentQR,
 };

@@ -17,4 +17,7 @@ const getUserIdFromToken = (token: string): number => {
   return Number(decoded.UserId);
 };
 
-export { isTokenExpired, getUserIdFromToken };
+const formatCurrency = (amount: number) =>
+  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+
+export { isTokenExpired, getUserIdFromToken, formatCurrency };

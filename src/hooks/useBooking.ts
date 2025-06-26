@@ -1,4 +1,8 @@
-import { checkExistingNearBooking, createBooking } from '@/services/booking_service';
+import {
+  checkExistingNearBooking,
+  createBooking,
+  regeneratePaymentQR,
+} from '@/services/booking_service';
 import { useAuthStore } from '@/stores/auth';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -15,8 +19,13 @@ export const useBooking = () => {
     enabled: !!userId,
   });
 
+  const regeneratePaymentQRMutation = useMutation({
+    mutationFn: (bookingId: number) => regeneratePaymentQR(bookingId),
+  });
+
   return {
     createBookingMutation,
     checkExistingNearBookingQuery,
+    regeneratePaymentQRMutation,
   };
 };

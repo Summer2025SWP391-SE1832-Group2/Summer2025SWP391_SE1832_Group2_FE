@@ -1,7 +1,15 @@
 import { Button } from '@/components/ui/button';
 import type { Transaction } from '@/types/transaction';
-import type { Row } from '@tanstack/react-table';
-import { ExternalLink, Copy, Calendar, CreditCard } from 'lucide-react';
+import type { ColumnDef, Row } from '@tanstack/react-table';
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Calendar,
+  Copy,
+  CreditCard,
+  ExternalLink,
+} from 'lucide-react';
 import { TransactionStatusBadge } from './transaction-status-badge';
 
 type TransactionTableActionsProps = {
@@ -42,7 +50,7 @@ const TransactionTableActions = ({
 export const createTransactionTableColumns = (
   onCopyCode: (code: string) => void,
   onOpenPaymentUrl: (url: string) => void,
-) => [
+): ColumnDef<Transaction>[] => [
   {
     header: 'Mã giao dịch',
     accessorKey: 'transactionCode',
@@ -69,8 +77,19 @@ export const createTransactionTableColumns = (
     ),
   },
   {
-    header: 'Số tiền',
     accessorKey: 'price',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='h-auto p-0 font-semibold hover:bg-transparent'
+        >
+          Số tiền
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }: { row: Row<Transaction> }) => (
       <div className='font-semibold text-slate-800 bg-gradient-to-r from-blue-50 to-purple-50 px-3 py-1 rounded-lg border border-blue-200'>
         {new Intl.NumberFormat('vi-VN', {
@@ -81,8 +100,19 @@ export const createTransactionTableColumns = (
     ),
   },
   {
-    header: 'Cổng thanh toán',
     accessorKey: 'paymentGateway',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='h-auto p-0 font-semibold hover:bg-transparent'
+        >
+          Cổng thanh toán
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }: { row: Row<Transaction> }) => (
       <div className='flex items-center gap-2'>
         <CreditCard className='h-4 w-4 text-blue-600' />
@@ -91,17 +121,40 @@ export const createTransactionTableColumns = (
     ),
   },
   {
-    header: 'Trạng thái',
     accessorKey: 'status',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='h-auto p-0 font-semibold hover:bg-transparent'
+        >
+          Trạng thái
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }: { row: Row<Transaction> }) => (
-      <div className='flex justify-center'>
+      <div className='flex justify-start'>
         <TransactionStatusBadge status={row.original.status} />
       </div>
     ),
   },
   {
-    header: 'Ngày tạo',
     accessorKey: 'createdAt',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='h-auto p-0 font-semibold hover:bg-transparent flex items-center gap-2'
+        >
+          <Calendar className='h-4 w-4' />
+          Ngày tạo
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }: { row: Row<Transaction> }) => (
       <div className='flex items-center gap-2 text-sm text-slate-600'>
         <Calendar className='h-4 w-4 text-slate-400' />

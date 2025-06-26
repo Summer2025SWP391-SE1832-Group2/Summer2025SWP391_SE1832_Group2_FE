@@ -1,32 +1,42 @@
 import { Badge } from '@/components/ui/badge';
 import type { TransactionStatus } from '@/types/transaction';
+import { CheckCircle, Clock } from 'lucide-react';
 
 type TransactionStatusBadgeProps = {
   status: TransactionStatus;
 };
 
-const statusStyles: Record<TransactionStatus, string> = {
-  SUCCESS:
-    'text-green-700 bg-gradient-to-r from-green-100 to-green-200 hover:from-green-200 hover:to-green-300 border-green-300 font-medium',
-  PENDING:
-    'text-yellow-700 bg-gradient-to-r from-yellow-100 to-yellow-200 hover:from-yellow-200 hover:to-yellow-300 border-yellow-300 font-medium',
-  FAILED:
-    'text-red-700 bg-gradient-to-r from-red-100 to-red-200 hover:from-red-200 hover:to-red-300 border-red-300 font-medium',
-  CANCELLED:
-    'text-gray-700 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 border-gray-300 font-medium',
+const statusConfig: Record<
+  TransactionStatus,
+  {
+    style: string;
+    icon: React.ReactNode;
+    label: string;
+  }
+> = {
+  'Đã thanh toán': {
+    style:
+      'text-emerald-700 bg-gradient-to-r from-emerald-50 to-green-50 hover:from-emerald-100 hover:to-green-100 border-emerald-200 shadow-sm',
+    icon: <CheckCircle className='h-3 w-3' />,
+    label: 'Đã thanh toán',
+  },
+  'Chưa thanh toán': {
+    style:
+      'text-amber-700 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border-amber-200 shadow-sm',
+    icon: <Clock className='h-3 w-3' />,
+    label: 'Chưa thanh toán',
+  },
 };
 
-const statusText: Record<TransactionStatus, string> = {
-  SUCCESS: 'Thành công',
-  PENDING: 'Đang chờ',
-  FAILED: 'Thất bại',
-  CANCELLED: 'Đã hủy',
-};
+export const TransactionStatusBadge = ({ status }: TransactionStatusBadgeProps) => {
+  const config = statusConfig[status] || '';
 
-export const TransactionStatusBadge = ({ status }: TransactionStatusBadgeProps) => (
-  <Badge
-    className={`${statusStyles[status]} px-3 py-1 rounded-full text-xs transition-all duration-200`}
-  >
-    {statusText[status] ?? status}
-  </Badge>
-);
+  return (
+    <Badge
+      className={`${config.style} px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5`}
+    >
+      {config.icon}
+      <span>{config.label}</span>
+    </Badge>
+  );
+};
