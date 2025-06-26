@@ -79,7 +79,7 @@ export default function AppointmentsPage() {
       return;
     }
     try {
-      const staffList = await getStaffForSchedule(scheduleId);
+      const staffList = await getStaffForSchedule(booking.bookingId);
       setEmployees(staffList);
     } catch (error) {
       console.error("Failed to fetch staff for schedule:", error);

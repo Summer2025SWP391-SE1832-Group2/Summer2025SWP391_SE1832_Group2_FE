@@ -78,6 +78,7 @@ export default function StaffSchedulePage() {
             <th className='border px-3 py-2'>ID</th>
             <th className='border px-3 py-2'>Họ tên</th>
             <th className='border px-3 py-2'>Email</th>
+            <th className='border px-3 py-2'>Chức Vụ</th>
             <th className='border px-3 py-2'>Xem lịch</th>
           </tr>
         </thead>
@@ -87,6 +88,8 @@ export default function StaffSchedulePage() {
               <td className='border px-3 py-2'>{user.userId}</td>
               <td className='border px-3 py-2'>{user.fullName}</td>
               <td className='border px-3 py-2'>{user.email}</td>
+              <td className='border px-3 py-2'>{user.role}</td>
+
               <td className='border px-3 py-2'>
                 <button
                   className='bg-indigo-600 text-white px-4 py-1 rounded hover:bg-indigo-700'
