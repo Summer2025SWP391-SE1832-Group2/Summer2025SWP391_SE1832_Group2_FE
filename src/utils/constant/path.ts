@@ -31,7 +31,7 @@ export const paths = {
   blogmanage: '/dashboard/blogmanage',
   blogcreate: '/dashboard/blogmanage/blogcreate',
   blogdetailManage: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
-
+  addResult : '/dashboard/result/add/:id',
   // Payment results
   paymentSuccess: '/payment/success',
   paymentFailed: '/payment/failed',
