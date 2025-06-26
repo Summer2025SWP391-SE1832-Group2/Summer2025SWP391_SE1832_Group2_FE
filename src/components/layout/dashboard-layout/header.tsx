@@ -1,4 +1,4 @@
-import { Bell, LogOut, Search } from 'lucide-react';
+import { Bell, LogOut, Search, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuthStore } from '@/stores/auth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { paths } from '@/utils/constant/path';
 
 const DashboardHeader = () => {
@@ -60,10 +60,10 @@ const DashboardHeader = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end' className='w-[200px]'>
                 <DropdownMenuItem className='flex items-center gap-2'>
-                  {/* <Link to={paths.dashboardProfile} className='flex items-center gap-2 w-full'>
+                  <Link to={paths.dashboardProfile} className='flex items-center gap-2 w-full'>
                     <User className='h-4 w-4' />
                     Hồ sơ
-                  </Link> */}
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout} className='text-red-600'>
                   <LogOut className='h-4 w-4' />

@@ -93,7 +93,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-
+    path: paths.dashboard,
     element: (
       <ProtectedRoute>
         <DashboardLayout />
@@ -101,8 +101,12 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: paths.dashboard, 
+        index: true,
         element: <DashboardPage />,
+      },
+      {
+        path: paths.dashboardProfile,
+        element: <ProfilePage />,
       },
       {
         path: paths.appointments,
@@ -125,16 +129,16 @@ const router = createBrowserRouter([
         element: <StaffSchedulePage />,
       },
       {
-        path: paths.blogManagement,
+        path: paths.blogmanage,
         element: <BlogManagementPage />,
-
+       
       },
       {
         path: paths.blogcreate,
         element: <BlogCreatePage />,
       },
       {
-        path: paths.blogdetailManagement(':blogId'),
+        path: paths.blogdetailManage(':blogId'),
         element: <BlogDetailManagePage />,
       }
 

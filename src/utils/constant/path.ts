@@ -21,18 +21,15 @@ export const paths = {
 
   // Protected routes
   dashboard: '/dashboard',
-  appointments: '/appointments',
-  services: '/services',
-  bookingList: '/bookinglist',
-  addResult: '/result/add/:id',
-  staffschedule : '/staffschedules',
-  blogManagement : '/blogManagement',
-  blogcreate: '/blogManagement/blogcreate',
-  blogdetailManagement: (blogId: string) => `/blogManagement/blogdetail/${blogId}`,
-  userManagement: '/userManagement',
-  testParameterManagement: '/testParameterManagement',
-  reports: '/reports',
-  settings: '/settings',
+  appointments: '/dashboard/appointments',
+  services: '/dashboard/services',
+  dashboardProfile: '/dashboard/profile',
+  bookingList: '/dashboard/bookinglist',
+  addResult: '/dashboard/result/add/:id',
+  staffschedule : '/dashboard/staffschedules',
+  blogmanage : '/dashboard/blogmanage',
+  blogcreate: '/dashboard/blogmanage/blogcreate',
+  blogdetailManage: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
 
 
   // Payment results
