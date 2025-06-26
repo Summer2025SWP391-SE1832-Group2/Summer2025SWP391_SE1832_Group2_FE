@@ -20,7 +20,15 @@ interface CalendarEvent {
   end: Date;
   allDay: boolean;
 }
-
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 export default function StaffSchedulePage() {
   const [users, setUsers] = useState<User[]>([]);
   const navigate = useNavigate();
@@ -72,36 +80,35 @@ export default function StaffSchedulePage() {
   };
   return (
     <div className='p-6 h-[calc(100vh-64px)] w-full flex flex-col'>
-      <table className='table-auto w-full border border-gray-300 mb-4'>
-        <thead className='bg-gray-100'>
-          <tr>
-            <th className='border px-3 py-2'>ID</th>
-            <th className='border px-3 py-2'>Họ tên</th>
-            <th className='border px-3 py-2'>Email</th>
-            <th className='border px-3 py-2'>Chức Vụ</th>
-            <th className='border px-3 py-2'>Xem lịch</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table >
+        <TableHeader >
+          <TableRow>
+            <TableHead  className='border px-3 py-2'>ID</TableHead >
+            <TableHead  className='border px-3 py-2'>Họ tên</TableHead >
+            <TableHead className='border px-3 py-2'>Email</TableHead>
+            <TableHead className='border px-3 py-2'>Chức Vụ</TableHead>
+            <TableHead className='border px-3 py-2'>Xem lịch</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {paginatedUsers.map((user) => (
-            <tr key={user.userId}>
-              <td className='border px-3 py-2'>{user.userId}</td>
-              <td className='border px-3 py-2'>{user.fullName}</td>
-              <td className='border px-3 py-2'>{user.email}</td>
-              <td className='border px-3 py-2'>{user.role}</td>
+            <TableRow key={user.userId}>
+              <TableCell  className='border px-3 py-2'>{user.userId}</TableCell >
+              <TableCell  className='border px-3 py-2'>{user.fullName}</TableCell >
+              <TableCell  className='border px-3 py-2'>{user.email}</TableCell >
+              <TableCell  className='border px-3 py-2'>{user.role}</TableCell >
 
-              <td className='border px-3 py-2'>
+              <TableCell  className='border px-3 py-2'>
                 <button
-                  className='bg-indigo-600 text-white px-4 py-1 rounded hover:bg-indigo-700'
                   onClick={() => handleViewCalendar(user)}
                 >
                   Xem lịch
                 </button>
-              </td>
-            </tr>
+              </TableCell >
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       {totalPages > 1 && (
         <Pagination>
           <PaginationContent>
