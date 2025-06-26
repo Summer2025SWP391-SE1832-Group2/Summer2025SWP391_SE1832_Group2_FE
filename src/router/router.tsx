@@ -27,6 +27,7 @@ import BlogCreatePage from '@/pages/blog-manage/blog-create';
 import StaffSchedulePage from '@/pages/staff-schedule';
 import BlogManagementPage from '@/pages/blog-manage';
 import UserSchedulePage from '@/pages/staff-schedule/user_chedulePage';
+import { TransactionPage } from '@/pages/transaction';
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,7 @@ const router = createBrowserRouter([
         path: paths.result,
         element: <ResultPage />,
       },
+
       {
         path: paths.booking(':serviceId'),
         element: <BookingPage />,
@@ -78,7 +80,6 @@ const router = createBrowserRouter([
         path: paths.blogdetail(':blogId'),
         element: <BlogDetailHomePage />,
       },
-
       {
         element: <PublicRoute />,
         children: [
@@ -95,6 +96,14 @@ const router = createBrowserRouter([
             element: <RegisterPage />,
           },
         ],
+      },
+      {
+        path: paths.transaction,
+        element: (
+          <ProtectedRoute>
+            <TransactionPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -137,7 +146,6 @@ const router = createBrowserRouter([
       {
         path: paths.blogmanage,
         element: <BlogManagementPage />,
-       
       },
       {
         path: paths.blogcreate,

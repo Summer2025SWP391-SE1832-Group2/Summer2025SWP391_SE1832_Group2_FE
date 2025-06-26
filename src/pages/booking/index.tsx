@@ -31,16 +31,11 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Timeline, TimelineItem } from '@/components/ui/timeline/timeline';
 import { useToast } from '@/components/ui/toast';
-import ServiceMethodOption from '@/feature/booking/service-method-option';
+import { ServiceMethodOption } from '@/feature/booking';
 import { useBooking } from '@/hooks/useBooking';
 import { useService } from '@/hooks/useService';
 import { cn } from '@/lib/utils';
-import {
-  bookingDefaultValues,
-  bookingFormSchema,
-  type BookingFormValues,
-  TIME_SLOTS,
-} from '@/lib/zod/booking';
+import { bookingDefaultValues, bookingFormSchema, type BookingFormValues } from '@/lib/zod/booking';
 import { useAuthStore } from '@/stores/auth';
 import { paths } from '@/utils/constant/path';
 import {
@@ -48,18 +43,21 @@ import {
   selfCollectionSteps,
   staffVisitSteps,
 } from '@/utils/constant/timeline-services';
+import { vi } from 'date-fns/locale';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, formatISO } from 'date-fns';
 import { AlertTriangle, CalendarIcon, Home, MapPin, Package } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+import useWorkSchedule from '@/hooks/useWorkSchedule';
 
 const BookingPage = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuthStore();
   const { createBookingMutation, checkExistingNearBookingQuery } = useBooking();
+  const { getWorkScheduleQuery } = useWorkSchedule();
   const { showToast } = useToast();
   const { queryServiceById } = useService(Number(serviceId));
   const { data: service, isLoading, error, refetch } = queryServiceById;
@@ -75,8 +73,15 @@ const BookingPage = () => {
       serviceId: Number(serviceId),
     },
   });
-  console.log(form.formState.errors);
   const selectedMethod = form.watch('method');
+
+  // Time slots
+  const { data: workSchedule } = getWorkScheduleQuery;
+  const timeSlots = workSchedule?.map((item) => ({
+    id: item.workScheduleId,
+    label: `${item.title} (${item.startTime} - ${item.endTime})`,
+    value: `${item.startTime}-${item.endTime}`,
+  }));
 
   // Update values when method changes
   useEffect(() => {
@@ -86,7 +91,10 @@ const BookingPage = () => {
     } else {
       form.setValue('location', 'Cơ sở y tế');
     }
-  }, [selectedMethod, form]);
+    if (workSchedule && timeSlots) {
+      form.setValue('time', timeSlots?.[0]?.value ?? '');
+    }
+  }, [selectedMethod, form, workSchedule]);
 
   const getTimelineSteps = () => {
     switch (selectedMethod) {
@@ -104,7 +112,6 @@ const BookingPage = () => {
     try {
       const resposne = await createBookingMutation.mutateAsync({
         ...values,
-        status: 'Pending',
         paymentStatus: 'Unpaid',
         time: values.time, // This will be in format '7:30:00-9:00:00'
         userId: user?.userId ?? 0,
@@ -129,16 +136,12 @@ const BookingPage = () => {
       navigate(paths.login);
       return;
     }
-
     const isExistingNearBooking = checkExistingNearBookingQuery.data;
     if (isExistingNearBooking) {
-      // Show warning dialog if there's an existing near booking
       setPendingBookingData(values);
       setShowWarningDialog(true);
       return;
     }
-
-    // Proceed with booking if no existing near booking
     await createBooking(values);
   };
 
@@ -319,9 +322,9 @@ const BookingPage = () => {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, 'PPP')
+                                  format(field.value, 'PPP', { locale: vi })
                                 ) : (
-                                  <span>Pick a date</span>
+                                  <span>Chọn ngày</span>
                                 )}
                                 <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
                               </Button>
@@ -354,7 +357,7 @@ const BookingPage = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {TIME_SLOTS.map((slot) => (
+                            {timeSlots?.map((slot) => (
                               <SelectItem
                                 key={slot.id}
                                 value={slot.value}
@@ -433,10 +436,11 @@ const BookingPage = () => {
           <DialogHeader>
             <DialogTitle className='flex items-center gap-2'>
               <AlertTriangle className='h-5 w-5 text-amber-500' />
-              Cảnh báo lịch đặt trùng lặp
+              Cảnh báo đã có lịch đặt gần đây
             </DialogTitle>
             <DialogDescription className='text-left'>
-              Bạn đã có một lịch đặt gần đây. Việc đặt thêm lịch mới có thể gây xung đột thời gian.
+              Bạn đã từng đặt một lịch xét nghiệm gần đây. Việc tiếp tục đặt thêm lịch mới có thể
+              dẫn đến dư thừa hoặc gây nhầm lẫn.
               <br />
               <br />
               Bạn có chắc chắn muốn tiếp tục đặt lịch mới không?

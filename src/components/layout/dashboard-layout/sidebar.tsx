@@ -36,23 +36,9 @@ const sidebarLinks: SidebarLink[] = [
 
   {
     title: 'Dịch vụ',
-    href: '/dashboard/service',
+    href: '/dashboard/services',
     icon: <Package className='h-5 w-5' />,
     roles: ['Staff', 'Manager', 'Admin'],
-    children: [
-      {
-        title: 'Dịch vụ',
-        href: '/dashboard/services',
-        icon: <Package className='h-5 w-5' />,
-        roles: ['Staff', 'Manager', 'Admin'],
-      },
-      {
-        title: 'Loại dịch vụ',
-        href: '/dashboard/service-by-type',
-        icon: <Package className='h-5 w-5' />,
-        roles: ['Staff', 'Manager', 'Admin'],
-      },
-    ],
   },
   {
     title: 'Thống kê',
