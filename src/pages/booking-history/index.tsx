@@ -111,7 +111,6 @@ const BookingHistoryPage = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Mã đơn</TableHead>
-                  <TableHead>Khách hàng</TableHead>
                   <TableHead>Trạng thái</TableHead>
                   <TableHead>Thanh toán</TableHead>
                   <TableHead>Ngày đặt</TableHead>
@@ -126,7 +125,6 @@ const BookingHistoryPage = () => {
                 {currentBookings.map((booking) => (
                   <TableRow key={booking.bookingId}>
                     <TableCell>#{booking.bookingId}</TableCell>
-                    <TableCell>{user?.fullName ?? 'Khách hàng'}</TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
                     </TableCell>
