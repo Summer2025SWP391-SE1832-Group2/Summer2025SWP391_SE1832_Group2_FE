@@ -44,18 +44,7 @@ export default function UserSchedulePage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [workSchedules, setWorkSchedules] = useState<WorkSchedule[]>([]);
 
-  useEffect(() => {
-    const fetchWorkSchedules = async () => {
-      try {
-        const data = await getAllWorkSchedules();
-        console.log('Work schedules hả hả :', data);
-        setWorkSchedules(data);
-      } catch (err) {
-        console.error('Lỗi khi lấy work schedules:', err);
-      }
-    };
-    fetchWorkSchedules();
-  }, []);
+  
 
 
   if (!state?.user || !state?.events) {
@@ -83,17 +72,18 @@ export default function UserSchedulePage() {
     const [endHour, endMinute] = slot.endTime.split(':').map(Number);
 
     const start = new Date(selectedDate);
-    start.setHours(startHour, startMinute, 0);
+    // start.setHours(startHour, startMinute, 0);
 
     const end = new Date(selectedDate);
-    end.setHours(endHour, endMinute, 0);
+    // end.setHours(endHour, endMinute, 0);
 
     try {
-      const newSchedule = await createUserWorkSchedule({
-        userId: state.user.userId,
-        workScheduleId: slot.workScheduleId,
-        date: selectedDate.toISOString().split('T')[0],
-      });
+        console.log('Thêm lịch làm việc:', selectedDate);
+        const newSchedule = await createUserWorkSchedule({
+          userId: state.user.userId,
+          workScheduleId: slot.workScheduleId,
+          date: selectedDate.toLocaleDateString('en-CA'),
+        });
 
       const newEvent: CalendarEvent = {
         title: slot.title,
@@ -106,7 +96,7 @@ export default function UserSchedulePage() {
 
       setEventList([...eventList, newEvent]);
       setOpenDialog(false);
-      const schedule = await getUserWorkScheduleUserById(state.user.userId);
+      // 
       
     } catch (error) {
       console.error('Lỗi khi tạo lịch:', error);
@@ -128,7 +118,31 @@ export default function UserSchedulePage() {
       console.error('Lỗi khi xoá lịch làm việc:', error);
     }
   };
-  
+  useEffect(() => {
+    const fetchWorkSchedules = async () => {
+      try {
+        const data = await getAllWorkSchedules();
+        const schedule = await getUserWorkScheduleUserById(state.user.userId);
+        const mapped: CalendarEvent[] = schedule.map((s: any) => {
+          const date = new Date(s.date);
+          return {
+            title: s.title || 'Ca làm',
+            start: date,
+            end: date,
+            allDay: true,
+            color: '#22C55E',
+            userWorkScheduleId: s.userWorkScheduleId,
+            workScheduleId: s.workScheduleId,
+          };
+        });
+        setEventList(mapped);
+        setWorkSchedules(data);
+      } catch (err) {
+        console.error('Lỗi khi lấy work schedules:', err);
+      }
+    };
+    fetchWorkSchedules();
+  }, []);
 
   return (
     <div className='w-full h-screen p-4 bg-white'>
