@@ -15,7 +15,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { createUserWorkSchedule } from '@/services/userworkschedule_service';
+import { createUserWorkSchedule, getUserWorkScheduleUserById } from '@/services/userworkschedule_service';
 import type { WorkSchedule } from '@/types/workschedule';
 import { getAllWorkSchedules } from '@/services/schedule_service';
 import { deleteUserWorkSchedule } from '@/services/userworkschedule_service';
@@ -48,6 +48,7 @@ export default function UserSchedulePage() {
     const fetchWorkSchedules = async () => {
       try {
         const data = await getAllWorkSchedules();
+        console.log('Work schedules hả hả :', data);
         setWorkSchedules(data);
       } catch (err) {
         console.error('Lỗi khi lấy work schedules:', err);
@@ -55,6 +56,7 @@ export default function UserSchedulePage() {
     };
     fetchWorkSchedules();
   }, []);
+
 
   if (!state?.user || !state?.events) {
     return (
@@ -69,6 +71,7 @@ export default function UserSchedulePage() {
       </div>
     );
   }
+
 
   const handleAddEvent = async () => {
     if (!selectedDate || selectedSlot === null) return;
@@ -103,6 +106,8 @@ export default function UserSchedulePage() {
 
       setEventList([...eventList, newEvent]);
       setOpenDialog(false);
+      const schedule = await getUserWorkScheduleUserById(state.user.userId);
+      
     } catch (error) {
       console.error('Lỗi khi tạo lịch:', error);
     }
