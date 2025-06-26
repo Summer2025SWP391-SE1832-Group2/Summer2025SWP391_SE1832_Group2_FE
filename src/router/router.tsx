@@ -25,6 +25,7 @@ import BlogDetailHomePage from '@/pages/blog/blogDetail';
 import BlogCreatePage from '@/pages/blog-manage/blog-create';
 import StaffSchedulePage from '@/pages/staff-schedule';
 import BlogManagementPage from '@/pages/blog-manage';
+import { TransactionPage } from '@/pages/transaction';
 
 const router = createBrowserRouter([
   {
@@ -72,7 +73,6 @@ const router = createBrowserRouter([
         path: paths.blogdetail(':blogId'),
         element: <BlogDetailHomePage />,
       },
-
       {
         element: <PublicRoute />,
         children: [
@@ -89,6 +89,14 @@ const router = createBrowserRouter([
             element: <RegisterPage />,
           },
         ],
+      },
+      {
+        path: paths.transaction,
+        element: (
+          <ProtectedRoute>
+            <TransactionPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -127,7 +135,6 @@ const router = createBrowserRouter([
       {
         path: paths.blogManagement,
         element: <BlogManagementPage />,
-
       },
       {
         path: paths.blogcreate,
@@ -136,7 +143,7 @@ const router = createBrowserRouter([
       {
         path: paths.blogdetailManagement(':blogId'),
         element: <BlogDetailManagePage />,
-      }
+      },
 
       // Add other dashboard routes here
     ],

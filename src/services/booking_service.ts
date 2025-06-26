@@ -1,26 +1,29 @@
-import axiosInstance from "@/lib/api/axios";
-import type { Booking, BookingSchedule } from "@/types/booking";
-import type { User } from "@/types/user";
+import axiosInstance from '@/lib/api/axios';
+import type { Booking, BookingRequest, BookingSchedule } from '@/types/booking';
+import type { User } from '@/types/user';
 
 // Get all bookings
 const getAllBookings = async (): Promise<Booking[]> => {
-  const response = await axiosInstance.get<Booking[]>("/api/Booking");
+  const response = await axiosInstance.get<Booking[]>('/api/Booking');
   return response.data;
 };
 
 const getAllBookingSchedule = async (): Promise<BookingSchedule[]> => {
-    const response = await axiosInstance.get<BookingSchedule[]>("/BookingWithSchedule");
-    console.log("getAllBookingSchedule response:", response.data);
-    return response.data;
-  };
+  const response = await axiosInstance.get<BookingSchedule[]>('/BookingWithSchedule');
+  return response.data;
+};
 
 const getStaffForSchedule = async (id: number): Promise<User[]> => {
-  const response = await axiosInstance.get<User[]>(`/api/SampleCollectionSchedule/${id}/available-staffs`);
+  const response = await axiosInstance.get<User[]>(
+    `/api/SampleCollectionSchedule/${id}/available-staffs`,
+  );
   return response.data;
 };
 
 const AssignStaffForSchedule = async (id: number, idStaff: number): Promise<User[]> => {
-  const response = await axiosInstance.put(`/api/SampleCollectionSchedule/AssignTask/${id}/${idStaff}`);
+  const response = await axiosInstance.put(
+    `/api/SampleCollectionSchedule/AssignTask/${id}/${idStaff}`,
+  );
   return response.data;
 };
 
@@ -31,8 +34,8 @@ const getBookingById = async (id: number): Promise<Booking> => {
 };
 
 // Create a new booking
-const createBooking = async (data: Omit<Booking, "bookingId">): Promise<Booking> => {
-  const response = await axiosInstance.post<Booking>("/api/Booking", data);
+const createBooking = async (data: BookingRequest) => {
+  const response = await axiosInstance.post<string>('/api/Booking', data);
   return response.data;
 };
 
@@ -52,14 +55,20 @@ const getBookingsByUserId = async (userId: number): Promise<Booking[]> => {
   return response.data;
 };
 
+const checkExistingNearBooking = async (userId: number) => {
+  const response = await axiosInstance.get<boolean>(`checkPending?userId=${userId}`);
+  return response.data;
+};
+
 export {
+  AssignStaffForSchedule,
+  createBooking,
+  deleteBooking,
   getAllBookings,
   getAllBookingSchedule,
   getBookingById,
-  createBooking,
-  updateBooking,
-  deleteBooking,
+  getBookingsByUserId,
   getStaffForSchedule,
-  AssignStaffForSchedule,
-  getBookingsByUserId
+  updateBooking,
+  checkExistingNearBooking,
 };

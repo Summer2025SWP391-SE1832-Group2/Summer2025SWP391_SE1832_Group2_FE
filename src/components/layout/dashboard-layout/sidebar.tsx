@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/auth';
 import { type UserRole } from '@/types/user';
 import {
 
+  BarChart3,
   Calendar,
   ChevronDown,
   FileText,
@@ -35,9 +36,15 @@ const sidebarLinks: SidebarLink[] = [
   },
   {
     title: 'Dịch vụ',
-    href: paths.services,
+    href: '/dashboard/services',
     icon: <Package className='h-5 w-5' />,
-    roles: ['Admin'],
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
+    title: 'Thống kê',
+    href: '/dashboard/analytics',
+    icon: <BarChart3 className='h-5 w-5' />,
+    roles: ['Manager', 'Admin'],
   },
   {
     title: 'Lịch hẹn',

@@ -8,8 +8,6 @@ export const paths = {
   home: '/',
   login: '/login',
   register: '/register',
-  profile: '/profile',
-  resetPassword: '/reset-password',
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
 
@@ -17,7 +15,6 @@ export const paths = {
   booking: (serviceId: string) => `/booking/${serviceId}`,
   bookingDetail: (bookingId: string) => `/bookingdetail/${bookingId}`,
   blogdetail: (blogId: string) => `/viewblog/${blogId}`,
-
 
   // Protected routes
   dashboard: '/dashboard',
@@ -33,7 +30,6 @@ export const paths = {
   testParameterManagement: '/testParameterManagement',
   reports: '/reports',
   settings: '/settings',
-
 
   // Payment results
   paymentSuccess: '/payment/success',
