@@ -129,8 +129,14 @@ const BookingDetailPage = () => {
           </span>
         </div>
 
-        <div className="text-sm">
-          <strong>Kết quả:</strong> {booking.result || 'Chưa có'}
+        <div>
+          <Button
+            variant="secondary"
+            disabled={!booking.result}
+            onClick={() => navigate(`/result/${booking.bookingId}`)}
+          >
+            {booking.result ? "Xem kết quả" : "Chưa có kết quả"}
+          </Button>
         </div>
 
         <div>

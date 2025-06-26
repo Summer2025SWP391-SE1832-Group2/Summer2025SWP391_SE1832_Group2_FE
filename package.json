@@ -58,7 +58,6 @@
     "react-spinners": "^0.17.0",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7",
-    "vietnam-provinces": "^0.0.4",
     "zod": "^3.25.36",
     "zustand": "^5.0.4"
   },
