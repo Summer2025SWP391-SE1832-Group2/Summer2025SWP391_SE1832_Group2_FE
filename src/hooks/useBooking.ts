@@ -1,4 +1,4 @@
-import { checkExistingNearBooking, createBooking } from '@/services/booking';
+import { checkExistingNearBooking, createBooking } from '@/services/booking_service';
 import { useAuthStore } from '@/stores/auth';
 import { useMutation, useQuery } from '@tanstack/react-query';
 

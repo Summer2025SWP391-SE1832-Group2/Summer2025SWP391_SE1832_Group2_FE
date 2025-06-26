@@ -9,6 +9,7 @@ type SampleCollectionSchedule = {
   location: string;
   status: string;
 };
+
 type BookingSchedule = {
   bookingId: number;
   serviceTypeId: number;
@@ -21,12 +22,13 @@ type BookingSchedule = {
   result: string;
   sampleCollectionSchedules: SampleCollectionSchedule[];
 };
+
 type Booking = {
   bookingId: number;
   serviceId: number;
   userId: number;
   bookingDate: string;
-  status: BookingStatus;
+  status?: string;
   buyKit: boolean;
   method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
@@ -36,16 +38,16 @@ type Booking = {
   location: string;
   result: string;
 };
-//   export type { Booking,BookingSchedule, SampleCollectionSchedule };
+
 type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
-type PaymentStatus = 'Unpaid' | 'Processing' | 'Paid' | 'Failed';
+type PaymentStatus = 'Unpaid' | 'Paid' | 'Failed';
 
 type BookingRequest = {
   bookingId?: number;
   serviceId: number;
   userId: number;
   bookingDate: string;
-  status: BookingStatus;
+  status?: string;
   buyKit: boolean;
   method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
@@ -60,5 +62,4 @@ export {
   type PaymentStatus,
   type Booking,
   type BookingSchedule,
-  type SampleCollectionSchedule,
 };
