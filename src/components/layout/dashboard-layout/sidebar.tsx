@@ -27,12 +27,12 @@ interface SidebarLink {
 }
 
 const sidebarLinks: SidebarLink[] = [
-  {
-    title: 'Tổng quan',
-    href: '/dashboard',
-    icon: <LayoutDashboard className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-  },
+  // {
+  //   title: 'Tổng quan',
+  //   href: '/dashboard',
+  //   icon: <LayoutDashboard className='h-5 w-5' />,
+  //   roles: ['Staff', 'Manager', 'Admin'],
+  // },
 
   {
     title: 'Dịch vụ',
@@ -58,12 +58,12 @@ const sidebarLinks: SidebarLink[] = [
     icon: <Calendar className='h-5 w-5' />,
     roles: ['Staff', 'Manager', 'Admin'],
   },
-  {
-    title: 'Xét nghiệm',
-    href: '/dashboard/tests',
-    icon: <TestTube className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-  },
+  // {
+  //   title: 'Xét nghiệm',
+  //   href: '/dashboard/tests',
+  //   icon: <TestTube className='h-5 w-5' />,
+  //   roles: ['Staff', 'Manager', 'Admin'],
+  // },
   {
     title: 'Nhập mẫu',
     href: '/dashboard/bookinglist',

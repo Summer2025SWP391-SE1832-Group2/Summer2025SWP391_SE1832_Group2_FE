@@ -10,6 +10,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+// import {
+//   Table,
+//   TableCaption,
+//   TableHeader,
+//   TableBody,
+//   TableRow,
+//   TableHead,
+//   TableCell,
+// } from "@/components/ui/table";
 import { Button } from '@/components/ui/button';
 // import BlogTypeEditorDialog from './blog-type-edit-dialog';
 import { paths } from '@/utils/constant/path';
@@ -36,9 +45,12 @@ export default function BlogManagementPage() {
 
   const handleSelectBlogType = async (id: number) => {
     try {
-      const data = await getAllBlogByBlogTypeID(id);
       const selected = blogTypes.find((bt) => bt.blogTypeId === id) || null;
-      setSelectedBlogType(selected);
+  setSelectedBlogType(selected);
+  setBlogs([]);
+
+      const data = await getAllBlogByBlogTypeID(id);
+     
       setBlogs(data);
     } catch (error) {
       console.error('Error fetching blogs:', error);
@@ -56,7 +68,7 @@ export default function BlogManagementPage() {
   };
 
   return (
-    <div className='grid grid-cols-3 gap-6 p-6 h-screen overflow-hidden'>
+    <div className='grid grid-cols-4 gap-6 p-6 h-screen overflow-hidden'>
       <div className='col-span-1 space-y-4 overflow-y-auto pr-2'>
         <div className='flex items-center justify-between sticky top-0 bg-white dark:bg-background z-10 pb-2'>
           <h2 className='text-xl font-bold sticky top-0 bg-white dark:bg-background z-10 pb-2'>
@@ -104,14 +116,14 @@ export default function BlogManagementPage() {
               />
               <div>
                 <h3 className='font-semibold text-lg'>{type.title}</h3>
-                <p className='text-sm text-muted-foreground'>{type.description}</p>
+                <p className='text-sm text-muted-foreground truncate'>{type.description}</p>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className='col-span-2 space-y-4 overflow-y-auto pr-2'>
+      <div className='col-span-3 space-y-4 overflow-y-auto pr-2'>
         <div className='flex items-center justify-between sticky top-0 bg-white dark:bg-background z-10 pb-2'>
           <h2 className='text-xl font-bold'>
             {selectedBlogType
@@ -148,7 +160,6 @@ export default function BlogManagementPage() {
             </CardContent>
             </Link>
           </Card>
-
         ))}
 
         {selectedBlogType && blogs.length === 0 && (

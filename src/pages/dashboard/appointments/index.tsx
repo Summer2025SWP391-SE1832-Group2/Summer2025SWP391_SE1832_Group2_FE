@@ -139,7 +139,7 @@ export default function AppointmentsPage() {
       </div>
 
       <Table>
-        <TableCaption>Danh sách Booking</TableCaption>
+        <TableCaption></TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
@@ -212,50 +212,50 @@ export default function AppointmentsPage() {
       <Dialog open={!!selectedBooking} onOpenChange={() => setSelectedBooking(null)}>
         <DialogContent className="!w-full !max-w-[95vw] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Booking Details</DialogTitle>
+            <DialogTitle>Chi tiết</DialogTitle>
           </DialogHeader>
 
           {selectedBooking && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
               <div className="border rounded-xl p-4 bg-gray-50">
-                <p className="font-semibold mb-2">Details</p>
+                <p className="font-semibold mb-2">Chi tiết</p>
                 <div className="space-y-1">
-                  <div><strong>Booking ID:</strong> {selectedBooking.bookingId}</div>
-                  <div><strong>Service Type ID:</strong> {selectedBooking.serviceTypeId}</div>
-                  <div><strong>User ID:</strong> {selectedBooking.userId}</div>
-                  <div><strong>Sample Method:</strong> {selectedBooking.sampleMethod}</div>
-                  <div><strong>Payment Status:</strong> {selectedBooking.paymentStatus}</div>
-                  <div><strong>Location:</strong> {selectedBooking.sampleCollectionSchedules[0]?.location || "N/A"}</div>
+                  <div><strong>Mã đơn:</strong> {selectedBooking.bookingId}</div>
+                  {/* <div><strong>Service Type ID:</strong> {selectedBooking.serviceTypeId}</div> */}
+                  <div><strong>Người đặt:</strong> {selectedBooking.userId}</div>
+                  {/* <div><strong>Sample Method:</strong> {selectedBooking.sampleMethod}</div> */}
+                  <div><strong>Thanh toán :</strong> {selectedBooking.paymentStatus}</div>
+                  <div><strong>Vị trí:</strong> {selectedBooking.sampleCollectionSchedules[0]?.location || "N/A"}</div>
                 </div>
               </div>
 
               <div className="border rounded-xl p-4 bg-gray-50">
-                <p className="font-semibold mb-2">Time</p>
+                <p className="font-semibold mb-2">Thời gian</p>
                 <div className="space-y-1">
-                  <div><strong>Preferred Date:</strong> {new Date(selectedBooking.preferredDate).toLocaleDateString()}</div>
-                  <div><strong>Collection Date:</strong> {selectedBooking.sampleCollectionSchedules[0] ? new Date(selectedBooking.sampleCollectionSchedules[0].collectionDate).toLocaleString() : "N/A"}</div>
-                  <div><strong>Time:</strong> {selectedBooking.sampleCollectionSchedules[0]?.time || "N/A"}</div>
+                  <div><strong>Ngày đặt:</strong> {new Date(selectedBooking.preferredDate).toLocaleDateString()}</div>
+                  <div><strong>Ngày thu mẫu:</strong> {selectedBooking.sampleCollectionSchedules[0] ? new Date(selectedBooking.sampleCollectionSchedules[0].collectionDate).toLocaleString() : "N/A"}</div>
+                  <div><strong>Thời gian:</strong> {selectedBooking.sampleCollectionSchedules[0]?.time || "N/A"}</div>
                 </div>
               </div>
 
               <div className="border rounded-xl p-4 bg-gray-50">
-                <p className="font-semibold mb-2">Status</p>
+                <p className="font-semibold mb-2">Trạng thái</p>
                 <div className="space-y-1">
-                  <div><strong>Status:</strong> {selectedBooking.status}</div>
-                  <div><strong>Result:</strong> {selectedBooking.result}</div>
-                  <div><strong>Collection Status:</strong> {selectedBooking.sampleCollectionSchedules[0]?.status || "N/A"}</div>
+                  <div><strong>Trạng thái:</strong> {selectedBooking.status}</div>
+                  <div><strong>Trạng thái mẫu:</strong> {selectedBooking.sampleCollectionSchedules[0]?.status || "N/A"}</div>
+                  <div><strong>Kết quả :</strong> {selectedBooking.result}</div>
                 </div>
               </div>
 
               <div className="border rounded-xl p-4 bg-gray-50">
-                <p className="font-semibold mb-2">Assign to Employee</p>
+                <p className="font-semibold mb-2">Phân công nhân viên</p>
                 <Select value={assignedEmployee} onValueChange={setAssignedEmployee}>
                   <SelectTrigger className="w-full mt-1">
-                    <SelectValue placeholder="Select Staff" />
+                    <SelectValue placeholder="Chọn nhân viên" />
                   </SelectTrigger>
                   <SelectContent>
                     {employees.length === 0 && (
-                      <SelectItem value="NULL" disabled>No staff available</SelectItem>
+                      <SelectItem value="NULL" disabled>Không có nhân viên nào </SelectItem>
                     )}
                     {employees
                       .filter(emp => emp.userId !== null && emp.userId !== undefined)

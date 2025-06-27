@@ -34,7 +34,9 @@ type Booking = {
   collectionDate: string;
   time: string;
   location: string;
-  result: string;
+  resultDetails: [];
+  fullName?: string;
+  finalResult ?: string;
 };
 
 type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';

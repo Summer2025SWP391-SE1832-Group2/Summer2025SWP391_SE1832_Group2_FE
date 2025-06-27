@@ -29,6 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Button } from '@/components/ui/button';
 export default function StaffSchedulePage() {
   const [users, setUsers] = useState<User[]>([]);
   const navigate = useNavigate();
@@ -98,12 +99,13 @@ export default function StaffSchedulePage() {
               <TableCell  className='border px-3 py-2'>{user.email}</TableCell >
               <TableCell  className='border px-3 py-2'>{user.role}</TableCell >
 
-              <TableCell  className='border px-3 py-2'>
-                <button
+              <TableCell  className='border px-3 py-2 flex justify-center'>
+                <Button
+                variant={'black'}
                   onClick={() => handleViewCalendar(user)}
                 >
                   Xem lịch
-                </button>
+                </Button>
               </TableCell >
             </TableRow>
           ))}
