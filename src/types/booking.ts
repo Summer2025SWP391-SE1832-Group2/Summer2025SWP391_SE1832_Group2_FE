@@ -32,7 +32,7 @@ type Booking = {
   serviceId: number;
   userId: number;
   bookingDate: string;
-  status?: string;
+  status: BookingStatus;
   buyKit: boolean;
   method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
@@ -49,7 +49,7 @@ type BookingRequest = {
   serviceId: number;
   userId: number;
   bookingDate: string;
-  status?: string;
+  status: BookingStatus;
   buyKit: boolean;
   method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
@@ -79,4 +79,5 @@ export {
   type PaymentStatus,
   type Booking,
   type BookingSchedule,
+  type SampleCollectionSchedule,
 };

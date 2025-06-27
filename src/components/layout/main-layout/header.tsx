@@ -13,7 +13,7 @@ import {
 import { useService } from '@/hooks/useService';
 import { useAuthStore } from '@/stores/auth';
 import { paths } from '@/utils/constant/path';
-import { ChevronDown, Clock, CreditCard, LogOut, User } from 'lucide-react';
+import { ChevronDown, Clock, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -125,7 +125,7 @@ const Header = () => {
             to={paths.blogType}
             className='text-sm font-medium text-muted-foreground hover:text-primary'
           >
-            Phản Hồi
+          Phản Hồi 
           </Link>
         </nav>
 
@@ -159,14 +159,6 @@ const Header = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={paths.transaction}>
-                    <span className='flex items-center gap-2 w-full'>
-                      <CreditCard className='h-4 w-4' />
-                      Xem giao dịch
-                    </span>
-                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleLogout}

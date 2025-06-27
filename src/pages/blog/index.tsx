@@ -33,7 +33,7 @@ import { Link, useParams } from 'react-router-dom';
 //     title: "10 Life-Changing Hacks Every Working Mom Should Know",
 //     image: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/494524518_122125510058831091_2398413459099684334_n.jpg?stp=dst-jpg_s640x640_tt6&_nc_cat=108&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFxDGQvgaeVXCNnQnqOkmD1h7l1P6_2jUyHuXU_r_aNTCMVGKSCkQ4TpXWBjPW3TXk_jGhKuX8xyhUae_tMGABQ&_nc_ohc=ffjH-pM_WUAQ7kNvwFKoGnC&_nc_oc=AdnH-T9SYVV-ggqU13TPEo7upD4pvTpahN2nxFaMx4TC_PXdnnLJi7tRrBeiZBWElhyv8tOrkYqjpF-p15TAUMmT&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=mrHh40-MuDBCqdRF23cVug&oh=00_AfIFvXnq63wWL2A9ulPlkNULTYXS3vWPbAZKsqp3ALxGag&oe=684388A0",
 //   },
-
+ 
 // ];
 
 const BlogPage: React.FC = () => {
@@ -43,6 +43,7 @@ const BlogPage: React.FC = () => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      console.log('check : ', blogTypeId);
       if (!blogTypeId) return;
       const id = parseInt(blogTypeId); // ép kiểu chuỗi sang số
       if (isNaN(id)) {
@@ -51,6 +52,7 @@ const BlogPage: React.FC = () => {
       }
       try {
         const data = await getAllBlogByBlogTypeID(id);
+        console.log('Blogs fetched:', data);
         setBlogs(data);
         if (data.length > 0) {
           setFeaturedPost(data[0]);

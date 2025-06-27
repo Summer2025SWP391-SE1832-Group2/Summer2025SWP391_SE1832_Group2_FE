@@ -4,6 +4,7 @@ type BaseService = {
   description: string;
   durationDays: number;
   price: number;
+  serviceTypeId: number;
   isAtHome: boolean;
   isStaffSuport: boolean;
 };

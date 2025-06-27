@@ -5,11 +5,9 @@ import {
   getServiceById,
   updateService,
 } from '@/services/services';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useService = (serviceId?: number) => {
-  const queryClient = useQueryClient();
-
   const queryServices = useQuery({
     queryKey: ['services'],
     queryFn: getAllServices,
@@ -23,34 +21,14 @@ export const useService = (serviceId?: number) => {
 
   const createMutation = useMutation({
     mutationFn: createService,
-    onSuccess: () => {
-      // Invalidate and refetch services list
-      queryClient.invalidateQueries({ queryKey: ['services'] });
-    },
-    onError: (error) => {
-      console.error('Error creating service:', error);
-    },
   });
 
   const updateMutation = useMutation({
     mutationFn: updateService,
-    onSuccess: () => {
-      // Invalidate and refetch services list
-      queryClient.invalidateQueries({ queryKey: ['services'] });
-    },
-    onError: (error) => {
-      console.error('Error updating service:', error);
-    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteService,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] });
-    },
-    onError: (error) => {
-      console.error('Error deleting service:', error);
-    },
   });
 
   return {

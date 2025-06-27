@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+// Time Slot Configuration
+export const TIME_SLOTS = [
+  { id: 'slot1', label: 'Slot 1 (7:30 - 9:00)', value: '7:30:00-9:00:00' },
+  { id: 'slot2', label: 'Slot 2 (9:00 - 10:30)', value: '9:00:00-10:30:00' },
+  { id: 'slot3', label: 'Slot 3 (13:00 - 14:30)', value: '13:00:00-14:30:00' },
+  { id: 'slot4', label: 'Slot 4 (14:30 - 16:00)', value: '14:30:00-16:00:00' },
+] as const;
+
 export const bookingSchema = z.object({
   serviceId: z.number().positive(),
   collectionDate: z.date(),
@@ -13,9 +21,8 @@ export const bookingDefaultValues = {
   serviceId: 0,
   method: 'TAI_CO_SO_Y_TE' as BookingFormValues['method'],
   location: 'Cơ sở y tế',
-  collectionDate: new Date(new Date().setDate(new Date().getDate() + 1)),
   buyKit: false,
-  time: '',
+  time: TIME_SLOTS[0].value,
 };
 
 // Conditional schema that requires location field when method is StaffVisit

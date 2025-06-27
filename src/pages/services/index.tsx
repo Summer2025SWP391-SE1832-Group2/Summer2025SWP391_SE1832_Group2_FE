@@ -3,17 +3,25 @@ import { ErrorMessage } from '@/components/common/error';
 import { Loading } from '@/components/common/loading';
 import { DataTable } from '@/components/common/table/data_table';
 import { Button } from '@/components/ui/button';
-import { useService } from '@/hooks/useService';
+import { getAllServices } from '@/services/services';
 import type { ServiceResponse } from '@/types/services';
+import { useQuery } from '@tanstack/react-query';
 import type { Row } from '@tanstack/react-table';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
-
 const ServicesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingService, setEditingService] = useState<ServiceResponse | null>(null);
-  const { queryServices } = useService();
-  const { data: services, isLoading, error } = queryServices;
+  const [editingServiceType, setEditingServiceType] = useState<ServiceResponse | null>(null);
+
+  const {
+    data: serviceTypes,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['serviceTypes'],
+    queryFn: getAllServices,
+  });
+
   const columns = [
     {
       header: 'Name',
@@ -39,19 +47,20 @@ const ServicesPage = () => {
     },
   ];
 
+  isModalOpen && editingServiceType;
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
-  isModalOpen && editingService;
 
   const handleEdit = (record: ServiceResponse) => {
-    setEditingService(record);
+    setEditingServiceType(record);
     setIsModalOpen(true);
   };
 
   if (isLoading) return <Loading />;
   if (error) return <ErrorMessage message='Failed to load service types' />;
-  if (!services?.length)
+  if (!serviceTypes?.length)
     return (
       <EmptyState
         title='No service types found'
@@ -67,7 +76,7 @@ const ServicesPage = () => {
       </div>
 
       <div className='rounded-md border'>
-        <DataTable columns={columns} data={services} />
+        <DataTable columns={columns} data={serviceTypes} />
       </div>
     </div>
   );
