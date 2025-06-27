@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/auth';
 import { type UserRole } from '@/types/user';
 import {
+
   BarChart3,
   Calendar,
   ChevronDown,
@@ -12,7 +13,7 @@ import {
   Package,
   Settings,
   TestTube,
-  Users,
+ 
 } from 'lucide-react';
 import BrandLogo from '@/components/common/brand-logo';
 import { paths } from '@/utils/constant/path';
@@ -29,11 +30,10 @@ interface SidebarLink {
 const sidebarLinks: SidebarLink[] = [
   {
     title: 'Tổng quan',
-    href: '/dashboard',
+    href: paths.dashboard,
     icon: <LayoutDashboard className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Admin'],
   },
-
   {
     title: 'Dịch vụ',
     href: '/dashboard/services',
@@ -48,67 +48,54 @@ const sidebarLinks: SidebarLink[] = [
   },
   {
     title: 'Lịch hẹn',
-    href: '/dashboard/appointments',
+    href: paths.appointments,
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Manager'],
   },
   {
     title: 'Lịch Làm việc',
-    href: '/dashboard/staffschedules',
+    href: paths.staffschedule,
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager'],
   },
   {
-    title: 'Xét nghiệm',
-    href: '/dashboard/tests',
+    title: 'Quản lý thông số xét nghiệm',
+    href: paths.testParameterManagement,
     icon: <TestTube className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Manager'],
+  },
+  {
+    title: 'Quản lý người dùng',
+    href: paths.userManagement,
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Admin'],
   },
   {
     title: 'Nhập mẫu',
-    href: '/dashboard/bookinglist',
+    href: paths.bookingList,
     icon: <Package className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-    // children: [
-    //   {
-    //     title: 'Nhập thông số sample',
-    //     href: '/dashboard/bookinglist',
-    //     icon: <Package className='h-5 w-5' />,
-    //     roles: ['Staff', 'Manager', 'Admin'],
-    //   },
-    //   {
-    //     title: 'Nhập kết quả',
-    //     href: '/dashboard/addresult',
-    //     icon: <Package className='h-5 w-5' />,
-    //     roles: ['Staff', 'Manager', 'Admin'],
-    //   },
-    // ],
+    roles: ['Staff', 'Manager'],
   },
   {
     title: 'Báo cáo',
-    href: '/dashboard/reports',
+    href: paths.reports,
     icon: <FileText className='h-5 w-5' />,
     roles: ['Manager', 'Admin'],
   },
   {
     title: 'Blogs',
-    href: '/dashboard/blogmanage',
+    href: paths.blogManagement,
     icon: <FileText className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-  },
-  {
-    title: 'Người dùng',
-    href: '/dashboard/users',
-    icon: <Users className='h-5 w-5' />,
-    roles: ['Admin'],
+    roles: ['Manager'],
   },
   {
     title: 'Cài đặt',
-    href: '/dashboard/settings',
+    href: paths.settings,
     icon: <Settings className='h-5 w-5' />,
     roles: ['Admin'],
   },
 ];
+
 
 const DashboardSidebar = () => {
   const location = useLocation();

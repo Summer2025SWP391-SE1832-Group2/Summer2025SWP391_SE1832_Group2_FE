@@ -67,15 +67,17 @@ const BookingHistoryPage = () => {
 
 
   const methodMap: Record<string, string> = {
-    TAI_CO_SO_Y_TE: 'Cơ sở y tế tại SWP391',
+    TAI_CO_SO_Y_TE: 'Tại cở sở y tế',
     NHAN_VIEN_DEN_NHA: 'Nhân viên đến nhà',
     TU_THU_MAU: 'Tự thu mẫu',
   };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'completed':
+      case 'đã lấy mẫu':
         return 'bg-blue-100 text-blue-700';
+      case 'hoàn thành':
+        return 'bg-green-100 text-green-800';
       case 'pending':
         return 'bg-orange-100 text-orange-800';
       case 'cancelled':
@@ -114,7 +116,7 @@ const BookingHistoryPage = () => {
                   <TableHead>Trạng thái</TableHead>
                   <TableHead>Thanh toán</TableHead>
                   <TableHead>Ngày đặt</TableHead>
-                  <TableHead>Ngày trả</TableHead>
+                  <TableHead>Ngày lấy mẫu</TableHead>
                   <TableHead>Thời gian</TableHead>
                   <TableHead>Phương thức</TableHead>
                   <TableHead>Địa điểm</TableHead>
@@ -134,7 +136,7 @@ const BookingHistoryPage = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>{formatDate(booking.bookingDate)}</TableCell>
-                    <TableCell>{formatDate(booking.preferredDate)}</TableCell>
+                    <TableCell>{formatDate(booking.collectionDate)}</TableCell>
                     <TableCell>{formatTime(booking.time)}</TableCell>
                     <TableCell>{methodMap[booking.method] ?? booking.method}</TableCell>
                     <TableCell>{booking.location || 'Chưa có'}</TableCell>

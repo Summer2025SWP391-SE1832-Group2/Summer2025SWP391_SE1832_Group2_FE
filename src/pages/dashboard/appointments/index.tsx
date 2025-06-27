@@ -1,21 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectTrigger,
@@ -38,8 +22,6 @@ export default function AppointmentsPage() {
   const [filterStatus, setFilterStatus] = useState("");
   const [employees, setEmployees] = useState<User[]>([]);
   const [assignedEmployee, setAssignedEmployee] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   const filteredBookings = bookings.filter((b) => {
     const statusMatch =
@@ -51,18 +33,12 @@ export default function AppointmentsPage() {
     return statusMatch && b.bookingId.toString().includes(search);
   });
 
-  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
-  const paginatedBookings = filteredBookings
-    .slice()
-    .reverse()
-    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getAllBookingSchedule();
         setBookings(data);
-        console.log("Fetched bookings:", data);
       } catch (error) {
         console.error("Failed to fetch bookings:", error);
       }
@@ -79,7 +55,7 @@ export default function AppointmentsPage() {
       return;
     }
     try {
-      const staffList = await getStaffForSchedule(booking.bookingId);
+      const staffList = await getStaffForSchedule(scheduleId);
       setEmployees(staffList);
     } catch (error) {
       console.error("Failed to fetch staff for schedule:", error);
@@ -111,21 +87,15 @@ export default function AppointmentsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center gap-4">
+    <div className="max-w-5xl mx-auto p-6 space-y-4">
+      <div className="flex justify-between items-center gap-4 mb-4">
         <Input
           placeholder="Search by Booking ID"
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setCurrentPage(1);
-          }}
+          onChange={(e) => setSearch(e.target.value)}
           className="w-1/2"
         />
-        <Select value={filterStatus} onValueChange={(value) => {
-          setFilterStatus(value);
-          setCurrentPage(1);
-        }}>
+        <Select value={filterStatus} onValueChange={setFilterStatus}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by Status" />
           </SelectTrigger>
@@ -138,79 +108,64 @@ export default function AppointmentsPage() {
         </Select>
       </div>
 
-      <Table>
-        <TableCaption>Danh sách Booking</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Trạng Thái</TableHead>
-            <TableHead>Thanh Toán</TableHead>
-            <TableHead>Loại Mẫu</TableHead>
-            <TableHead>Ngày Đặt</TableHead>
-            <TableHead>Dự Kiến</TableHead>
-            <TableHead>Kết Quả</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {paginatedBookings.map((booking) => (
-            <TableRow
-              key={booking.bookingId}
-              onClick={() => handleBookingClick(booking)}
-              className="cursor-pointer hover:bg-gray-100"
-            >
-              <TableCell>#{booking.bookingId}</TableCell>
-              <TableCell>{booking.status}</TableCell>
-              <TableCell>{booking.paymentStatus}</TableCell>
-              <TableCell>{booking.sampleMethod}</TableCell>
-              <TableCell>{new Date(booking.bookingDate).toLocaleDateString()}</TableCell>
-              <TableCell>{new Date(booking.preferredDate).toLocaleDateString()}</TableCell>
-              <TableCell>{booking.result || "Chưa có"}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {[...filteredBookings].reverse().map((booking) => (
+        <Card
+          key={booking.bookingId}
+          className={`hover:shadow-md cursor-pointer ${
+            booking.sampleCollectionSchedules?.[0]?.collectorId
+              ? "bg-green-50"
+              : "bg-red-50"
+          }`}
+          onClick={() => handleBookingClick(booking)}
+        >
+          <CardContent className="py-6 px-6 space-y-2">
 
-      <Pagination className="mt-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentPage((prev) => Math.max(prev - 1, 1));
-              }}
-            />
-          </PaginationItem>
+            <div className="text-lg font-semibold text-gray-800">
+              Booking #{booking.bookingId} — Loại dịch vụ #{booking.serviceTypeId}
+            </div>
 
-          {[...Array(totalPages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink
-                href="#"
-                isActive={index + 1 === currentPage}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setCurrentPage(index + 1);
-                }}
-              >
-                {index + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
+            <div className="flex flex-row items-center gap-x-4">
 
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+            <div className="text-sm text-gray-600 p-2">
+              Trạng Thái: {booking.status} 
+            </div>
+            <div className="text-sm text-gray-600 p-2">
+              Thanh Toán: {booking.paymentStatus}
+            </div>
+            </div>
+
+            <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+          <div className="text-sm text-gray-600 p-2">
+              Tên : {booking.userId} 
+            </div>
+            <div className="text-sm text-gray-600 p-2">
+              Loại Mẫu: {booking.sampleMethod} 
+            </div>
+          </div>
+
+          <div className="flex flex-1 flex-col p-3 bg-white rounded-lg">
+         
+            <div className="text-sm text-gray-600 p-2">
+              Ngày Đặt: {new Date(booking.bookingDate).toLocaleDateString()} 
+            </div>
+            <div className="text-sm text-gray-600 p-2">
+           Ngày Dự Kiến: {new Date(booking.preferredDate).toLocaleDateString()}
+            </div>
+            
+          </div>
+
+            </div>
+
+            <div className="text-sm text-gray-600">
+              Kết Quả: {booking.result ? booking.result : "Chưa có kết quả"} 
+            </div>
+          </CardContent>
+        </Card>
+      ))}
 
       <Dialog open={!!selectedBooking} onOpenChange={() => setSelectedBooking(null)}>
-        <DialogContent className="!w-full !max-w-[95vw] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="!w-full !max-w-[95vw] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Booking Details</DialogTitle>
           </DialogHeader>
