@@ -16,6 +16,7 @@ import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
 import ResetPasswordPage from '@/pages/reset-password';
+import ResultPage from '@/pages/result';
 import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
@@ -25,6 +26,7 @@ import BlogDetailHomePage from '@/pages/blog/blogDetail';
 import BlogCreatePage from '@/pages/blog-manage/blog-create';
 import StaffSchedulePage from '@/pages/staff-schedule';
 import BlogManagementPage from '@/pages/blog-manage';
+import UserSchedulePage from '@/pages/staff-schedule/user_chedulePage';
 import { TransactionPage } from '@/pages/transaction';
 
 const router = createBrowserRouter([
@@ -66,6 +68,11 @@ const router = createBrowserRouter([
         element: <ProfilePage />,
       },
       {
+        path: paths.result,
+        element: <ResultPage />,
+      },
+
+      {
         path: paths.booking(':serviceId'),
         element: <BookingPage />,
       },
@@ -101,7 +108,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-
+    path: paths.dashboard,
     element: (
       <ProtectedRoute>
         <DashboardLayout />
@@ -109,8 +116,12 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: paths.dashboard, 
+        index: true,
         element: <DashboardPage />,
+      },
+      {
+        path: paths.dashboardProfile,
+        element: <ProfilePage />,
       },
       {
         path: paths.appointments,
@@ -133,7 +144,7 @@ const router = createBrowserRouter([
         element: <StaffSchedulePage />,
       },
       {
-        path: paths.blogManagement,
+        path: paths.blogmanage,
         element: <BlogManagementPage />,
       },
       {
@@ -141,9 +152,13 @@ const router = createBrowserRouter([
         element: <BlogCreatePage />,
       },
       {
-        path: paths.blogdetailManagement(':blogId'),
+        path: paths.blogdetailManage(':blogId'),
         element: <BlogDetailManagePage />,
       },
+      {
+        path: paths.scheduleforstaff,
+        element: <UserSchedulePage />,
+      }
 
       // Add other dashboard routes here
     ],

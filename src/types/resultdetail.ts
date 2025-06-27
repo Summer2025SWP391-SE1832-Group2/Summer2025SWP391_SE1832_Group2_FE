@@ -5,8 +5,6 @@ export type ResultDetail = {
   sampleId: number;
   unit: string;
   description: string;
-  resultDetailId: string;
-  parameterName: string;
 };
 
 export type ResultItem = {

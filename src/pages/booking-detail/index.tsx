@@ -9,11 +9,6 @@ import {
   User,
   CheckCircle,
   ArrowLeft,
-  EllipsisVertical,
-  CalendarArrowDown,
-  CalendarCog,
-  CalendarCheck,
-  Activity,
 } from 'lucide-react';
 
 import { getBookingById } from '@/services/booking_service';
@@ -21,8 +16,6 @@ import type { Booking } from '@/types/booking';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ResultContent } from '@/components/common/ResultContent';
 
 const BookingDetailPage = () => {
   const navigate = useNavigate();
@@ -67,7 +60,7 @@ const BookingDetailPage = () => {
   };
 
   const methodMap: Record<string, string> = {
-    TAI_CO_SO_Y_TE: 'Tại cơ sở y tế ',
+    TAI_CO_SO_Y_TE: 'Cơ sở y tế tại SWP391',
     NHAN_VIEN_DEN_NHA: 'Nhân viên đến nhà',
     TU_THU_MAU: 'Tự thu mẫu',
   };
@@ -84,7 +77,7 @@ const BookingDetailPage = () => {
     <div className="p-6 max-w-3xl mx-auto">
       <div className="flex justify-start mb-4">
         <Button variant="outline" onClick={() => navigate(-1)} className="flex items-center gap-2">
-          <ArrowLeft className="w12-h12" /> Quay lại lịch sử
+          <ArrowLeft className="w-4 h-4" /> Quay lại lịch sử
         </Button>
       </div>
 
@@ -96,78 +89,55 @@ const BookingDetailPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <User className="w12-h12 text-muted-foreground" />
-              <span>Người đặt: {booking.fullName || 'Chưa có'}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CalendarArrowDown className="w12-h12 text-muted-foreground" />
+              <CalendarDays className="w-4 h-4 text-muted-foreground" />
               <span>Ngày đặt: {formatDate(booking.bookingDate)}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Activity className="w12-h12 text-muted-foreground" />
-              <span>Phương thức: {methodMap[booking.method] ?? booking.method}</span>
+              <CalendarDays className="w-4 h-4 text-muted-foreground" />
+              <span>Ngày dự kiến: {formatDate(booking.preferredDate)}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="w12-h12 text-muted-foreground" />
+              <CalendarDays className="w-4 h-4 text-muted-foreground" />
+              <span>Ngày lấy mẫu: {formatDate(booking.collectionDate)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-muted-foreground" />
               <span>Khung giờ: {formatTime(booking.time)}</span>
             </div>
           </div>
 
           <div className="space-y-1">
-
             <div className="flex items-center gap-2">
-              <CalendarCog className="w12-h12 text-muted-foreground" />
-              <span>Ngày lấy mẫu: {formatDate(booking.collectionDate)}</span>
+              <User className="w-4 h-4 text-muted-foreground" />
+              <span>Phương thức: {methodMap[booking.method] ?? booking.method}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="w12-h12 text-muted-foreground" />
-              <span>Khung giờ: {formatTime(booking.time)}</span>
+              <CheckCircle className="w-4 h-4 text-muted-foreground" />
+              <span>Mua kit: {booking.buyKit ? 'Có' : 'Không'}</span>
             </div>
             <div className="flex items-center gap-2">
-              <CalendarCheck className="w12-h12 text-muted-foreground" />
-              <span>Ngày trả kết quả: {formatDate(booking.preferredDate)}</span>
+              <ReceiptText className="w-4 h-4 text-muted-foreground" />
+              <span>Thanh toán: {booking.paymentStatus}</span>
             </div>
-
-
           </div>
         </div>
 
         <div className="flex items-start gap-2">
-          <MapPin className="w12-h12 text-muted-foreground mt-1" />
+          <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
           <span>
             <strong>Địa điểm:</strong> {booking.location || 'Chưa có'}
           </span>
         </div>
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              variant={
-                booking.resultDetails && booking.resultDetails.length > 0
-                  ? "complete"
-                  : "error"
-              }
-              disabled={!booking.resultDetails || booking.resultDetails.length === 0}
-            >
-              {booking.resultDetails && booking.resultDetails.length > 0
-                ? "Xem kết quả"
-                : "Chưa có kết quả"}
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent className="max-w-5xl overflow-x-auto">
-            <DialogHeader>
-              <DialogTitle>Kết quả Booking #{booking.bookingId}</DialogTitle>
-            </DialogHeader>
-            <ResultContent resultDetails={booking.resultDetails || []} />
-            <div>
-              <span className="font-semibold">Lời nhận xét:</span>{" "}
-              {booking.finalResult || <span className="text-muted-foreground italic">Chưa có</span>}
-            </div>
-
-          </DialogContent>
-        </Dialog>
-
+        <div>
+          <Button
+            variant="secondary"
+            disabled={!booking.result}
+            onClick={() => navigate(`/result/${booking.bookingId}`)}
+          >
+            {booking.result ? "Xem kết quả" : "Chưa có kết quả"}
+          </Button>
+        </div>
 
         <div>
           <Badge variant="outline" className="uppercase">
