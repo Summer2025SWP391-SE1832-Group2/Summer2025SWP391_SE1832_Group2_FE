@@ -34,10 +34,10 @@ const AddResultPage = () => {
 
   const [testParameters, setTestParameters] = useState<{ testParameterId: number; name: string }[]>([]);
   const [samples, setSamples] = useState<Sample[]>([]);
-  const [testParameters, setTestParameters] = useState<{ testParameterId: number; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState<Record<string, [string, string]>>({});
   const [finalResult, setFinalResult] = useState<string>("");
+
 
   useEffect(() => {
     if (!bookingId || isNaN(bookingId)) {
