@@ -56,7 +56,29 @@ type BookingRequest = {
   location: string;
 };
 
-// ✅ Mapping trạng thái sang tiếng Việt
+export type BookingByCollector = {
+  bookingId: number;
+  userId: number;
+  fullName: string;
+  bookingDate: string;
+  status: string;
+  paymentStatus: string;
+  preferredDate: string;
+  method: string;
+  sampleCollectionSchedules: {
+    scheduleId: number;
+    bookingId: number;
+    collectorId: number;
+    collectorName: string | null;
+    collectionDate: string;
+    time: string;
+    location: string;
+    status: string;
+  }[];
+};
+
+
+
 export const bookingStatusMap: Record<BookingStatus, string> = {
   Pending: 'Đang chờ',
   Confirmed: 'Đã xác nhận',
