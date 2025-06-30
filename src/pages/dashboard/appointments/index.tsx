@@ -61,7 +61,8 @@ export default function AppointmentsPage() {
     const fetchData = async () => {
       try {
         const data = await getAllBookingSchedule();
-        setBookings(data);
+        const filter = data.filter((booking) => booking.paymentStatus ==='Đã thanh toán');
+        setBookings(filter);
         console.log("Fetched bookings:", data);
       } catch (error) {
         console.error("Failed to fetch bookings:", error);
@@ -145,9 +146,9 @@ export default function AppointmentsPage() {
             <TableHead>ID</TableHead>
             <TableHead>Trạng Thái</TableHead>
             <TableHead>Thanh Toán</TableHead>
-            <TableHead>Loại Mẫu</TableHead>
+            <TableHead>Người Lấy Mẫu</TableHead>
             <TableHead>Ngày Đặt</TableHead>
-            <TableHead>Dự Kiến</TableHead>
+            <TableHead>Ngày Lấy Mẫu</TableHead>
             <TableHead>Kết Quả</TableHead>
           </TableRow>
         </TableHeader>
@@ -161,9 +162,9 @@ export default function AppointmentsPage() {
               <TableCell>#{booking.bookingId}</TableCell>
               <TableCell>{booking.status}</TableCell>
               <TableCell>{booking.paymentStatus}</TableCell>
-              <TableCell>{booking.sampleMethod}</TableCell>
+              <TableCell>{booking.sampleCollectionSchedules[0]?.collectorId}</TableCell>
               <TableCell>{new Date(booking.bookingDate).toLocaleDateString()}</TableCell>
-              <TableCell>{new Date(booking.preferredDate).toLocaleDateString()}</TableCell>
+              <TableCell>{new Date(booking.sampleCollectionSchedules[0]?.collectionDate).toLocaleDateString()}</TableCell>
               <TableCell>{booking.result || "Chưa có"}</TableCell>
             </TableRow>
           ))}
@@ -232,7 +233,7 @@ export default function AppointmentsPage() {
               <div className="border rounded-xl p-4 bg-gray-50">
                 <p className="font-semibold mb-2">Thời gian</p>
                 <div className="space-y-1">
-                  <div><strong>Ngày đặt:</strong> {new Date(selectedBooking.preferredDate).toLocaleDateString()}</div>
+                  <div><strong>Ngày đặt:</strong> {new Date(selectedBooking.bookingDate).toLocaleDateString()}</div>
                   <div><strong>Ngày thu mẫu:</strong> {selectedBooking.sampleCollectionSchedules[0] ? new Date(selectedBooking.sampleCollectionSchedules[0].collectionDate).toLocaleString() : "N/A"}</div>
                   <div><strong>Thời gian:</strong> {selectedBooking.sampleCollectionSchedules[0]?.time || "N/A"}</div>
                 </div>

@@ -49,7 +49,9 @@ export default function StaffSchedulePage() {
     const fetchUsers = async () => {
       try {
         const userData = await getAllUserRequests();
-        setUsers(userData);
+        const staffUsers = userData.filter((user: any) => user.role === 'Staff' || user.role==='Manager'); // hoặc user.type
+
+        setUsers(staffUsers);
       } catch (error) {
         console.error('Lỗi tải danh sách người dùng', error);
       }
@@ -135,7 +137,6 @@ export default function StaffSchedulePage() {
                 <PaginationEllipsis />
               </PaginationItem>
             )}
-
             <PaginationItem>
               <PaginationNext href='#' onClick={() => handlePageChange(currentPage + 1)} />
             </PaginationItem>
