@@ -1,5 +1,5 @@
 import axiosInstance from '@/lib/api/axios';
-import type { Booking, BookingRequest, BookingSchedule } from '@/types/booking';
+import type { Booking, BookingByCollector, BookingRequest, BookingSchedule } from '@/types/booking';
 import type { User } from '@/types/user';
 
 // Get all bookings
@@ -57,6 +57,12 @@ const getBookingsByUserId = async (userId: number): Promise<Booking[]> => {
 
 const checkExistingNearBooking = async (userId: number) => {
   const response = await axiosInstance.get<boolean>(`checkPending?userId=${userId}`);
+  return response.data;
+};
+
+
+export const getBookingsByCollectorId = async (collectorId: number): Promise<BookingByCollector[]> => {
+  const response = await axiosInstance.get<BookingByCollector[]>(`/api/Booking/by-collector/${collectorId}`);
   return response.data;
 };
 

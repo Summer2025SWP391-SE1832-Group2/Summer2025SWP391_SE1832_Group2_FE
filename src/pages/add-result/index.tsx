@@ -2,17 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { getAllBookings } from "@/services/booking_service";
+import { getSamplesByBookingId } from "@/services/sample_service";
+import { createMultipleResultDetails, getResultDetailsByBookingId } from "@/services/result-service";
 
-import { getSamplesByBookingId, createSampleService } from '@/services/sample_service';
-import {
-  getResultDetailsByBookingId,
-  createMultipleResultDetails,
-} from '@/services/result-service';
+import type { ResultItem, ResultDetail } from "@/types/resultdetail";
+import type { Sample } from "@/types/sample";
+import { ArrowLeft } from 'lucide-react';
 import { getTestParametersByBookingId } from '@/services/parameters-service';
 
-import type { ResultItem, ResultDetail } from '@/types/resultdetail';
-import type { Sample } from '@/types/sample';
+
 import type { TestParameter } from '@/types/testparameters';
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
