@@ -7,6 +7,7 @@ import { createMultipleResultDetails, getResultDetailsByBookingId } from "@/serv
 
 import type { ResultItem, ResultDetail } from "@/types/resultdetail";
 import type { Sample } from "@/types/sample";
+import { ArrowLeft } from 'lucide-react';
 
 import {
   Card,

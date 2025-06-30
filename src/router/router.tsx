@@ -9,7 +9,7 @@ import AddResultPage from '@/pages/add-result';
 import BookingPage from '@/pages/booking';
 import BookingDetailPage from '@/pages/booking-detail';
 import BookingHistoryPage from '@/pages/booking-history';
-import BookingListPage from '@/pages/booking-list';
+import BookingListPage from '@/pages/add-sample';
 import AppointmentsPage from '@/pages/dashboard/appointments';
 import ServicePage from '@/pages/dashboard/service';
 import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';

@@ -1,7 +1,5 @@
 import axiosInstance from '@/lib/api/axios';
-import type { Sample } from '@/types/sample';
-
-
+import type { Sample, NewSample } from '@/types/sample';
 
 // Get all sample services
 export const getAllSampleServices = async (): Promise<Sample[]> => {
@@ -16,7 +14,7 @@ export const getSampleServiceById = async (id: number): Promise<Sample> => {
 };
 
 // Create a new sample service
-export const createSampleService = async (data: Omit<Sample, 'serviceId'>): Promise<void> => {
+export const createSampleService = async (data: NewSample): Promise<void> => {
   await axiosInstance.post('/api/Sample', data);
 };
 
@@ -30,6 +28,7 @@ export const deleteSampleService = async (id: number): Promise<void> => {
   await axiosInstance.delete(`/api/Sample/${id}`);
 };
 
+// Get samples by Booking ID
 export const getSamplesByBookingId = async (bookingId: number): Promise<Sample[]> => {
   const response = await axiosInstance.get<Sample[]>(`/api/Sample/by-booking-id/${bookingId}`);
   return response.data;
