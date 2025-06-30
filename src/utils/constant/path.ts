@@ -8,16 +8,17 @@ export const paths = {
   home: '/',
   login: '/login',
   register: '/register',
-  profile: '/profile',
-  resetPassword: '/reset-password',
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
 
+  profile: '/profile',
+  transaction: '/transaction',
+  resetPassword: '/reset-password',
+  result: '/result/:id',
   bookingHistory: '/bookinghistory',
   booking: (serviceId: string) => `/booking/${serviceId}`,
   bookingDetail: (bookingId: string) => `/bookingdetail/${bookingId}`,
   blogdetail: (blogId: string) => `/viewblog/${blogId}`,
-
 
   // Protected routes
   dashboard: '/dashboard',
@@ -25,13 +26,12 @@ export const paths = {
   services: '/dashboard/services',
   dashboardProfile: '/dashboard/profile',
   bookingList: '/dashboard/bookinglist',
-  addResult: '/dashboard/result/add/:id',
-  staffschedule : '/dashboard/staffschedules',
-  blogmanage : '/dashboard/blogmanage',
+  staffschedule: '/dashboard/staffschedules',
+  scheduleforstaff : '/dashboard/schedules',
+  blogmanage: '/dashboard/blogmanage',
   blogcreate: '/dashboard/blogmanage/blogcreate',
   blogdetailManage: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
-
-
+  addResult : '/dashboard/result/add/:id',
   // Payment results
   paymentSuccess: '/payment/success',
   paymentFailed: '/payment/failed',

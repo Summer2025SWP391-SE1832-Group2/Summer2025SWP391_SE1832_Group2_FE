@@ -13,7 +13,7 @@ type ServiceMethodOptionProps = {
 };
 
 // Service method option component
-const ServiceMethodOption = ({
+export const ServiceMethodOption = ({
   method,
   icon,
   title,
@@ -39,5 +39,3 @@ const ServiceMethodOption = ({
     </CardContent>
   </Card>
 );
-
-export default ServiceMethodOption;

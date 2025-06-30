@@ -27,32 +27,18 @@ interface SidebarLink {
 }
 
 const sidebarLinks: SidebarLink[] = [
-  {
-    title: 'Tổng quan',
-    href: '/dashboard',
-    icon: <LayoutDashboard className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-  },
+  // {
+  //   title: 'Tổng quan',
+  //   href: '/dashboard',
+  //   icon: <LayoutDashboard className='h-5 w-5' />,
+  //   roles: ['Staff', 'Manager', 'Admin'],
+  // },
 
   {
     title: 'Dịch vụ',
-    href: '/dashboard/service',
+    href: '/dashboard/services',
     icon: <Package className='h-5 w-5' />,
     roles: ['Staff', 'Manager', 'Admin'],
-    children: [
-      {
-        title: 'Dịch vụ',
-        href: '/dashboard/services',
-        icon: <Package className='h-5 w-5' />,
-        roles: ['Staff', 'Manager', 'Admin'],
-      },
-      {
-        title: 'Loại dịch vụ',
-        href: '/dashboard/service-by-type',
-        icon: <Package className='h-5 w-5' />,
-        roles: ['Staff', 'Manager', 'Admin'],
-      },
-    ],
   },
   {
     title: 'Thống kê',
@@ -72,12 +58,12 @@ const sidebarLinks: SidebarLink[] = [
     icon: <Calendar className='h-5 w-5' />,
     roles: ['Staff', 'Manager', 'Admin'],
   },
-  {
-    title: 'Xét nghiệm',
-    href: '/dashboard/tests',
-    icon: <TestTube className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-  },
+  // {
+  //   title: 'Xét nghiệm',
+  //   href: '/dashboard/tests',
+  //   icon: <TestTube className='h-5 w-5' />,
+  //   roles: ['Staff', 'Manager', 'Admin'],
+  // },
   {
     title: 'Nhập mẫu',
     href: '/dashboard/bookinglist',

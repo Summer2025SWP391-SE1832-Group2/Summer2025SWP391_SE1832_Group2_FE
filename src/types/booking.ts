@@ -9,7 +9,6 @@ type SampleCollectionSchedule = {
   location: string;
   status: string;
 };
-
 type BookingSchedule = {
   bookingId: number;
   serviceTypeId: number;
@@ -22,17 +21,12 @@ type BookingSchedule = {
   result: string;
   sampleCollectionSchedules: SampleCollectionSchedule[];
 };
-
-type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
-type PaymentStatus = 'Unpaid' | 'Processing' | 'Paid' | 'Failed';
-
 type Booking = {
-  fullName: string;
   bookingId: number;
   serviceId: number;
   userId: number;
   bookingDate: string;
-  status: BookingStatus;
+  status?: string;
   buyKit: boolean;
   method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
@@ -41,15 +35,19 @@ type Booking = {
   time: string;
   location: string;
   resultDetails: [];
-  finalResult: string;
+  fullName?: string;
+  finalResult ?: string;
 };
+
+type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
+type PaymentStatus = 'Unpaid' | 'Paid' | 'Failed';
 
 type BookingRequest = {
   bookingId?: number;
   serviceId: number;
   userId: number;
   bookingDate: string;
-  status: BookingStatus;
+  status?: string;
   buyKit: boolean;
   method: BookingFormValues['method'];
   paymentStatus: PaymentStatus;
@@ -68,7 +66,6 @@ export const bookingStatusMap: Record<BookingStatus, string> = {
 
 export const paymentStatusMap: Record<PaymentStatus, string> = {
   Unpaid: 'Chưa thanh toán',
-  Processing: 'Đang xử lý',
   Paid: 'Đã thanh toán',
   Failed: 'Thanh toán thất bại',
 };
@@ -79,5 +76,4 @@ export {
   type PaymentStatus,
   type Booking,
   type BookingSchedule,
-  type SampleCollectionSchedule,
 };

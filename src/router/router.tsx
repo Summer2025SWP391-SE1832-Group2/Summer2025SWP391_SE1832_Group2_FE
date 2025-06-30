@@ -16,6 +16,7 @@ import { PaymentFailedPage, PaymentSuccessPage } from '@/pages/payment';
 import ProfilePage from '@/pages/profile';
 import RegisterPage from '@/pages/register';
 import ResetPasswordPage from '@/pages/reset-password';
+import ResultPage from '@/pages/result';
 import { paths } from '@/utils/constant/path';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './protected-route';
@@ -25,6 +26,8 @@ import BlogDetailHomePage from '@/pages/blog/blogDetail';
 import BlogCreatePage from '@/pages/blog-manage/blog-create';
 import StaffSchedulePage from '@/pages/staff-schedule';
 import BlogManagementPage from '@/pages/blog-manage';
+import UserSchedulePage from '@/pages/staff-schedule/user_chedulePage';
+import { TransactionPage } from '@/pages/transaction';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +68,11 @@ const router = createBrowserRouter([
         element: <ProfilePage />,
       },
       {
+        path: paths.result,
+        element: <ResultPage />,
+      },
+
+      {
         path: paths.booking(':serviceId'),
         element: <BookingPage />,
       },
@@ -72,7 +80,6 @@ const router = createBrowserRouter([
         path: paths.blogdetail(':blogId'),
         element: <BlogDetailHomePage />,
       },
-
       {
         element: <PublicRoute />,
         children: [
@@ -89,6 +96,14 @@ const router = createBrowserRouter([
             element: <RegisterPage />,
           },
         ],
+      },
+      {
+        path: paths.transaction,
+        element: (
+          <ProtectedRoute>
+            <TransactionPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -131,7 +146,6 @@ const router = createBrowserRouter([
       {
         path: paths.blogmanage,
         element: <BlogManagementPage />,
-       
       },
       {
         path: paths.blogcreate,
@@ -140,6 +154,10 @@ const router = createBrowserRouter([
       {
         path: paths.blogdetailManage(':blogId'),
         element: <BlogDetailManagePage />,
+      },
+      {
+        path: paths.scheduleforstaff,
+        element: <UserSchedulePage />,
       }
 
       // Add other dashboard routes here
