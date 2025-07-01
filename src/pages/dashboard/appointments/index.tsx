@@ -149,7 +149,7 @@ export default function AppointmentsPage() {
             <TableHead>Người Lấy Mẫu</TableHead>
             <TableHead>Ngày Đặt</TableHead>
             <TableHead>Ngày Lấy Mẫu</TableHead>
-            <TableHead>Kết Quả</TableHead>
+            {/* <TableHead>Kết Quả</TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -162,10 +162,10 @@ export default function AppointmentsPage() {
               <TableCell>#{booking.bookingId}</TableCell>
               <TableCell>{booking.status}</TableCell>
               <TableCell>{booking.paymentStatus}</TableCell>
-              <TableCell>{booking.sampleCollectionSchedules[0]?.collectorId}</TableCell>
+              <TableCell>{booking.sampleCollectionSchedules[0]?.collectorName}</TableCell>
               <TableCell>{new Date(booking.bookingDate).toLocaleDateString()}</TableCell>
               <TableCell>{new Date(booking.sampleCollectionSchedules[0]?.collectionDate).toLocaleDateString()}</TableCell>
-              <TableCell>{booking.result || "Chưa có"}</TableCell>
+              {/* <TableCell>{booking.result || "Chưa có"}</TableCell> */}
             </TableRow>
           ))}
         </TableBody>

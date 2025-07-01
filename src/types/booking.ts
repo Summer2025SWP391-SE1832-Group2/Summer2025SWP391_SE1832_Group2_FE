@@ -8,6 +8,7 @@ type SampleCollectionSchedule = {
   time: string;
   location: string;
   status: string;
+  collectorName : string;
 };
 type BookingSchedule = {
   bookingId: number;
