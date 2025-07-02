@@ -28,6 +28,9 @@ import StaffSchedulePage from '@/pages/staff-schedule';
 import BlogManagementPage from '@/pages/blog-manage';
 import UserSchedulePage from '@/pages/staff-schedule/user_chedulePage';
 import { TransactionPage } from '@/pages/transaction';
+import ParameterPage from '@/pages/parameter-management';
+import TestParameterPage from '@/pages/test-parameter-management';
+import TestParameterDetailPage from '@/pages/test-parameter-detail';
 
 const router = createBrowserRouter([
   {
@@ -158,7 +161,19 @@ const router = createBrowserRouter([
       {
         path: paths.scheduleforstaff,
         element: <UserSchedulePage />,
-      }
+      },
+      {
+        path: paths.parameterlist,
+        element: <ParameterPage />,
+      },
+      {
+        path: paths.testparameterlist,
+        element: <TestParameterPage />,
+      },
+      {
+        path: paths.testparameterdetail(':serviceId'),
+        element: <TestParameterDetailPage />,
+      },
 
       // Add other dashboard routes here
     ],

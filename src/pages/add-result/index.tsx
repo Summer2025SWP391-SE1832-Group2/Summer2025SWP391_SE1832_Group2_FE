@@ -1,15 +1,12 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllBookings } from "@/services/booking_service";
 import { getSamplesByBookingId } from "@/services/sample_service";
 import { createMultipleResultDetails, getResultDetailsByBookingId } from "@/services/result-service";
 
-import type { ResultItem, ResultDetail } from "@/types/resultdetail";
+import type { ResultItem } from "@/types/resultdetail";
 import type { Sample } from "@/types/sample";
 import { ArrowLeft } from 'lucide-react';
-import { getTestParametersByBookingId } from '@/services/parameters-service';
+import { getTestParametersByBookingId } from '@/services/test_parameters-service';
 
 
 import type { TestParameter } from '@/types/testparameters';
@@ -38,36 +35,39 @@ export default function AddResultPage() {
       return;
     }
 
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [sampleData, resultDetails, parameterData] = await Promise.all([
-          getSamplesByBookingId(bookingId),
-          getResultDetailsByBookingId(bookingId),
-          getTestParametersByBookingId(bookingId),
-        ]);
+const fetchData = async () => {
+  setLoading(true);
+  try {
+    const [sampleData, parameterData] = await Promise.all([
+      getSamplesByBookingId(bookingId),
+      getTestParametersByBookingId(bookingId),
+    ]);
 
-        setSamples(sampleData);
-        setTestParameters(parameterData);
+    if (sampleData.length === 0) {
+      alert('Booking chưa có mẫu. Vui lòng thêm mẫu trước.');
+      navigate(-1);
+      return;
+    }
 
-        const newValues: Record<string, [string, string]> = {};
-        resultDetails.forEach((r) => {
-          const key = `${r.testParameterId}-${r.sampleId}`;
-          const split = r.value.split(',');
-          newValues[key] = [split[0] || '', split[1] || ''];
-        });
+    const resultDetails = await getResultDetailsByBookingId(bookingId);
 
-        setValues(newValues);
+    setSamples(sampleData);
+    setTestParameters(parameterData);
 
-        if (sampleData.length === 0) {
-          alert('Booking chưa có mẫu. Vui lòng thêm mẫu trước.');
-        }
-      } catch (err) {
-        console.error('Lỗi khi tải dữ liệu:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const newValues: Record<string, [string, string]> = {};
+    resultDetails.forEach((r) => {
+      const key = `${r.testParameterId}-${r.sampleId}`;
+      const split = r.value.split(',');
+      newValues[key] = [split[0] || '', split[1] || ''];
+    });
+    setValues(newValues);
+  } catch (err) {
+    console.error('Lỗi khi tải dữ liệu:', err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
     fetchData();
   }, [bookingId]);
@@ -91,10 +91,14 @@ export default function AddResultPage() {
         const value = valPair.filter(Boolean).join(',');
 
         resultItems.push({
+          resultDetailId: 0,
+          bookingId,
           testParameterId: param.testParameterId,
           sampleId: sample.sampleId,
+          parameterName: param.name,
           value,
         });
+
       }
     }
 

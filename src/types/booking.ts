@@ -10,18 +10,6 @@ type SampleCollectionSchedule = {
   status: string;
   collectorName : string;
 };
-type BookingSchedule = {
-  bookingId: number;
-  serviceTypeId: number;
-  userId: number;
-  bookingDate: string;
-  sampleMethod: string;
-  status: string;
-  paymentStatus: string;
-  preferredDate: string;
-  result: string;
-  sampleCollectionSchedules: SampleCollectionSchedule[];
-};
 type Booking = {
   bookingId: number;
   serviceId: number;
@@ -38,6 +26,16 @@ type Booking = {
   resultDetails: [];
   fullName?: string;
   finalResult ?: string;
+  sampleCollectionSchedules: {
+    scheduleId: number;
+    bookingId: number;
+    collectorId: number;
+    collectorName: string | null;
+    collectionDate: string;
+    time: string;
+    location: string;
+    status: string;
+  }[];
 };
 
 type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
@@ -57,26 +55,6 @@ type BookingRequest = {
   location: string;
 };
 
-export type BookingByCollector = {
-  bookingId: number;
-  userId: number;
-  fullName: string;
-  bookingDate: string;
-  status: string;
-  paymentStatus: string;
-  preferredDate: string;
-  method: string;
-  sampleCollectionSchedules: {
-    scheduleId: number;
-    bookingId: number;
-    collectorId: number;
-    collectorName: string | null;
-    collectionDate: string;
-    time: string;
-    location: string;
-    status: string;
-  }[];
-};
 
 
 
@@ -98,5 +76,4 @@ export {
   type BookingStatus,
   type PaymentStatus,
   type Booking,
-  type BookingSchedule,
 };

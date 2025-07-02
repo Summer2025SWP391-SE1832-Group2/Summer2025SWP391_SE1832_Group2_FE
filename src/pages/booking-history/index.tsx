@@ -72,24 +72,31 @@ const BookingHistoryPage = () => {
     TU_THU_MAU: 'Tự thu mẫu',
   };
 
-  const getStatusColor = (status: string) => {
+  const getBookingStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'completed':
+      case 'đã lấy mẫu':
         return 'bg-blue-100 text-blue-700';
-      case 'pending':
+      case 'đang chờ xử lý':
         return 'bg-orange-100 text-orange-800';
-      case 'cancelled':
+      case 'hoàn thành':
+        return 'bg-green-100 text-green-700';
+      case 'đã huỷ':
         return 'bg-gray-200 text-gray-600';
-      case 'paid':
-        return 'bg-green-200 text-green-800';
-      case 'unpaid':
-        return 'bg-red-100 text-red-700';
-      case 'failed':
-        return 'bg-rose-100 text-rose-700';
       default:
         return 'bg-gray-100 text-gray-700';
     }
   };
+  const getPaymentStatusColor = (paymentStatus: string) => {
+  switch (paymentStatus.toLowerCase()) {
+    case 'đã thanh toán':
+      return 'bg-green-100 text-green-700';
+    case 'chưa thanh toán':
+      return 'bg-red-100 text-red-700';
+    default:
+      return 'bg-gray-100 text-gray-700';
+  }
+};
+
 
   const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
   const reversedBookings = [...bookings].reverse();
@@ -126,10 +133,10 @@ const BookingHistoryPage = () => {
                   <TableRow key={booking.bookingId}>
                     <TableCell>#{booking.bookingId}</TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
+                      <Badge className={getBookingStatusColor(booking.status||"")}>{booking.status}</Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(booking.paymentStatus)} variant="secondary">
+                      <Badge className={getPaymentStatusColor(booking.paymentStatus)} variant="secondary">
                         {booking.paymentStatus}
                       </Badge>
                     </TableCell>

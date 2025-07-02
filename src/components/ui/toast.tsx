@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 type ToastProps = {
   message: string;
-  type: 'success' | 'error' | 'info';
+  type: 'success' | 'error' | 'info'|'loading';
   onClose: () => void;
   duration?: number;
 };
@@ -25,6 +25,8 @@ export const Toast = ({ message, type, onClose, duration = 4000 }: ToastProps) =
       case 'error':
         return <AlertCircle className='h-5 w-5 text-white' />;
       case 'info':
+        return <AlertCircle className='h-5 w-5 text-white' />;
+      case 'loading':
         return <AlertCircle className='h-5 w-5 text-white' />;
       default:
         return null;

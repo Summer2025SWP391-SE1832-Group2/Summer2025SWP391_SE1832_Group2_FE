@@ -58,12 +58,18 @@ const sidebarLinks: SidebarLink[] = [
     icon: <Calendar className='h-5 w-5' />,
     roles: ['Staff', 'Manager', 'Admin'],
   },
-  // {
-  //   title: 'Xét nghiệm',
-  //   href: '/dashboard/tests',
-  //   icon: <TestTube className='h-5 w-5' />,
-  //   roles: ['Staff', 'Manager', 'Admin'],
-  // },
+  {
+    title: 'Thông số xét nghiệm',
+    href: '/dashboard/parameterlist',
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
+    title: 'Thông số dịch vụ',
+    href: '/dashboard/testparameterlist',
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
   {
     title: 'Nhập mẫu',
     href: '/dashboard/bookinglist',
