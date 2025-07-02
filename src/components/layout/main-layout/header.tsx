@@ -174,6 +174,14 @@ const Header = () => {
                     </span>
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={paths.favorite}>
+                    <span className='flex items-center gap-2 w-full'>
+                      <CreditCard className='h-4 w-4' />
+                      Xem Blog yêu thích 
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleLogout}
                   className='text-red-600 flex items-center gap-2 w-full'

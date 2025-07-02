@@ -64,27 +64,38 @@ export default function UserSchedulePage() {
 
   const handleAddEvent = async () => {
     if (!selectedDate || selectedSlot === null) return;
-
+  
     const slot = workSchedules.find((s) => s.workScheduleId === selectedSlot);
     if (!slot) return;
-
+  
+    const isDuplicate = eventList.some(
+      (event) =>
+        event.start.toDateString() === selectedDate.toDateString() &&
+        event.workScheduleId === selectedSlot
+    );
+  
+    if (isDuplicate) {
+      alert('Đã có lịch làm việc trùng trong ngày này!');
+      return;
+    }
+  
     const [startHour, startMinute] = slot.startTime.split(':').map(Number);
     const [endHour, endMinute] = slot.endTime.split(':').map(Number);
-
+  
     const start = new Date(selectedDate);
-    // start.setHours(startHour, startMinute, 0);
-
+    start.setHours(startHour, startMinute, 0);
+  
     const end = new Date(selectedDate);
-    // end.setHours(endHour, endMinute, 0);
-
+    end.setHours(endHour, endMinute, 0);
+  
     try {
-        console.log('Thêm lịch làm việc:', selectedDate);
-        const newSchedule = await createUserWorkSchedule({
-          userId: state.user.userId,
-          workScheduleId: slot.workScheduleId,
-          date: selectedDate.toLocaleDateString('en-CA'),
-        });
-
+      console.log('Thêm lịch làm việc:', selectedDate);
+      const newSchedule = await createUserWorkSchedule({
+        userId: state.user.userId,
+        workScheduleId: slot.workScheduleId,
+        date: selectedDate.toLocaleDateString('en-CA'),
+      });
+  
       const newEvent: CalendarEvent = {
         title: slot.title,
         start,
@@ -93,15 +104,14 @@ export default function UserSchedulePage() {
         userWorkScheduleId: newSchedule.userWorkScheduleId,
         workScheduleId: slot.workScheduleId,
       };
-
+  
       setEventList([...eventList, newEvent]);
       setOpenDialog(false);
-      // 
-      
     } catch (error) {
       console.error('Lỗi khi tạo lịch:', error);
     }
   };
+  
 
   const handleDeleteEvent = async (eventToDelete: CalendarEvent) => {
     

@@ -56,8 +56,6 @@ export default function AppointmentsPage() {
     .slice()
     .reverse()
     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getAllBookingSchedule();
@@ -68,6 +66,8 @@ export default function AppointmentsPage() {
         console.error("Failed to fetch bookings:", error);
       }
     };
+  useEffect(() => {
+    
     fetchData();
   }, []);
 
@@ -103,8 +103,7 @@ export default function AppointmentsPage() {
       await AssignStaffForSchedule(scheduleId, staffId);
       alert("Staff assigned successfully!");
       setSelectedBooking(null);
-      const updatedBookings = await getAllBookingSchedule();
-      setBookings(updatedBookings);
+      fetchData();
     } catch (error) {
       console.error("Assignment failed:", error);
       alert("Failed to assign staff.");

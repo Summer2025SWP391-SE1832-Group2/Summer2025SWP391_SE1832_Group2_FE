@@ -16,6 +16,8 @@ export const paths = {
   resetPassword: '/reset-password',
   result: '/result/:id',
   bookingHistory: '/bookinghistory',
+  favorite: '/favorite',
+
   booking: (serviceId: string) => `/booking/${serviceId}`,
   bookingDetail: (bookingId: string) => `/bookingdetail/${bookingId}`,
   blogdetail: (blogId: string) => `/viewblog/${blogId}`,

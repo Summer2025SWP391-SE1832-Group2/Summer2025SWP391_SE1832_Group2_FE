@@ -28,6 +28,7 @@ import StaffSchedulePage from '@/pages/staff-schedule';
 import BlogManagementPage from '@/pages/blog-manage';
 import UserSchedulePage from '@/pages/staff-schedule/user_chedulePage';
 import { TransactionPage } from '@/pages/transaction';
+import FavoritePage from '@/pages/favorite';
 
 const router = createBrowserRouter([
   {
@@ -71,7 +72,10 @@ const router = createBrowserRouter([
         path: paths.result,
         element: <ResultPage />,
       },
-
+      {
+        path: paths.favorite,
+        element: <FavoritePage />,
+      },
       {
         path: paths.booking(':serviceId'),
         element: <BookingPage />,

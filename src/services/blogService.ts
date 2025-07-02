@@ -1,6 +1,7 @@
 import axiosInstance from "@/lib/api/axios";
 import type { Blog, Blogtype } from "@/types/blog";
 
+
 const getAllBlogs = async (): Promise<Blog[]> => {
   const response = await axiosInstance.get<Blog[]>("/api/Blog");
   return response.data;
@@ -42,6 +43,13 @@ const updateBlogType = async ( data: Partial<Blogtype>): Promise<Blogtype> => {
   return response.data;
 };
 
+const addFavorite = async (blogId: number, userId: number): Promise<Blog> => {
+  const data = { blogId, userId };
+  const response = await axiosInstance.post<Blog>("/api/Favorite", data);
+  return response.data;
+};
+
+
 export {
   getAllBlogs,
   getBlogById,
@@ -50,5 +58,6 @@ export {
   deleteBlog,
   getAllBlogByBlogTypeID,
   getAllBlogtype,
-  updateBlogType
+  updateBlogType,
+  addFavorite
 };
