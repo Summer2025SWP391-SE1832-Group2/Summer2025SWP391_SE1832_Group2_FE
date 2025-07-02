@@ -1,2 +1,2 @@
-export { TransactionStatusBadge } from './transaction-status-badge';
-export { createTransactionTableColumns } from './transaction-table-columns';
+export * from './transaction-status-badge';
+export * from './transaction-table-columns';

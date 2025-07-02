@@ -7,6 +7,15 @@ export const bookingSchema = z.object({
   location: z.string().min(1, { message: 'Địa chỉ là bắt buộc' }),
   buyKit: z.boolean(),
   time: z.string().min(1, { message: 'Vui lòng chọn khung giờ' }),
+  samples: z
+    .array(
+      z.object({
+        sampleType: z.string().min(1, { message: 'Vui lòng chọn loại mẫu' }),
+        participantName: z.string().min(1, { message: 'Vui lòng điền tên người tham gia' }),
+        notes: z.string().min(1, { message: 'Vui lòng điền ghi chú' }),
+      }),
+    )
+    .length(2, { message: 'Vui lòng điền đầy đủ thông tin của 2 mẫu' }),
 });
 
 export const bookingDefaultValues = {
@@ -16,6 +25,18 @@ export const bookingDefaultValues = {
   collectionDate: new Date(new Date().setDate(new Date().getDate() + 1)),
   buyKit: false,
   time: '',
+  samples: [
+    {
+      sampleType: '',
+      participantName: '',
+      notes: '',
+    },
+    {
+      sampleType: '',
+      participantName: '',
+      notes: '',
+    },
+  ],
 };
 
 // Conditional schema that requires location field when method is StaffVisit

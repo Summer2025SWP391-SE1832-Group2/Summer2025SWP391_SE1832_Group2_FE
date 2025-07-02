@@ -8,7 +8,7 @@ type SampleCollectionSchedule = {
   time: string;
   location: string;
   status: string;
-  collectorName : string;
+  collectorName: string;
 };
 type BookingSchedule = {
   bookingId: number;
@@ -37,7 +37,7 @@ type Booking = {
   location: string;
   resultDetails: [];
   fullName?: string;
-  finalResult ?: string;
+  finalResult?: string;
 };
 
 type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
@@ -55,6 +55,11 @@ type BookingRequest = {
   collectionDate: string;
   time: string;
   location: string;
+  samples: {
+    sampleType: string;
+    participantName: string;
+    notes: string;
+  }[];
 };
 
 export type BookingByCollector = {
@@ -77,8 +82,6 @@ export type BookingByCollector = {
     status: string;
   }[];
 };
-
-
 
 export const bookingStatusMap: Record<BookingStatus, string> = {
   Pending: 'Đang chờ',
