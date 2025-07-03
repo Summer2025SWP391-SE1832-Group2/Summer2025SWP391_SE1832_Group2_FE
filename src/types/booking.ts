@@ -8,7 +8,7 @@ type SampleCollectionSchedule = {
   time: string;
   location: string;
   status: string;
-  collectorName : string;
+  collectorName: string;
 };
 type Booking = {
   bookingId: number;
@@ -25,7 +25,7 @@ type Booking = {
   location: string;
   resultDetails: [];
   fullName?: string;
-  finalResult ?: string;
+  finalResult?: string;
   sampleCollectionSchedules: {
     scheduleId: number;
     bookingId: number;
@@ -53,10 +53,12 @@ type BookingRequest = {
   collectionDate: string;
   time: string;
   location: string;
+  samples: {
+    sampleType: string;
+    participantName: string;
+    notes: string;
+  }[];
 };
-
-
-
 
 export const bookingStatusMap: Record<BookingStatus, string> = {
   Pending: 'Đang chờ',
@@ -71,9 +73,4 @@ export const paymentStatusMap: Record<PaymentStatus, string> = {
   Failed: 'Thanh toán thất bại',
 };
 
-export {
-  type BookingRequest,
-  type BookingStatus,
-  type PaymentStatus,
-  type Booking,
-};
+export { type BookingRequest, type BookingStatus, type PaymentStatus, type Booking };

@@ -27,36 +27,23 @@ interface SidebarLink {
 }
 
 const sidebarLinks: SidebarLink[] = [
-  // {
-  //   title: 'Tổng quan',
-  //   href: '/dashboard',
-  //   icon: <LayoutDashboard className='h-5 w-5' />,
-  //   roles: ['Staff', 'Manager', 'Admin'],
-  // },
-
   {
     title: 'Dịch vụ',
     href: '/dashboard/services',
     icon: <Package className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-  },
-  {
-    title: 'Thống kê',
-    href: '/dashboard/analytics',
-    icon: <BarChart3 className='h-5 w-5' />,
     roles: ['Manager', 'Admin'],
   },
   {
     title: 'Lịch hẹn',
     href: '/dashboard/appointments',
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager'],
   },
   {
     title: 'Lịch Làm việc',
     href: '/dashboard/staffschedules',
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager'],
   },
   {
     title: 'Thông số xét nghiệm',
@@ -74,44 +61,18 @@ const sidebarLinks: SidebarLink[] = [
     title: 'Nhập mẫu',
     href: '/dashboard/bookinglist',
     icon: <Package className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-    // children: [
-    //   {
-    //     title: 'Nhập thông số sample',
-    //     href: '/dashboard/bookinglist',
-    //     icon: <Package className='h-5 w-5' />,
-    //     roles: ['Staff', 'Manager', 'Admin'],
-    //   },
-    //   {
-    //     title: 'Nhập kết quả',
-    //     href: '/dashboard/addresult',
-    //     icon: <Package className='h-5 w-5' />,
-    //     roles: ['Staff', 'Manager', 'Admin'],
-    //   },
-    // ],
-  },
-  {
-    title: 'Báo cáo',
-    href: '/dashboard/reports',
-    icon: <FileText className='h-5 w-5' />,
-    roles: ['Manager', 'Admin'],
+    roles: ['Staff'],
   },
   {
     title: 'Blogs',
     href: '/dashboard/blogmanage',
     icon: <FileText className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Manager'],
   },
   {
     title: 'Người dùng',
     href: '/dashboard/users',
     icon: <Users className='h-5 w-5' />,
-    roles: ['Admin'],
-  },
-  {
-    title: 'Cài đặt',
-    href: '/dashboard/settings',
-    icon: <Settings className='h-5 w-5' />,
     roles: ['Admin'],
   },
 ];
