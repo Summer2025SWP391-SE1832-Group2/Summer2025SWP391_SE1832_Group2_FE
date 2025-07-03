@@ -8,19 +8,7 @@ type SampleCollectionSchedule = {
   time: string;
   location: string;
   status: string;
-  collectorName : string;
-};
-type BookingSchedule = {
-  bookingId: number;
-  serviceTypeId: number;
-  userId: number;
-  bookingDate: string;
-  sampleMethod: string;
-  status: string;
-  paymentStatus: string;
-  preferredDate: string;
-  result: string;
-  sampleCollectionSchedules: SampleCollectionSchedule[];
+  collectorName: string;
 };
 type Booking = {
   bookingId: number;
@@ -37,7 +25,17 @@ type Booking = {
   location: string;
   resultDetails: [];
   fullName?: string;
-  finalResult ?: string;
+  finalResult?: string;
+  sampleCollectionSchedules: {
+    scheduleId: number;
+    bookingId: number;
+    collectorId: number;
+    collectorName: string | null;
+    collectionDate: string;
+    time: string;
+    location: string;
+    status: string;
+  }[];
 };
 
 type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
@@ -55,30 +53,12 @@ type BookingRequest = {
   collectionDate: string;
   time: string;
   location: string;
-};
-
-export type BookingByCollector = {
-  bookingId: number;
-  userId: number;
-  fullName: string;
-  bookingDate: string;
-  status: string;
-  paymentStatus: string;
-  preferredDate: string;
-  method: string;
-  sampleCollectionSchedules: {
-    scheduleId: number;
-    bookingId: number;
-    collectorId: number;
-    collectorName: string | null;
-    collectionDate: string;
-    time: string;
-    location: string;
-    status: string;
+  samples: {
+    sampleType: string;
+    participantName: string;
+    notes: string;
   }[];
 };
-
-
 
 export const bookingStatusMap: Record<BookingStatus, string> = {
   Pending: 'Đang chờ',
@@ -93,10 +73,4 @@ export const paymentStatusMap: Record<PaymentStatus, string> = {
   Failed: 'Thanh toán thất bại',
 };
 
-export {
-  type BookingRequest,
-  type BookingStatus,
-  type PaymentStatus,
-  type Booking,
-  type BookingSchedule,
-};
+export { type BookingRequest, type BookingStatus, type PaymentStatus, type Booking };

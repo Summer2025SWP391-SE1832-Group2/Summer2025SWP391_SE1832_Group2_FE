@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getBookingsByCollectorId } from "@/services/booking_service";
+import { getAllBookings, getAllBookingSchedule, getBookingsByCollectorId } from "@/services/booking_service";
 import {
   getSamplesByBookingId,
   createSampleService,
@@ -8,7 +8,7 @@ import {
 } from "@/services/sample_service";
 import { getCollectionScheduleByBookingId } from "@/services/sample_collection_schedule_service";
 import { useAuthStore } from "@/stores/auth";
-import type { BookingByCollector } from "@/types/booking";
+import type { Booking } from "@/types/booking";
 import type { Sample, NewSample } from "@/types/sample";
 import BookingTable from "./BookingTable";
 import { useToast } from "@/components/ui/toast";
@@ -17,17 +17,30 @@ const BookingListPage: React.FC = () => {
   const { user } = useAuthStore();
   const { showToast } = useToast();
 
-  const [bookings, setBookings] = useState<BookingByCollector[]>([]);
+  const [bookings, setBookings] = useState<Array<Booking >>([]);
   const [sampleMap, setSampleMap] = useState<Record<number, Sample[]>>({});
   const [expanded, setExpanded] = useState<number | null>(null);
   const [openDialogId, setOpenDialogId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (user) {
-      getBookingsByCollectorId(user.userId)
-        .then((data) => setBookings(data.reverse()))
-        .catch(() => showToast("Không thể tải danh sách booking.", "error"));
-    }
+    if (!user) return;
+
+    const fetchData = async () => {
+      try {
+        if (user.role === "Manager" || user.role === "Admin") {
+          const data: Booking[] = await getAllBookingSchedule();
+          setBookings(data.reverse());
+        } else {
+          const data: Booking[] = await getBookingsByCollectorId(user.userId);
+          setBookings(data.reverse());
+        }
+      } catch (error) {
+        console.error(error);
+        showToast("Không thể tải danh sách booking.", "error");
+      }
+    };
+
+    fetchData();
   }, [user, showToast]);
 
   const loadSamples = async (bookingId: number) => {

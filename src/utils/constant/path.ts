@@ -29,14 +29,18 @@ export const paths = {
   dashboardProfile: '/dashboard/profile',
   bookingList: '/dashboard/bookinglist',
   staffschedule: '/dashboard/staffschedules',
-  scheduleforstaff : '/dashboard/schedules',
+  scheduleforstaff: '/dashboard/schedules',
   blogmanage: '/dashboard/blogmanage',
   blogcreate: '/dashboard/blogmanage/blogcreate',
+  parameterlist: '/dashboard/parameterlist',
+  testparameterlist: '/dashboard/testparameterlist',
+  testparameterdetail: (serviceId: string) => `/dashboard/testparameterdetail/${serviceId}`,
+
   blogdetailManage: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
-  addResult : '/dashboard/result/add/:id',
+  addResult: '/dashboard/result/add/:id',
   // Payment results
-  paymentSuccess: '/payment/success',
-  paymentFailed: '/payment/failed',
+  paymentSuccess: '/payment-success',
+  paymentFailed: '/payment-failed',
 
   // Fallback
   notFound: '*',

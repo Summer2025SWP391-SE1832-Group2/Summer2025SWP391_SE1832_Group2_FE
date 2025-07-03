@@ -1,4 +1,4 @@
-export { ServiceFormModal } from './service-form-modal';
-export { ServiceDeleteModal } from './service-delete-modal';
-export { ServiceStatusBadge } from './service-status-badge';
-export { createServiceTableColumns } from './service-table-columns';
+export * from './service-form-modal';
+export * from './service-delete-modal';
+export * from './service-status-badge';
+export * from './service-table-columns';

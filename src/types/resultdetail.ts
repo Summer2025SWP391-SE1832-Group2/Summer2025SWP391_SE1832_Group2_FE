@@ -8,14 +8,15 @@ export type ResultDetail = {
   parameterName : string;
 };
 
-export type ResultItem = {
+export interface ResultItem {
   resultDetailId: number;
   bookingId: number;
   testParameterId: number;
+  sampleId: number;
   parameterName: string;
   value: string;
-  sampleId: number;
-};
+}
+
 
 export type CreateResultDetail = {
   bookingId: number;
