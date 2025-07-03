@@ -78,26 +78,12 @@ const PaymentFailedPage = () => {
       </Card>
 
       {/* Action Buttons */}
-      <div className='flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-2xl'>
-        <Button asChild variant='outline' size='lg' className='w-full sm:w-auto'>
-          <Link to={paths.home} className='flex items-center justify-center gap-2'>
-            <ArrowLeft className='w-4 h-4' />
-            <span>Về trang chủ</span>
-          </Link>
-        </Button>
-
-        <Button
-          asChild
-          size='lg'
-          className='w-full sm:w-auto bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800'
-        >
-          <Link to='/support' className='flex items-center justify-center gap-2'>
-            <HelpCircle className='w-4 h-4' />
-            <span>Liên hệ hỗ trợ</span>
-            <ChevronRight className='w-4 h-4 ml-1' />
-          </Link>
-        </Button>
-      </div>
+      <Button asChild variant='outline' size='lg' className='w-full sm:w-auto'>
+        <Link to={paths.home} className='flex items-center justify-center gap-2'>
+          <ArrowLeft className='w-4 h-4' />
+          <span>Về trang chủ</span>
+        </Link>
+      </Button>
     </div>
   );
 };

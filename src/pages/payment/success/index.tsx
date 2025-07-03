@@ -113,7 +113,7 @@ const PaymentSuccessPage = () => {
         </Button>
 
         <Button asChild size='lg' className='w-full sm:w-auto'>
-          <Link to='/profile/bookings' className='flex items-center justify-center gap-2'>
+          <Link to={paths.bookingHistory} className='flex items-center justify-center gap-2'>
             <ListChecks className='w-4 h-4' />
             <span>Xem lịch hẹn</span>
             <ChevronRight className='w-4 h-4 ml-1' />
