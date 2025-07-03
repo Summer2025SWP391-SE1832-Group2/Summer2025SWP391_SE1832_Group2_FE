@@ -37,8 +37,8 @@ export const paths = {
   blogdetailManage: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
   addResult: '/dashboard/result/add/:id',
   // Payment results
-  paymentSuccess: '/payment/success',
-  paymentFailed: '/payment/failed',
+  paymentSuccess: '/payment-success',
+  paymentFailed: '/payment-failed',
 
   // Fallback
   notFound: '*',
