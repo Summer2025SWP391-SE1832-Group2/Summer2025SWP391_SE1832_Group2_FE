@@ -45,6 +45,9 @@ const SampleList: React.FC<SampleListProps> = ({ samples, onDelete, onEdit }) =>
                 <p>
                   <strong>Loại:</strong> {s.sampleType}
                 </p>
+                <p>
+                  <strong>Ghi chú:</strong> {s.notes}
+                </p>
               </div>
               <div className="space-x-2">
                 <Button size="sm" variant="outline" onClick={() => setEditingId(s.sampleId)}>

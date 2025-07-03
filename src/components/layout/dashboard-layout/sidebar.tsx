@@ -46,6 +46,18 @@ const sidebarLinks: SidebarLink[] = [
     roles: ['Staff', 'Manager'],
   },
   {
+    title: 'Thông số xét nghiệm',
+    href: '/dashboard/parameterlist',
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
+    title: 'Thông số dịch vụ',
+    href: '/dashboard/testparameterlist',
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
     title: 'Nhập mẫu',
     href: '/dashboard/bookinglist',
     icon: <Package className='h-5 w-5' />,
