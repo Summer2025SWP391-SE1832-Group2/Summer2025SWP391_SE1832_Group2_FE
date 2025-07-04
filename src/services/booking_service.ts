@@ -66,6 +66,11 @@ export const getBookingsByCollectorId = async (collectorId: number): Promise<Boo
   return response.data;
 };
 
+ const rePayment = async (bookingID: number) => {
+  const response= await axiosInstance.post<string>(`/api/Booking/regenerate-qr/${bookingID}`);
+  return response.data;
+};
+
 export {
   AssignStaffForSchedule,
   createBooking,
@@ -77,4 +82,5 @@ export {
   getStaffForSchedule,
   updateBooking,
   checkExistingNearBooking,
+  rePayment,
 };

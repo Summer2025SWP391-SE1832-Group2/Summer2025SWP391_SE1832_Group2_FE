@@ -148,7 +148,6 @@ const BookingPage = () => {
       });
 
       showToast('Booking created successfully', 'success');
-
       setTimeout(() => {
         window.location.href = response;
       }, 1000);

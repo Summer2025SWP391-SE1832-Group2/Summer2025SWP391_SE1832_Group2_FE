@@ -20,7 +20,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { getBookingsByUserId } from '@/services/booking_service';
+import { getBookingsByUserId, rePayment } from '@/services/booking_service';
+import { useToast } from '@/components/ui/toast';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -28,6 +29,7 @@ const BookingHistoryPage = () => {
   const { user } = useAuthStore();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -65,7 +67,6 @@ const BookingHistoryPage = () => {
     return time;
   };
 
-
   const methodMap: Record<string, string> = {
     TAI_CO_SO_Y_TE: 'Cơ sở y tế tại SWP391',
     NHAN_VIEN_DEN_NHA: 'Nhân viên đến nhà',
@@ -87,33 +88,46 @@ const BookingHistoryPage = () => {
     }
   };
   const getPaymentStatusColor = (paymentStatus: string) => {
-  switch (paymentStatus.toLowerCase()) {
-    case 'đã thanh toán':
-      return 'bg-green-100 text-green-700';
-    case 'chưa thanh toán':
-      return 'bg-red-100 text-red-700';
-    default:
-      return 'bg-gray-100 text-gray-700';
-  }
-};
+    switch (paymentStatus.toLowerCase()) {
+      case 'đã thanh toán':
+        return 'bg-green-100 text-green-700';
+      case 'chưa thanh toán':
+        return 'bg-red-100 text-red-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+  const rePaymentBooking = async (bookingID: number ) => {
+    try {
+      const response = await rePayment(bookingID);
 
-
+      showToast('Booking created successfully', 'success');
+      setTimeout(() => {
+        window.location.href = response.paymentUrl;
+      }, 1000);
+    } catch (error: any) {
+      showToast(error?.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+    }
+  };
   const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
   const reversedBookings = [...bookings].reverse();
-  const currentBookings = reversedBookings.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const currentBookings = reversedBookings.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
+  );
 
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-6">Lịch sử đặt lịch</h2>
+    <div className='p-6'>
+      <h2 className='text-2xl font-semibold mb-6'>Lịch sử đặt lịch</h2>
 
       {bookings.length === 0 ? (
-        <p className="text-muted-foreground">Bạn chưa có lịch sử booking nào.</p>
+        <p className='text-muted-foreground'>Bạn chưa có lịch sử booking nào.</p>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-lg border">
+          <div className='overflow-x-auto rounded-lg border'>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -125,7 +139,7 @@ const BookingHistoryPage = () => {
                   <TableHead>Thời gian</TableHead>
                   <TableHead>Phương thức</TableHead>
                   <TableHead>Địa điểm</TableHead>
-                  <TableHead className="text-right">Hành động</TableHead>
+                  <TableHead className='text-right'>Hành động</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -133,10 +147,15 @@ const BookingHistoryPage = () => {
                   <TableRow key={booking.bookingId}>
                     <TableCell>#{booking.bookingId}</TableCell>
                     <TableCell>
-                      <Badge className={getBookingStatusColor(booking.status||"")}>{booking.status}</Badge>
+                      <Badge className={getBookingStatusColor(booking.status || '')}>
+                        {booking.status}
+                      </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getPaymentStatusColor(booking.paymentStatus)} variant="secondary">
+                      <Badge
+                        className={getPaymentStatusColor(booking.paymentStatus)}
+                        variant='secondary'
+                      >
                         {booking.paymentStatus}
                       </Badge>
                     </TableCell>
@@ -145,12 +164,20 @@ const BookingHistoryPage = () => {
                     <TableCell>{formatTime(booking.time)}</TableCell>
                     <TableCell>{methodMap[booking.method] ?? booking.method}</TableCell>
                     <TableCell>{booking.location || 'Chưa có'}</TableCell>
-                    <TableCell className="text-right">
-                      <Link to={paths.bookingDetail(String(booking.bookingId))}>
-                        <Button variant="outline" size="sm">
-                          Chi tiết
-                        </Button>
-                      </Link>
+                    <TableCell className='text-right'>
+                      {booking.paymentStatus === 'Chưa thanh toán' ? (                
+                          <Button variant='destructive' size='sm' onClick={() => {              
+                            void rePaymentBooking(booking.bookingId);
+                          }}>
+                            Thanh toán lại
+                          </Button>
+                      ) : (
+                        <Link to={paths.bookingDetail(String(booking.bookingId))}>
+                          <Button variant='outline' size='sm'>
+                            Chi tiết
+                          </Button>
+                        </Link>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -158,13 +185,13 @@ const BookingHistoryPage = () => {
             </Table>
           </div>
 
-          <Pagination className="mt-4 justify-center">
+          <Pagination className='mt-4 justify-center'>
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious onClick={handlePrevPage} />
               </PaginationItem>
               <PaginationItem>
-                <span className="text-sm text-muted-foreground px-4">
+                <span className='text-sm text-muted-foreground px-4'>
                   Trang {currentPage} / {totalPages}
                 </span>
               </PaginationItem>

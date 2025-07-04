@@ -26,14 +26,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import type { BookingSchedule } from "@/types/booking";
+import type { Booking } from "@/types/booking";
 import type { User } from "@/types/user";
 
 import { getAllBookingSchedule, getStaffForSchedule, AssignStaffForSchedule } from "@/services/booking_service";
 
 export default function AppointmentsPage() {
-  const [selectedBooking, setSelectedBooking] = useState<BookingSchedule | null>(null);
-  const [bookings, setBookings] = useState<BookingSchedule[]>([]);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [employees, setEmployees] = useState<User[]>([]);
@@ -71,7 +71,7 @@ export default function AppointmentsPage() {
     fetchData();
   }, []);
 
-  const handleBookingClick = async (booking: BookingSchedule) => {
+  const handleBookingClick = async (booking: Booking) => {
     setSelectedBooking(booking);
     setAssignedEmployee("");
     const scheduleId = booking.sampleCollectionSchedules?.[0]?.scheduleId;
@@ -222,7 +222,7 @@ export default function AppointmentsPage() {
                 <div className="space-y-1">
                   <div><strong>Mã đơn:</strong> {selectedBooking.bookingId}</div>
                   {/* <div><strong>Service Type ID:</strong> {selectedBooking.serviceTypeId}</div> */}
-                  <div><strong>Người đặt:</strong> {selectedBooking.userId}</div>
+                  <div><strong>Người đặt:</strong> {selectedBooking.fullName}</div>
                   {/* <div><strong>Sample Method:</strong> {selectedBooking.sampleMethod}</div> */}
                   <div><strong>Thanh toán :</strong> {selectedBooking.paymentStatus}</div>
                   <div><strong>Vị trí:</strong> {selectedBooking.sampleCollectionSchedules[0]?.location || "N/A"}</div>
@@ -243,7 +243,7 @@ export default function AppointmentsPage() {
                 <div className="space-y-1">
                   <div><strong>Trạng thái:</strong> {selectedBooking.status}</div>
                   <div><strong>Trạng thái mẫu:</strong> {selectedBooking.sampleCollectionSchedules[0]?.status || "N/A"}</div>
-                  <div><strong>Kết quả :</strong> {selectedBooking.result}</div>
+                  <div><strong>Kết quả :</strong> {selectedBooking.finalResult}</div>
                 </div>
               </div>
 
