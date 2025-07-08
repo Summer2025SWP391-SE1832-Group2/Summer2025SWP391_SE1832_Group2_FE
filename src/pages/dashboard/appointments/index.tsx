@@ -114,6 +114,12 @@ export default function AppointmentsPage() {
       alert('Failed to assign staff.');
     }
   };
+  const assignedBookings = paginatedBookings.filter(
+    (b) => b.sampleCollectionSchedules[0]?.collectorId !== null,
+  );
+  const unassignedBookings = paginatedBookings.filter(
+    (b) => b.sampleCollectionSchedules[0]?.collectorId === null,
+  );
 
   return (
     <div className='max-w-7xl mx-auto p-6 space-y-6'>
@@ -146,43 +152,77 @@ export default function AppointmentsPage() {
         </Select>
       </div>
 
-      <Table>
-        <TableCaption></TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Trạng Thái</TableHead>
-            <TableHead>Thanh Toán</TableHead>
-            <TableHead>Người Lấy Mẫu</TableHead>
-            <TableHead>Ngày Đặt</TableHead>
-            <TableHead>Ngày Lấy Mẫu</TableHead>
-            {/* <TableHead>Kết Quả</TableHead> */}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {paginatedBookings.map((booking) => (
-            <TableRow
-              key={booking.bookingId}
-              onClick={() => handleBookingClick(booking)}
-              className='cursor-pointer hover:bg-gray-100'
-            >
-              <TableCell>#{booking.bookingId}</TableCell>
-              <TableCell>{booking.status}</TableCell>
-              <TableCell>{booking.paymentStatus}</TableCell>
-              <TableCell>{booking.sampleCollectionSchedules[0]?.collectorName}</TableCell>
-              <TableCell>{new Date(booking.bookingDate).toLocaleDateString()}</TableCell>
-              <TableCell>
-                {new Date(
-                  booking.sampleCollectionSchedules[0]?.collectionDate,
-                ).toLocaleDateString()}
-              </TableCell>
-              {/* <TableCell>{booking.result || "Chưa có"}</TableCell> */}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        {/* Bảng đã phân công */}
+        <div>
+          <h2 className='text-lg font-semibold mb-2'>Đã phân công</h2>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Trạng Thái</TableHead>
+                <TableHead>Thanh Toán</TableHead>
+                <TableHead>Người Lấy Mẫu</TableHead>
+                <TableHead>Ngày Lấy Mẫu</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {assignedBookings.map((booking) => (
+                <TableRow
+                  key={booking.bookingId}
+                  onClick={() => handleBookingClick(booking)}
+                  className='cursor-pointer hover:bg-gray-100'
+                >
+                  <TableCell>{booking.status}</TableCell>
+                  <TableCell>{booking.paymentStatus}</TableCell>
+                  <TableCell>{booking.sampleCollectionSchedules[0]?.collectorName}</TableCell>
+                  <TableCell>
+                    {new Date(
+                      booking.sampleCollectionSchedules[0]?.collectionDate,
+                    ).toLocaleDateString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
 
-      <Pagination className='mt-4'>
+        {/* Bảng chưa phân công */}
+        <div>
+          <h2 className='text-lg font-semibold mb-2'>Chưa phân công</h2>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Trạng Thái</TableHead>
+                <TableHead>Thanh Toán</TableHead>
+                <TableHead>Người Lấy Mẫu</TableHead>
+                <TableHead>Ngày Lấy Mẫu</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {unassignedBookings.map((booking) => (
+                <TableRow
+                  key={booking.bookingId}
+                  onClick={() => handleBookingClick(booking)}
+                  className='cursor-pointer hover:bg-gray-100'
+                >
+                  <TableCell>{booking.status}</TableCell>
+                  <TableCell>{booking.paymentStatus}</TableCell>
+                  <TableCell>
+                    {booking.sampleCollectionSchedules[0]?.collectorName || 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(
+                      booking.sampleCollectionSchedules[0]?.collectionDate,
+                    ).toLocaleDateString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* <Pagination className='mt-4'>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
@@ -219,7 +259,7 @@ export default function AppointmentsPage() {
             />
           </PaginationItem>
         </PaginationContent>
-      </Pagination>
+      </Pagination> */}
 
       <Dialog open={!!selectedBooking} onOpenChange={() => setSelectedBooking(null)}>
         <DialogContent className='!w-full !max-w-[95vw] max-h-[90vh] overflow-y-auto'>
