@@ -21,21 +21,37 @@ export const paths = {
   blogdetail: (blogId: string) => `/viewblog/${blogId}`,
 
   // Protected routes
-  dashboard: '/dashboard',
-  appointments: '/dashboard/appointments',
-  services: '/dashboard/services',
-  dashboardProfile: '/dashboard/profile',
-  bookingList: '/dashboard/bookinglist',
-  staffschedule: '/dashboard/staffschedules',
-  scheduleforstaff: '/dashboard/schedules',
-  blogmanage: '/dashboard/blogmanage',
-  blogcreate: '/dashboard/blogmanage/blogcreate',
-  parameterlist: '/dashboard/parameterlist',
-  testparameterlist: '/dashboard/testparameterlist',
-  testparameterdetail: (serviceId: string) => `/dashboard/testparameterdetail/${serviceId}`,
+  staff: {
+    dashboard: '/staff',
+    appointments: '/staff/appointments',
+    scheduleforstaff: '/staff/schedules',
+    bookingList: '/staff/bookinglist',
+  },
 
-  blogdetailManage: (blogId: string) => `/dashboard/blogmanage/blogdetail/${blogId}`,
-  addResult: '/dashboard/result/add/:id',
+  // Manager routes
+  manager: {
+    dashboard: '/manager',
+    appointments: '/manager/appointments',
+    staffSchedules: '/manager/staffschedules',
+    schedules: '/manager/schedules',
+    services: '/manager/services',
+    blogManage: '/manager/blogmanage',
+    blogCreate: '/manager/blogmanage/blogcreate',
+    blogDetail: (blogId: string) => `/manager/blogmanage/blogdetail/${blogId}`,
+    parameterList: '/manager/parameterlist',
+    testParameterList: '/manager/testparameterlist',
+    testParameterDetail: (serviceId: string) => `/manager/testparameterdetail/${serviceId}`,
+    bookingList: '/manager/bookinglist',
+    addResult: '/manager/result/add/:id',
+  },
+
+  // Admin routes
+  admin: {
+    dashboard: '/admin',
+    users: '/admin/users',
+    parameterList: '/admin/parameterlist',
+    testParameterList: '/admin/testparameterlist',
+  },
   // Payment results
   paymentSuccess: '/payment-success',
   paymentFailed: '/payment-failed',
@@ -47,9 +63,11 @@ export const paths = {
 export const getDefaultRouteByRole = (role?: UserRole) => {
   switch (role) {
     case 'Staff':
+      return paths.staff.dashboard;
     case 'Manager':
-    case 'Admin':
-      return paths.dashboard;
+      return paths.manager.dashboard;
+      case 'Admin':
+      return paths.admin.dashboard;
     case 'Customer':
       return paths.home;
     default:

@@ -4,13 +4,10 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/auth';
 import { type UserRole } from '@/types/user';
 import {
-  BarChart3,
   Calendar,
   ChevronDown,
   FileText,
-  LayoutDashboard,
   Package,
-  Settings,
   TestTube,
   Users,
 } from 'lucide-react';
@@ -26,53 +23,77 @@ interface SidebarLink {
   children?: Array<SidebarLink>;
 }
 
-const sidebarLinks: SidebarLink[] = [
-  {
-    title: 'Dịch vụ',
-    href: '/dashboard/services',
-    icon: <Package className='h-5 w-5' />,
-    roles: ['Manager', 'Admin'],
-  },
+const staffLinks: SidebarLink[] = [
   {
     title: 'Lịch hẹn',
-    href: '/dashboard/appointments',
+    href: paths.staff.appointments,
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['Staff', 'Manager'],
-  },
-  {
-    title: 'Lịch Làm việc',
-    href: '/dashboard/staffschedules',
-    icon: <Calendar className='h-5 w-5' />,
-    roles: ['Staff', 'Manager'],
-  },
-  {
-    title: 'Thông số xét nghiệm',
-    href: '/dashboard/parameterlist',
-    icon: <TestTube className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-  },
-  {
-    title: 'Thông số dịch vụ',
-    href: '/dashboard/testparameterlist',
-    icon: <TestTube className='h-5 w-5' />,
-    roles: ['Staff', 'Manager', 'Admin'],
-  },
-  {
-    title: 'Nhập mẫu',
-    href: '/dashboard/bookinglist',
-    icon: <Package className='h-5 w-5' />,
     roles: ['Staff'],
   },
   {
-    title: 'Blogs',
-    href: '/dashboard/blogmanage',
-    icon: <FileText className='h-5 w-5' />,
+    title: 'Lịch Làm việc',
+    href: paths.staff.scheduleforstaff,
+    icon: <Calendar className='h-5 w-5' />,
+    roles: ['Staff'],
+  },
+  {
+    title: 'Nhập mẫu',
+    href: paths.staff.bookingList,
+    icon: <Package className='h-5 w-5' />,
+    roles: ['Staff'],
+  },
+];
+
+const managerLinks: SidebarLink[] = [
+  {
+    title: 'Lịch hẹn',
+    href: paths.manager.appointments,
+    icon: <Calendar className='h-5 w-5' />,
     roles: ['Manager'],
   },
   {
+    title: 'Lịch Làm việc',
+    href: paths.manager.staffSchedules,
+    icon: <Calendar className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
+  {
+    title: 'Thông số xét nghiệm',
+    href: paths.manager.parameterList,
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
+  {
+    title: 'Thông số dịch vụ',
+    href: paths.manager.testParameterList,
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
+  {
+    title: 'Blogs',
+    href: paths.manager.blogManage,
+    icon: <FileText className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
+];
+
+const adminLinks: SidebarLink[] = [
+  {
     title: 'Người dùng',
-    href: '/dashboard/users',
+    href: paths.admin.users,
     icon: <Users className='h-5 w-5' />,
+    roles: ['Admin'],
+  },
+  {
+    title: 'Thông số xét nghiệm',
+    href: paths.admin.parameterList,
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Admin'],
+  },
+  {
+    title: 'Thông số dịch vụ',
+    href: paths.admin.testParameterList,
+    icon: <TestTube className='h-5 w-5' />,
     roles: ['Admin'],
   },
 ];
@@ -81,15 +102,24 @@ const DashboardSidebar = () => {
   const location = useLocation();
   const { user } = useAuthStore();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const filteredLinks = sidebarLinks.filter((link) => link.roles.includes(user?.role as UserRole));
+
+  const role = user?.role as UserRole;
+  let combinedLinks: SidebarLink[] = [];
+
+  let defaultDashboardPath = '/';
+  if (role === 'Staff') {
+    combinedLinks = staffLinks;
+    defaultDashboardPath = paths.staff.dashboard;
+  } else if (role === 'Manager') {
+    combinedLinks = managerLinks;
+    defaultDashboardPath = paths.manager.dashboard;
+  } else if (role === 'Admin') {
+    combinedLinks = adminLinks;
+    defaultDashboardPath = paths.admin.dashboard;
+  }
 
   const isLinkActive = (href: string) => {
-    // Exact match for dashboard to prevent highlighting when on sub-routes
-    if (href === '/dashboard') {
-      return location.pathname === href;
-    }
-    // For other routes, check if the pathname includes the href
-    return location.pathname.includes(href);
+    return location.pathname === href || location.pathname.startsWith(href);
   };
 
   const toggleExpand = (href: string) => {
@@ -101,17 +131,15 @@ const DashboardSidebar = () => {
 
   return (
     <div className='w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700'>
-      {/* Sidebar header */}
       <div className='h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700'>
-        <Link to={paths.dashboard}>
+        <Link to={defaultDashboardPath}>
           <BrandLogo />
         </Link>
       </div>
 
-      {/* Sidebar content */}
       <div className='p-4'>
         <nav className='space-y-1'>
-          {filteredLinks.map((link) => {
+          {combinedLinks.map((link) => {
             const hasSubLinks = link.children && link.children.length > 0;
             const isActive = isLinkActive(link.href);
             const isExpandedLink = expanded[link.href];
@@ -121,18 +149,25 @@ const DashboardSidebar = () => {
                 <Button
                   variant='ghost'
                   className={cn(
-                    'w-full justify-between',
-                    isActive && 'bg-gray-100 dark:bg-gray-700',
+                    'w-full justify-between px-3',
+                    isActive && 'bg-gray-100 dark:bg-gray-700'
                   )}
                   onClick={() => hasSubLinks && toggleExpand(link.href)}
                 >
-                  <Link to={hasSubLinks ? '#' : link.href} className='w-full flex justify-between'>
+                  <Link
+                    to={hasSubLinks ? '#' : link.href}
+                    className='w-full flex justify-between items-center'
+                  >
                     <div className='flex items-center gap-2'>
                       {link.icon}
                       {link.title}
                     </div>
                     {hasSubLinks && (
-                      <ChevronDown className={cn('h-4 w-4', isExpandedLink && 'rotate-180')} />
+                      <ChevronDown
+                        className={cn('h-4 w-4 transition-transform', {
+                          'rotate-180': isExpandedLink,
+                        })}
+                      />
                     )}
                   </Link>
                 </Button>
@@ -146,7 +181,7 @@ const DashboardSidebar = () => {
                         asChild
                         className={cn(
                           'w-full justify-start',
-                          isLinkActive(child.href) && 'bg-gray-100 dark:bg-gray-700',
+                          isLinkActive(child.href) && 'bg-gray-100 dark:bg-gray-700'
                         )}
                       >
                         <Link to={child.href} className='flex items-center gap-2'>

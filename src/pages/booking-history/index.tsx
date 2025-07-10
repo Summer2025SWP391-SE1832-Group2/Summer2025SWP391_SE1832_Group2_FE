@@ -67,7 +67,7 @@ const BookingHistoryPage = () => {
 
 
   const methodMap: Record<string, string> = {
-    TAI_CO_SO_Y_TE: 'Cơ sở y tế tại SWP391',
+    TAI_CO_SO_Y_TE: 'Cơ sở y tế',
     NHAN_VIEN_DEN_NHA: 'Nhân viên đến nhà',
     TU_THU_MAU: 'Tự thu mẫu',
   };

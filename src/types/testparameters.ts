@@ -3,7 +3,7 @@ type TestParameter = {
   serviceId: number;
   parameterId: number;
   displayOrder: number;
-  name?: string;
+  name: string;
   unit?: string;
   description?: string;
 };

@@ -89,7 +89,7 @@ const BookingPage = () => {
     if (selectedMethod === 'TU_THU_MAU' || selectedMethod === 'NHAN_VIEN_DEN_NHA') {
       form.setValue('location', user?.address ?? '');
     } else {
-      form.setValue('location', 'Cơ sở y tế');
+      form.setValue('location', '123 Nguyễn Thị Minh Khai, Q.1, TP.HCM');
     }
     if (workSchedule && timeSlots) {
       form.setValue('time', timeSlots?.[0]?.value ?? '');

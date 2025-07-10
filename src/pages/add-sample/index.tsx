@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllBookings, getAllBookingSchedule, getBookingsByCollectorId } from "@/services/booking_service";
+import { getAllBookingSchedule, getBookingsByCollectorId } from "@/services/booking_service";
 import {
   getSamplesByBookingId,
   createSampleService,

@@ -30,6 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from '@/components/ui/button';
+import { paths } from '@/utils/constant/path';
 export default function StaffSchedulePage() {
   const [users, setUsers] = useState<User[]>([]);
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export default function StaffSchedulePage() {
         };
       });
 
-      navigate('/dashboard/schedules', { state: { user, events: mapped } });
+      navigate(paths.manager.schedules, { state: { user, events: mapped } });
     } catch (err) {
       console.error('Lỗi lấy lịch', err);
     }

@@ -21,7 +21,7 @@ export const bookingSchema = z.object({
 export const bookingDefaultValues = {
   serviceId: 0,
   method: 'TAI_CO_SO_Y_TE' as BookingFormValues['method'],
-  location: 'Cơ sở y tế',
+  location: '123 Nguyễn Thị Minh Khai, Q.1, TP.HCM',
   collectionDate: new Date(new Date().setDate(new Date().getDate() + 1)),
   buyKit: false,
   time: '',
