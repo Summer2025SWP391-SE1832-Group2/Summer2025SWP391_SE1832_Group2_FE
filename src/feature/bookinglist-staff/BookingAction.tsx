@@ -22,7 +22,7 @@ const BookingAction: React.FC<BookingActionProps> = ({
   renderDialogContent,
 }) => {
   const getAddResultPath = (id: number) =>
-    paths.addResult.replace(":id", id.toString());
+    paths.staff.addResult.replace(":id", id.toString());
 
   return (
     <div className="space-x-2 text-right">

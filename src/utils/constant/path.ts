@@ -11,7 +11,7 @@ export const paths = {
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
 
-  profile: '/profile',
+  profile: 'profile',
   transaction: '/transaction',
   resetPassword: '/reset-password',
   result: '/result/:id',

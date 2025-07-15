@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Sample, NewSample } from "@/types/sample";
+import type { Sample } from "@/types/sample";
 import { Button } from "@/components/ui/button";
 import SampleForm from "./SampleForm";
 
@@ -28,10 +28,13 @@ const SampleList: React.FC<SampleListProps> = ({ samples, onDelete, onEdit }) =>
               bookingId={s.bookingId}
               defaultCollectedBy={s.collectedBy}
               loadSchedule={() => Promise.resolve({ collectionDate: s.collectedDate })}
-              onSubmit={(bookingId, data) => {
+              onSubmit={(_, data) => {
                 onEdit({ ...s, ...data });
                 setEditingId(null);
               }}
+
+
+
             />
           ) : (
             <div className="flex justify-between items-start">

@@ -58,6 +58,7 @@ const TestParameterDetailPage = () => {
         serviceId: Number(serviceId),
         parameterId: selectedParamId,
         displayOrder: 0,
+        name: "",
       });
       await fetchTestParameters();
       setSelectedParamId(null);
