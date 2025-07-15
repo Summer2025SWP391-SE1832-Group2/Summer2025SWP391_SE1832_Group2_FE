@@ -93,6 +93,8 @@ const router = createBrowserRouter([
       { path: paths.staff.scheduleforstaff, element: <UserSchedulePage /> },
       { path: paths.staff.bookingList, element: <BookingListPage /> },
       { path: paths.staff.addResult, element: <AddResultPage /> },
+      { path: paths.staff.profile, element: <ProfilePage /> },
+
 
     ],
   },
@@ -119,6 +121,8 @@ const router = createBrowserRouter([
       { path: paths.manager.parameterList, element: <ParameterPage /> },
       { path: paths.manager.testParameterList, element: <TestParameterPage /> },
       { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
+      { path: paths.manager.profile, element: <ProfilePage /> },
+
     ],
   },
 
@@ -135,6 +139,8 @@ const router = createBrowserRouter([
       { path: paths.admin.users, element: <DashboardPage /> }, // Replace with actual UsersPage
       { path: paths.admin.parameterList, element: <ParameterPage /> },
       { path: paths.admin.testParameterList, element: <TestParameterPage /> },
+      { path: paths.admin.profile, element: <ProfilePage /> },
+
     ],
   },
 

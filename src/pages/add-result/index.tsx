@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getSamplesByBookingId } from "@/services/sample_service";
-import { createMultipleResultDetails, getResultDetailsByBookingId } from "@/services/result-service";
+import { getSamplesByBookingId } from '@/services/sample_service';
+import {
+  createMultipleResultDetails,
+  getResultDetailsByBookingId,
+  updateMultipleResultDetails,
+} from '@/services/result-service';
 
-import type { ResultItem } from "@/types/resultdetail";
-import type { Sample } from "@/types/sample";
-import { ArrowLeft } from 'lucide-react';
-import { getTestParametersByBookingId } from '@/services/test_parameters-service';
-
-
+import type { ResultDetail, ResultItem } from '@/types/resultdetail';
+import type { Sample } from '@/types/sample';
 import type { TestParameter } from '@/types/testparameters';
 
+import { getTestParametersByBookingId } from '@/services/test_parameters-service';
+
+import { ArrowLeft } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Label } from '@/components/ui/label';
 
 export default function AddResultPage() {
   const navigate = useNavigate();
@@ -24,53 +26,64 @@ export default function AddResultPage() {
 
   const [samples, setSamples] = useState<Sample[]>([]);
   const [testParameters, setTestParameters] = useState<TestParameter[]>([]);
+  const [resultDetails, setResultDetails] = useState<ResultItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState<Record<string, [string, string]>>({});
   const [finalResult, setFinalResult] = useState<string>('');
 
   useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [sampleData, parameterData, resultData] = await Promise.all([
+          getSamplesByBookingId(bookingId),
+          getTestParametersByBookingId(bookingId),
+          getResultDetailsByBookingId(bookingId),
+        ]);
+
+        if (sampleData.length === 0) {
+          alert('Booking chưa có mẫu. Vui lòng thêm mẫu trước.');
+          navigate(-1);
+          return;
+        }
+
+        setSamples(sampleData);
+        setTestParameters(parameterData);
+
+        // 🔧 Convert ResultDetail[] -> ResultItem[]
+        const resultItems: ResultItem[] = resultData.map((r) => ({
+          resultDetailId: (r as any).resultDetailId ?? 0,
+          bookingId,
+          testParameterId: r.testParameterId,
+          sampleId: r.sampleId,
+          parameterName: r.parameterName || r.name || '',
+          value: r.value,
+        }));
+
+        setResultDetails(resultItems);
+
+        const newValues: Record<string, [string, string]> = {};
+        resultItems.forEach((r) => {
+          const key = `${r.testParameterId}-${r.sampleId}`;
+          const split = r.value.split('-');
+          newValues[key] = [split[0] || '', split[1] || ''];
+        });
+        setValues(newValues);
+      } catch (err) {
+        console.error('Lỗi khi tải dữ liệu:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (!bookingId || isNaN(bookingId)) {
       alert('Booking ID không hợp lệ.');
       navigate('/dashboard/bookinglist');
       return;
     }
 
-const fetchData = async () => {
-  setLoading(true);
-  try {
-    const [sampleData, parameterData] = await Promise.all([
-      getSamplesByBookingId(bookingId),
-      getTestParametersByBookingId(bookingId),
-    ]);
-
-    if (sampleData.length === 0) {
-      alert('Booking chưa có mẫu. Vui lòng thêm mẫu trước.');
-      navigate(-1);
-      return;
-    }
-
-    const resultDetails = await getResultDetailsByBookingId(bookingId);
-
-    setSamples(sampleData);
-    setTestParameters(parameterData);
-
-    const newValues: Record<string, [string, string]> = {};
-    resultDetails.forEach((r) => {
-      const key = `${r.testParameterId}-${r.sampleId}`;
-      const split = r.value.split(',');
-      newValues[key] = [split[0] || '', split[1] || ''];
-    });
-    setValues(newValues);
-  } catch (err) {
-    console.error('Lỗi khi tải dữ liệu:', err);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
     fetchData();
-  }, [bookingId]);
+  }, [bookingId, navigate]);
 
   const handleChange = (sampleId: number, testParameterId: number, index: 0 | 1, value: string) => {
     const key = `${testParameterId}-${sampleId}`;
@@ -84,36 +97,40 @@ const fetchData = async () => {
 
   const handleSave = async () => {
     const resultItems: ResultItem[] = [];
+
     for (const param of testParameters) {
       for (const sample of samples) {
         const key = `${param.testParameterId}-${sample.sampleId}`;
         const valPair = values[key] || ['', ''];
         const value = valPair.filter(Boolean).join(',');
 
+        const existing = resultDetails.find(
+          (r) => r.testParameterId === param.testParameterId && r.sampleId === sample.sampleId
+        );
+
         resultItems.push({
-          resultDetailId: 0,
+          resultDetailId: existing?.resultDetailId ?? 0,
           bookingId,
           testParameterId: param.testParameterId,
           sampleId: sample.sampleId,
           parameterName: param.name,
           value,
         });
-
       }
     }
 
+    const toCreate = resultItems.filter((item) => item.resultDetailId === 0);
+    const toUpdate = resultItems.filter((item) => item.resultDetailId !== 0);
+
     try {
-      await createMultipleResultDetails({
-        bookingId,
-        finalResult,
-        results: resultItems.map((item) => ({
-          ...item,
-          resultDetailId: 0,
-          bookingId,
-          parameterName:
-            testParameters.find((p) => p.testParameterId === item.testParameterId)?.name || '',
-        })),
-      });
+      if (toCreate.length > 0) {
+        await createMultipleResultDetails({ bookingId, finalResult, results: toCreate });
+      }
+
+      if (toUpdate.length > 0) {
+        await updateMultipleResultDetails({ bookingId, finalResult, results: toUpdate });
+      }
+
       alert('Lưu kết quả thành công!');
     } catch (err) {
       console.error('Lỗi khi lưu:', err);
@@ -164,24 +181,14 @@ const fetchData = async () => {
                               <Input
                                 value={valPair[0]}
                                 onChange={(e) =>
-                                  handleChange(
-                                    sample.sampleId,
-                                    param.testParameterId,
-                                    0,
-                                    e.target.value,
-                                  )
+                                  handleChange(sample.sampleId, param.testParameterId, 0, e.target.value)
                                 }
                                 className='w-20'
                               />
                               <Input
                                 value={valPair[1]}
                                 onChange={(e) =>
-                                  handleChange(
-                                    sample.sampleId,
-                                    param.testParameterId,
-                                    1,
-                                    e.target.value,
-                                  )
+                                  handleChange(sample.sampleId, param.testParameterId, 1, e.target.value)
                                 }
                                 className='w-20'
                               />
@@ -195,14 +202,6 @@ const fetchData = async () => {
               </table>
             </div>
           )}
-          <div className='mt-6'>
-            <Label className='block mb-2'>Nhận định của bác sĩ:</Label>
-            <Input
-              value={finalResult}
-              onChange={(e) => setFinalResult(e.target.value)}
-              placeholder='Nhập nhận định tổng quát'
-            />
-          </div>
           <div className='mt-6 flex justify-end'>
             <Button onClick={handleSave}>Lưu kết quả</Button>
           </div>
