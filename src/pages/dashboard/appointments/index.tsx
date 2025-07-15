@@ -120,6 +120,12 @@ export default function AppointmentsPage() {
   const unassignedBookings = paginatedBookings.filter(
     (b) => b.sampleCollectionSchedules[0]?.collectorId === null,
   );
+  const isPastCollectionDate = (dateStr?: string) => {
+    if (!dateStr) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(dateStr) < today;
+  };
 
   return (
     <div className='max-w-7xl mx-auto p-6 space-y-6'>
@@ -275,11 +281,9 @@ export default function AppointmentsPage() {
                   <div>
                     <strong>Mã đơn:</strong> {selectedBooking.bookingId}
                   </div>
-                  {/* <div><strong>Service Type ID:</strong> {selectedBooking.serviceTypeId}</div> */}
                   <div>
                     <strong>Người đặt:</strong> {selectedBooking.userId}
                   </div>
-                  {/* <div><strong>Sample Method:</strong> {selectedBooking.sampleMethod}</div> */}
                   <div>
                     <strong>Thanh toán :</strong> {selectedBooking.paymentStatus}
                   </div>
@@ -327,25 +331,32 @@ export default function AppointmentsPage() {
 
               <div className='border rounded-xl p-4 bg-gray-50'>
                 <p className='font-semibold mb-2'>Phân công nhân viên</p>
-                <Select value={assignedEmployee} onValueChange={setAssignedEmployee}>
-                  <SelectTrigger className='w-full mt-1'>
-                    <SelectValue placeholder='Chọn nhân viên' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {employees.length === 0 && (
-                      <SelectItem value='NULL' disabled>
-                        Không có nhân viên nào{' '}
-                      </SelectItem>
-                    )}
-                    {employees
-                      .filter((emp) => emp.userId !== null && emp.userId !== undefined)
-                      .map((emp) => (
-                        <SelectItem key={emp.userId} value={emp.userId.toString()}>
-                          {emp.fullName}
+
+                {isPastCollectionDate(
+                  selectedBooking.sampleCollectionSchedules[0]?.collectionDate,
+                ) ? (
+                  <p className='italic text-gray-500 mt-1'>Đã quá hạn – không thể phân công</p>
+                ) : (
+                  <Select value={assignedEmployee} onValueChange={setAssignedEmployee}>
+                    <SelectTrigger className='w-full mt-1'>
+                      <SelectValue placeholder='Chọn nhân viên' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {employees.length === 0 && (
+                        <SelectItem value='NULL' disabled>
+                          Không có nhân viên nào
                         </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                      )}
+                      {employees
+                        .filter((emp) => emp.userId != null)
+                        .map((emp) => (
+                          <SelectItem key={emp.userId} value={emp.userId.toString()}>
+                            {emp.fullName}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
           )}

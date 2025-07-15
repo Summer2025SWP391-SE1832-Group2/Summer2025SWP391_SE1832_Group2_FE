@@ -60,7 +60,7 @@ const DashboardHeader = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end' className='w-[200px]'>
                 <DropdownMenuItem className='flex items-center gap-2'>
-                  <Link to={paths.dashboardProfile} className='flex items-center gap-2 w-full'>
+                  <Link to={paths.profile} className='flex items-center gap-2 w-full'>
                     <User className='h-4 w-4' />
                     Hồ sơ
                   </Link>

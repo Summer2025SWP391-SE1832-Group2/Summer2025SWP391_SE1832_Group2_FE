@@ -32,7 +32,7 @@ const staffLinks: SidebarLink[] = [
   },
   {
     title: 'Lịch Làm việc',
-    href: paths.staff.scheduleforstaff,
+    href: paths.staff.staffSchedule,
     icon: <Calendar className='h-5 w-5' />,
     roles: ['Staff'],
   },
@@ -54,6 +54,12 @@ const managerLinks: SidebarLink[] = [
   {
     title: 'Lịch Làm việc',
     href: paths.manager.staffSchedules,
+    icon: <Calendar className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
+  {
+    title: 'Phân Công',
+    href: paths.manager.manageSchedule,
     icon: <Calendar className='h-5 w-5' />,
     roles: ['Manager'],
   },

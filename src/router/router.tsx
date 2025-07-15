@@ -41,6 +41,8 @@ import NotFoundPage from '@/pages/error';
 
 import DashboardPage from '@/pages/dashboard';
 import { paths } from '@/utils/constant/path';
+import StaffIndividualSchedulePage from '@/pages/schedule-staff';
+import ManagerSchedulePage from '@/pages/manager-schedule';
 
 
 const router = createBrowserRouter([
@@ -91,6 +93,7 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: paths.staff.appointments, element: <AppointmentsPage /> },
       { path: paths.staff.scheduleforstaff, element: <UserSchedulePage /> },
+      { path: paths.staff.staffSchedule, element: <StaffIndividualSchedulePage /> },
       { path: paths.staff.bookingList, element: <BookingListPage /> },
       { path: paths.staff.addResult, element: <AddResultPage /> },
 
@@ -119,6 +122,9 @@ const router = createBrowserRouter([
       { path: paths.manager.parameterList, element: <ParameterPage /> },
       { path: paths.manager.testParameterList, element: <TestParameterPage /> },
       { path: '/manager/testparameterdetail/:serviceId', element: <TestParameterDetailPage /> },
+      { path: paths.manager.manageSchedule, element: <ManagerSchedulePage /> },
+
+
     ],
   },
 
