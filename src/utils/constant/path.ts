@@ -26,6 +26,7 @@ export const paths = {
     appointments: '/staff/appointments',
     scheduleforstaff: '/staff/schedules',
     bookingList: '/staff/bookinglist',
+    addResult: '/staff/result/add/:id',
   },
 
   // Manager routes
@@ -40,7 +41,7 @@ export const paths = {
     blogDetail: (blogId: string) => `/manager/blogmanage/blogdetail/${blogId}`,
     parameterList: '/manager/parameterlist',
     testParameterList: '/manager/testparameterlist',
-    testParameterDetail: (serviceId: string) => `/manager/testparameterdetail/${serviceId}`,
+    testParameterDetail: (serviceId: number) => `/manager/testparameterdetail/${serviceId}`,
     bookingList: '/manager/bookinglist',
     addResult: '/manager/result/add/:id',
   },
@@ -66,7 +67,7 @@ export const getDefaultRouteByRole = (role?: UserRole) => {
       return paths.staff.dashboard;
     case 'Manager':
       return paths.manager.dashboard;
-      case 'Admin':
+    case 'Admin':
       return paths.admin.dashboard;
     case 'Customer':
       return paths.home;

@@ -1,15 +1,15 @@
 import type { BookingFormValues } from '@/lib/zod/booking';
 
-type SampleCollectionSchedule = {
-  scheduleId: number;
-  bookingId: number;
-  collectorId: number;
-  collectionDate: string;
-  time: string;
-  location: string;
-  status: string;
-  collectorName: string;
-};
+// type SampleCollectionSchedule = {
+//   scheduleId: number;
+//   bookingId: number;
+//   collectorId: number;
+//   collectionDate: string;
+//   time: string;
+//   location: string;
+//   status: string;
+//   collectorName: string;
+// };
 type Booking = {
   bookingId: number;
   serviceId: number;
