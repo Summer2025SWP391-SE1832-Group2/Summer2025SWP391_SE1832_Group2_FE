@@ -88,7 +88,7 @@ const fetchData = async () => {
       for (const sample of samples) {
         const key = `${param.testParameterId}-${sample.sampleId}`;
         const valPair = values[key] || ['', ''];
-        const value = valPair.filter(Boolean).join(',');
+        const value = valPair.filter(Boolean).join('-');
 
         resultItems.push({
           resultDetailId: 0,
