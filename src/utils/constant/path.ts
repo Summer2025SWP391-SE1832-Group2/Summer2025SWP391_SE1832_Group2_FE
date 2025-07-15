@@ -11,7 +11,7 @@ export const paths = {
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
 
-  profile: '/profile',
+  profile: 'profile',
   transaction: '/transaction',
   resetPassword: '/reset-password',
   result: '/result/:id',
@@ -26,6 +26,7 @@ export const paths = {
     appointments: '/staff/appointments',
     scheduleforstaff: '/staff/schedules',
     bookingList: '/staff/bookinglist',
+    addResult: '/staff/result/add/:id',
   },
 
   // Manager routes
@@ -66,7 +67,7 @@ export const getDefaultRouteByRole = (role?: UserRole) => {
       return paths.staff.dashboard;
     case 'Manager':
       return paths.manager.dashboard;
-      case 'Admin':
+    case 'Admin':
       return paths.admin.dashboard;
     case 'Customer':
       return paths.home;

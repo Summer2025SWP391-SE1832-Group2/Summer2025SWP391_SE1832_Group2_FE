@@ -6,6 +6,7 @@ export type ResultDetail = {
   unit: string;
   description: string;
   parameterName : string;
+  pi: number;
 };
 
 export interface ResultItem {

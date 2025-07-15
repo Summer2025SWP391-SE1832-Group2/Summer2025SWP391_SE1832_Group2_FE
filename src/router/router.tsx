@@ -47,7 +47,7 @@ const router = createBrowserRouter([
   // Public Pages
   {
     path: paths.home,
-    element: <MainLayout />, 
+    element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> },
       { path: paths.blog, element: <BlogPage /> },
@@ -92,6 +92,8 @@ const router = createBrowserRouter([
       { path: paths.staff.appointments, element: <AppointmentsPage /> },
       { path: paths.staff.scheduleforstaff, element: <UserSchedulePage /> },
       { path: paths.staff.bookingList, element: <BookingListPage /> },
+      { path: paths.staff.addResult, element: <AddResultPage /> },
+
     ],
   },
 

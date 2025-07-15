@@ -96,7 +96,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                         </DialogContent>
                       </Dialog>
 
-                      <Link to={paths.addResult.replace(":id", b.bookingId.toString())}>
+                      <Link to={paths.staff.addResult.replace(":id", b.bookingId.toString())}>
                         <Button size="sm">Nhập kết quả</Button>
                       </Link>
                     </TableCell>

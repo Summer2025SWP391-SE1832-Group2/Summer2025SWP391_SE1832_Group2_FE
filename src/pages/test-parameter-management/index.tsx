@@ -28,7 +28,7 @@ const TestParameterPage = () => {
               <h2 className="font-semibold">{s.name}</h2>
               <p className="text-muted-foreground">{s.description}</p>
             </div>
-            <Button onClick={() => navigate(paths.testparameterdetail(s.serviceId))}>
+            <Button onClick={() => navigate(paths.manager.testParameterDetail(s.serviceId))}>
               Chọn thông số
             </Button>
           </div>

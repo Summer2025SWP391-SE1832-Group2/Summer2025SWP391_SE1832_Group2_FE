@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { paths } from '@/utils/constant/path';
-import { AlertTriangle, ArrowLeft, ChevronRight, FileText, HelpCircle } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
