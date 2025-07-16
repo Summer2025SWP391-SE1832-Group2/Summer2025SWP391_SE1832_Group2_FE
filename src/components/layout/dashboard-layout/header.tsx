@@ -50,7 +50,7 @@ const DashboardHeader = () => {
 
             {/* Profile */}
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger>
                 <Button variant='ghost' className='flex items-center gap-2' role='combobox'>
                   <Avatar className='h-8 w-8'>
                     <AvatarFallback>{user?.fullName.charAt(0)}</AvatarFallback>
@@ -59,22 +59,24 @@ const DashboardHeader = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end' className='w-[200px]'>
-                <DropdownMenuItem className='flex items-center gap-2'>
-                  <Link to={paths.dashboardProfile} className='flex items-center gap-2 w-full'>
+                <DropdownMenuItem className='flex items-center gap-2' asChild>
+                  <Link to={paths.profile} className='flex items-center gap-2 w-full'>
                     <User className='h-4 w-4' />
                     Hồ sơ
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className='text-red-600'>
-                  <LogOut className='h-4 w-4' />
-                  Đăng xuất
+                <DropdownMenuItem onClick={handleLogout} className='text-red-600' asChild>
+                  <div className='flex items-center gap-2'>
+                    <LogOut className='h-4 w-4' />
+                    Đăng xuất
+                  </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
       </div>
-    </header >
+    </header>
   );
 };
 
