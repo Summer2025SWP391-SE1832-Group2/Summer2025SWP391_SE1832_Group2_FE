@@ -158,14 +158,6 @@ const Header = () => {
                     </span>
                   </Link>
                 </DropdownMenuItem>
-                {/* <DropdownMenuItem asChild>
-                  <Link to={paths.result}>
-                    <span className='flex items-center gap-2 w-full'>
-                      <Clock className='h-4 w-4' />
-                      xem kết quả
-                    </span>
-                  </Link>
-                </DropdownMenuItem> */}
                 <DropdownMenuItem asChild>
                   <Link to={paths.transaction}>
                     <span className='flex items-center gap-2 w-full'>

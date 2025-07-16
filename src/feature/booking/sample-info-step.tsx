@@ -8,9 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import type { BookingFormValues } from '@/lib/zod/booking';
 import { TestTube, User } from 'lucide-react';
 import type { UseFormReturn } from 'react-hook-form';
-import type { BookingFormValues } from '@/lib/zod/booking';
+import { useEffect } from 'react';
+import { addDays } from 'date-fns';
 
 interface SampleInfoStepProps {
   form: UseFormReturn<BookingFormValues>;
@@ -18,11 +20,25 @@ interface SampleInfoStepProps {
   relationshipOptions: { label: string; value: string }[];
 }
 
+// Mapping of relationships (if one sample is X, the other should be Y)
+const relationshipMapping: Record<string, string> = {
+  Cha: 'Con',
+  Mẹ: 'Con',
+  Con: 'Cha/Mẹ',
+};
+
 export function SampleInfoStep({
   form,
   sampleTypeOptions,
   relationshipOptions,
 }: SampleInfoStepProps) {
+  // Handle relationship change for either sample
+  const handleRelationshipChange = (sampleIndex: number, value: string) => {
+    // Set the value for the current sample
+    form.setValue(`samples.${sampleIndex}.notes`, value);
+    form.setValue(`samples.${sampleIndex === 0 ? 1 : 0}.notes`, relationshipMapping[value]);
+  };
+
   return (
     <div className='space-y-6'>
       <div className='text-center mb-8'>
@@ -94,7 +110,10 @@ export function SampleInfoStep({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mối quan hệ</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={(value) => handleRelationshipChange(0, value)}
+                    value={field.value || ''}
+                  >
                     <FormControl>
                       <SelectTrigger className='h-12'>
                         <SelectValue placeholder='Chọn mối quan hệ' />
@@ -180,7 +199,10 @@ export function SampleInfoStep({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mối quan hệ</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={(value) => handleRelationshipChange(1, value)}
+                    value={field.value || ''}
+                  >
                     <FormControl>
                       <SelectTrigger className='h-12'>
                         <SelectValue placeholder='Chọn mối quan hệ' />
