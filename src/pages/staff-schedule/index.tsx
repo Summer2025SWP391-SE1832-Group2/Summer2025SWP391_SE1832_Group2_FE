@@ -23,7 +23,6 @@ interface CalendarEvent {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,

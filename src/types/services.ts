@@ -10,12 +10,12 @@ type BaseService = {
 
 // Response type includes serviceId as required
 type ServiceResponse = BaseService & {
-  serviceId: number;
+  serviceId: string;
 };
 
 // Request type has serviceId optional (for create/update scenarios)
 type ServiceRequest = BaseService & {
-  serviceId?: number;
+  serviceId?: string;
 };
 
 export { type ServiceResponse, type ServiceRequest };

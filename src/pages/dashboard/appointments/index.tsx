@@ -2,20 +2,11 @@ import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
 import {
   Select,
   SelectTrigger,
@@ -55,7 +46,7 @@ export default function AppointmentsPage() {
     return statusMatch && b.bookingId.toString().includes(search);
   });
 
-  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+  // const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
   const paginatedBookings = filteredBookings
     .slice()
     .reverse()
@@ -65,7 +56,7 @@ export default function AppointmentsPage() {
     const fetchData = async () => {
       try {
         const data = await getAllBookingSchedule();
-        const filter = data.filter((booking) => booking.paymentStatus === 'Đã thanh toán');
+        const filter = data.filter((booking) => booking.paymentStatus === 'Paid');
         setBookings(filter);
         console.log('Fetched bookings:', data);
       } catch (error) {

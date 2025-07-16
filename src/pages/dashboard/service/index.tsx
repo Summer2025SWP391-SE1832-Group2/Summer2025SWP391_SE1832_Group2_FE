@@ -68,7 +68,7 @@ const ServicesPage = () => {
     if (!deletingService) return;
 
     try {
-      await deleteMutation.mutateAsync(deletingService.serviceId);
+      await deleteMutation.mutateAsync(Number(deletingService.serviceId));
       showToast('Xóa dịch vụ thành công', 'success');
       setIsDeleteModalOpen(false);
       setDeletingService(null);
