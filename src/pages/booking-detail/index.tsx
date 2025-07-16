@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  CalendarDays,
   Clock,
   MapPin,
   PackageCheck,
-  ReceiptText,
   User,
-  CheckCircle,
   ArrowLeft,
-  EllipsisVertical,
   CalendarArrowDown,
   CalendarCog,
   CalendarCheck,
@@ -139,7 +135,7 @@ const BookingDetailPage = () => {
           </span>
         </div>
 
-        <Dialog>
+        <Dialog >
           <DialogTrigger asChild>
             <Button
               variant={
@@ -155,17 +151,21 @@ const BookingDetailPage = () => {
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="max-w-5xl overflow-x-auto">
+<DialogContent className="!w-[40vw] !max-w-none !max-h-[90vh] overflow-auto">
             <DialogHeader>
               <DialogTitle>Kết quả Booking #{booking.bookingId}</DialogTitle>
             </DialogHeader>
-            <ResultContent resultDetails={booking.resultDetails || []} />
-            <div>
-              <span className="font-semibold">Lời nhận xét:</span>{" "}
-              {booking.finalResult || <span className="text-muted-foreground italic">Chưa có</span>}
-            </div>
 
+            <ResultContent resultDetails={booking.resultDetails || []} />
+
+            <div className="mt-4">
+              <span className="font-semibold">Lời nhận xét:</span>{" "}
+              {booking.finalResult || (
+                <span className="text-muted-foreground italic">Chưa có</span>
+              )}
+            </div>
           </DialogContent>
+
         </Dialog>
 
 

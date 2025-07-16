@@ -23,7 +23,7 @@ import {
   serviceFormSchema,
   type ServiceFormValues,
 } from '@/lib/zod/services';
-import type { ServiceRequest, ServiceResponse } from '@/types/services';
+import type { ServiceResponse } from '@/types/services';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
