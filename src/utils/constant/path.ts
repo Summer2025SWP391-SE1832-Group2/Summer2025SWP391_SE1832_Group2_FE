@@ -29,6 +29,9 @@ export const paths = {
 
     bookingList: '/staff/bookinglist',
     addResult: '/staff/result/add/:id',
+    profile: '/staff/profile',
+    shipping: '/staff/shipping',
+
   },
 
   // Manager routes
@@ -43,10 +46,11 @@ export const paths = {
     blogDetail: (blogId: string) => `/manager/blogmanage/blogdetail/${blogId}`,
     parameterList: '/manager/parameterlist',
     testParameterList: '/manager/testparameterlist',
-    testParameterDetail: (serviceId: number) => `/manager/testparameterdetail/${serviceId}`,
+    testParameterDetail: (serviceId: string) => `/manager/testparameterdetail/${serviceId}`,
     bookingList: '/manager/bookinglist',
     addResult: '/manager/result/add/:id',
     manageSchedule : '/manager/manageschedule',
+    profile: '/manager/profile',
     users: '/manager/users',
   },
 
@@ -56,6 +60,9 @@ export const paths = {
     users: '/admin/users',
     parameterList: '/admin/parameterlist',
     testParameterList: '/admin/testparameterlist',
+    profile: '/admin/profile',
+
+
   },
   // Payment results
   paymentSuccess: '/payment-success',

@@ -1,5 +1,5 @@
 import axiosInstance from '@/lib/api/axios';
-import type { CreateResultDetail } from '@/types/resultdetail';
+import type { CreateResultDetail, SaveResultPayload } from '@/types/resultdetail';
 import type { ResultDetail } from '@/types/resultdetail';
 
 export const getResultDetailsByBookingId = async (
@@ -14,6 +14,10 @@ export const getResultDetailsByBookingId = async (
 
 export const createMultipleResultDetails = async (data: CreateResultDetail): Promise<void> => {
   await axiosInstance.post("/api/ResultDetail/createMultipleResults", data);
+};
+
+export const updateMultipleResultDetails = (data: SaveResultPayload) => {
+  return axiosInstance.put('/api/ResultDetail/updateMultipleResults', data);
 };
 
 

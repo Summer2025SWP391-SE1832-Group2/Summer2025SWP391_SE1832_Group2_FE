@@ -5,7 +5,8 @@ export type ResultDetail = {
   sampleId: number;
   unit: string;
   description: string;
-  parameterName : string;
+  parameterName: string;
+  resultDetailId: number;
   pi: number;
 };
 
@@ -20,6 +21,12 @@ export interface ResultItem {
 
 
 export type CreateResultDetail = {
+  bookingId: number;
+  finalResult: string;
+  results: ResultItem[];
+};
+
+export type SaveResultPayload = {
   bookingId: number;
   finalResult: string;
   results: ResultItem[];
