@@ -30,6 +30,12 @@ const staffLinks: SidebarLink[] = [
     roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
   },
   {
+    title: 'Giao kit',
+    href: paths.staff.shipping,
+    icon: <Calendar className='h-5 w-5' />,
+    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
+  },
+  {
     title: 'Nhập mẫu',
     href: paths.staff.bookingList,
     icon: <Package className='h-5 w-5' />,

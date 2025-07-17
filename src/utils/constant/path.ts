@@ -28,6 +28,7 @@ export const paths = {
     bookingList: '/staff/bookinglist',
     addResult: '/staff/result/add/:id',
     profile: '/staff/profile',
+    shipping: '/staff/shipping',
 
   },
 
@@ -47,7 +48,7 @@ export const paths = {
     bookingList: '/manager/bookinglist',
     addResult: '/manager/result/add/:id',
     profile: '/manager/profile',
-    // users: '/manager/users',
+    users: '/manager/users',
   },
 
   // Admin routes

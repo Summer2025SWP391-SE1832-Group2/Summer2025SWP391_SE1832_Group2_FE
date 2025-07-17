@@ -33,3 +33,14 @@ export const getSamplesByBookingId = async (bookingId: number): Promise<Sample[]
   const response = await axiosInstance.get<Sample[]>(`/api/Sample/by-booking-id/${bookingId}`);
   return response.data;
 };
+
+
+export const updateSamplePictureService = async (
+  sampleId: number,
+  picture: string
+): Promise<void> => {
+  await axiosInstance.put('/api/Sample/update-picture-and-booking-status', {
+    sampleId,
+    picture,
+  });
+};

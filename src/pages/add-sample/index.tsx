@@ -17,7 +17,7 @@ const BookingListPage: React.FC = () => {
   const { user } = useAuthStore();
   const { showToast } = useToast();
 
-  const [bookings, setBookings] = useState<Array<Booking >>([]);
+  const [bookings, setBookings] = useState<Array<Booking>>([]);
   const [sampleMap, setSampleMap] = useState<Record<number, Sample[]>>({});
   const [expanded, setExpanded] = useState<number | null>(null);
   const [openDialogId, setOpenDialogId] = useState<number | null>(null);
@@ -118,14 +118,8 @@ const BookingListPage: React.FC = () => {
         bookings={bookings}
         sampleMap={sampleMap}
         expanded={expanded}
-        openDialogId={openDialogId}
+        onReloadSamples={loadSamples}
         onToggleSamples={handleToggleSamples}
-        onOpenDialog={setOpenDialogId}
-        onCreateSample={handleCreateSample}
-        onDeleteSample={handleDeleteSample}
-        onEditSample={handleEditSample}
-        getSchedule={getCollectionScheduleByBookingId}
-        currentUserId={user?.userId?.toString() || ""}
       />
     </div>
   );

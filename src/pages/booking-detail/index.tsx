@@ -151,14 +151,14 @@ const BookingDetailPage = () => {
             </Button>
           </DialogTrigger>
 
-<DialogContent className="!w-[40vw] !max-w-none !max-h-[90vh] overflow-auto">
+<DialogContent className="!w-[60vw] !max-w-none !max-h-[100vh] overflow-auto">
             <DialogHeader>
               <DialogTitle>Kết quả Booking #{booking.bookingId}</DialogTitle>
             </DialogHeader>
 
             <ResultContent resultDetails={booking.resultDetails || []} />
 
-            <div className="mt-4">
+            <div className="">
               <span className="font-semibold">Lời nhận xét:</span>{" "}
               {booking.finalResult || (
                 <span className="text-muted-foreground italic">Chưa có</span>
