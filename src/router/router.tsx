@@ -31,6 +31,9 @@ import PaymentFailedPage from '@/pages/payment/failed';
 import NotFoundPage from '@/pages/error';
 import DashboardPage from '@/pages/dashboard';
 import { paths } from '@/utils/constant/path';
+import StaffIndividualSchedulePage from '@/pages/schedule-staff';
+import ManagerSchedulePage from '@/pages/manager-schedule';
+
 import UsersPage from '@/pages/dashboard/users';
 import BookingPage from '@/pages/booking';
 import BookingListPage from '@/pages/add-sample';
@@ -100,6 +103,7 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: paths.staff.appointments, element: <AppointmentsPage /> },
       { path: paths.staff.scheduleforstaff, element: <UserSchedulePage /> },
+      { path: paths.staff.staffSchedule, element: <StaffIndividualSchedulePage /> },
       { path: paths.staff.bookingList, element: <BookingListPage /> },
       { path: paths.staff.addResult, element: <AddResultPage /> },
       { path: paths.staff.shipping, element: <ShippingPage /> },
@@ -127,6 +131,10 @@ const router = createBrowserRouter([
       { path: paths.manager.blogDetail(':blogId'), element: <BlogDetailManagePage /> },
       { path: paths.manager.parameterList, element: <ParameterPage /> },
       { path: paths.manager.testParameterList, element: <TestParameterPage /> },
+      { path: '/manager/testparameterdetail/:serviceId', element: <TestParameterDetailPage /> },
+      { path: paths.manager.manageSchedule, element: <ManagerSchedulePage /> },
+
+
       { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
       { path: paths.manager.profile, element: <ProfilePage /> },
       { path: paths.manager.users, element: <UsersPage /> },

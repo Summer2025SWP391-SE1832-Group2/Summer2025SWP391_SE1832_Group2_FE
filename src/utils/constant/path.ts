@@ -25,6 +25,8 @@ export const paths = {
     dashboard: '/staff',
     appointments: '/staff/appointments',
     scheduleforstaff: '/staff/schedules',
+    staffSchedule: '/staff/scheduleforstaff',
+
     bookingList: '/staff/bookinglist',
     addResult: '/staff/result/add/:id',
     profile: '/staff/profile',
@@ -47,6 +49,7 @@ export const paths = {
     testParameterDetail: (serviceId: string) => `/manager/testparameterdetail/${serviceId}`,
     bookingList: '/manager/bookinglist',
     addResult: '/manager/result/add/:id',
+    manageSchedule : '/manager/manageschedule',
     profile: '/manager/profile',
     users: '/manager/users',
   },

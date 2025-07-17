@@ -67,7 +67,7 @@ export default function UserSchedulePage() {
     if (!selectedDate || selectedSlot === null) return;
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // reset về 00:00
+    today.setHours(0, 0, 0, 0);
 
     const selected = new Date(selectedDate);
     selected.setHours(0, 0, 0, 0);

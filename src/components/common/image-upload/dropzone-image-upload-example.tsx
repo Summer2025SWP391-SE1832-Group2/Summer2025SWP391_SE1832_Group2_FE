@@ -8,7 +8,6 @@ export const DropzoneImageUploadExample = () => {
   const handleImageUploaded = (url: string) => {
     setImageUrl(url);
     console.log('Image uploaded:', url);
-    // Here you would typically save this URL to your form state or database
   };
 
   return (
