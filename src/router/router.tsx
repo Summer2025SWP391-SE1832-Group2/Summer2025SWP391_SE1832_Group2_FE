@@ -107,6 +107,7 @@ const router = createBrowserRouter([
       { path: paths.staff.bookingList, element: <BookingListPage /> },
       { path: paths.staff.addResult, element: <AddResultPage /> },
       { path: paths.staff.shipping, element: <ShippingPage /> },
+      { path: paths.staff.profile, element: <ProfilePage /> },
     ],
   },
 
@@ -131,8 +132,10 @@ const router = createBrowserRouter([
       { path: paths.manager.blogDetail(':blogId'), element: <BlogDetailManagePage /> },
       { path: paths.manager.parameterList, element: <ParameterPage /> },
       { path: paths.manager.testParameterList, element: <TestParameterPage /> },
-      { path: '/manager/testparameterdetail/:serviceId', element: <TestParameterDetailPage /> },
+      { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
       { path: paths.manager.manageSchedule, element: <ManagerSchedulePage /> },
+      { path: paths.manager.bookingList, element: <BookingListPage /> },
+      { path: paths.manager.addResult, element: <AddResultPage /> },
 
 
       { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
@@ -151,7 +154,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: paths.admin.users, element: <UsersPage /> }, 
+      { path: paths.admin.users, element: <UsersPage /> },
       { path: paths.admin.parameterList, element: <ParameterPage /> },
       { path: paths.admin.testParameterList, element: <TestParameterPage /> },
       { path: paths.admin.profile, element: <ProfilePage /> },

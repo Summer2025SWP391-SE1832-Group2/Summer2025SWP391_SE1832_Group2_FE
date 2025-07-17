@@ -35,3 +35,11 @@ export const deleteResultDetail = async (
 ): Promise<void> => {
   await axiosInstance.delete(`/api/ResultDetail/${resultDetailId}`);
 };
+
+
+export const deleteResultDetailsByBookingId = async (
+  bookingId: number
+): Promise<void> => {
+  await axiosInstance.delete(`/api/ResultDetail/booking/${bookingId}`);
+};
+

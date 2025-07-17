@@ -75,6 +75,12 @@ const managerLinks: SidebarLink[] = [
     roles: ['Manager'],
   },
   {
+    title: 'Nhập mẫu',
+    href: paths.manager.bookingList,
+    icon: <Package className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
+  {
     title: 'Blogs',
     href: paths.manager.blogManage,
     icon: <FileText className='h-5 w-5' />,

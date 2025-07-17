@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getSamplesByBookingId } from '@/services/sample_service';
 import {
   createMultipleResultDetails,
+  deleteResultDetailsByBookingId,
   getResultDetailsByBookingId,
   updateMultipleResultDetails,
 } from '@/services/result-service';
@@ -18,6 +19,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { paths } from '@/utils/constant/path';
 
 export default function AddResultPage() {
   const navigate = useNavigate();
@@ -78,7 +80,7 @@ export default function AddResultPage() {
 
     if (!bookingId || isNaN(bookingId)) {
       alert('Booking ID không hợp lệ.');
-      navigate('/dashboard/bookinglist');
+      navigate(paths.staff.bookingList);
       return;
     }
 
@@ -122,14 +124,17 @@ export default function AddResultPage() {
     const toCreate = resultItems.filter((item) => item.resultDetailId === 0);
     const toUpdate = resultItems.filter((item) => item.resultDetailId !== 0);
 
-    try {
-      if (toCreate.length > 0) {
-        await createMultipleResultDetails({ bookingId, finalResult, results: toCreate });
-      }
+try {
+  if (toUpdate.length > 0) {
+    await deleteResultDetailsByBookingId(bookingId);
 
-      if (toUpdate.length > 0) {
-        await updateMultipleResultDetails({ bookingId, finalResult, results: toUpdate });
-      }
+    const newResults = [...toUpdate, ...toCreate];
+    if (newResults.length > 0) {
+      await createMultipleResultDetails({ bookingId, finalResult, results: newResults });
+    }
+  } else if (toCreate.length > 0) {
+    await createMultipleResultDetails({ bookingId, finalResult, results: toCreate });
+  }
 
       alert('Lưu kết quả thành công!');
     } catch (err) {
