@@ -49,7 +49,7 @@ export default function StaffSchedulePage() {
     const fetchUsers = async () => {
       try {
         const userData = await getAllUserRequests();
-        const staffUsers = userData.filter((user: any) => user.role === 'Staff' || user.role==='Manager'); // hoặc user.type
+        const staffUsers = userData.filter((user: any) => user.role.toLowerCase().includes('staff') || user.role === 'Manager'); // hoặc user.type
 
         setUsers(staffUsers);
       } catch (error) {
@@ -86,8 +86,8 @@ export default function StaffSchedulePage() {
       <Table >
         <TableHeader >
           <TableRow>
-            <TableHead  className='border px-3 py-2'>ID</TableHead >
-            <TableHead  className='border px-3 py-2'>Họ tên</TableHead >
+            <TableHead className='border px-3 py-2'>ID</TableHead >
+            <TableHead className='border px-3 py-2'>Họ tên</TableHead >
             <TableHead className='border px-3 py-2'>Email</TableHead>
             <TableHead className='border px-3 py-2'>Chức Vụ</TableHead>
             <TableHead className='border px-3 py-2'>Xem lịch</TableHead>
@@ -96,14 +96,14 @@ export default function StaffSchedulePage() {
         <TableBody>
           {paginatedUsers.map((user) => (
             <TableRow key={user.userId}>
-              <TableCell  className='border px-3 py-2'>{user.userId}</TableCell >
-              <TableCell  className='border px-3 py-2'>{user.fullName}</TableCell >
-              <TableCell  className='border px-3 py-2'>{user.email}</TableCell >
-              <TableCell  className='border px-3 py-2'>{user.role}</TableCell >
+              <TableCell className='border px-3 py-2'>{user.userId}</TableCell >
+              <TableCell className='border px-3 py-2'>{user.fullName}</TableCell >
+              <TableCell className='border px-3 py-2'>{user.email}</TableCell >
+              <TableCell className='border px-3 py-2'>{user.role}</TableCell >
 
-              <TableCell  className='border px-3 py-2 flex justify-center'>
+              <TableCell className='border px-3 py-2 flex justify-center'>
                 <Button
-                variant={'black'}
+                  variant={'black'}
                   onClick={() => handleViewCalendar(user)}
                 >
                   Xem lịch

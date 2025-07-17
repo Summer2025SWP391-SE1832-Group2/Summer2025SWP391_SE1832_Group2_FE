@@ -56,7 +56,7 @@ export default function AppointmentsPage() {
     const fetchData = async () => {
       try {
         const data = await getAllBookingSchedule();
-        const filter = data.filter((booking) => booking.paymentStatus === 'Paid');
+        const filter = data.filter((booking) => booking.paymentStatus === 'Đã thanh toán');
         setBookings(filter);
         console.log('Fetched bookings:', data);
       } catch (error) {

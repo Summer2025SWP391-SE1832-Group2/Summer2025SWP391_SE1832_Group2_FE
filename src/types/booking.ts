@@ -38,8 +38,8 @@ type Booking = {
   }[];
 };
 
-type BookingStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
-type PaymentStatus = 'Unpaid' | 'Paid' | 'Failed';
+type BookingStatus = 'Đang chờ xử lý' | 'Đã lấy mẫu' | 'Hoàn thành';
+type PaymentStatus = 'Đã thanh toán' | 'Chưa thanh toán' ;
 
 type BookingRequest = {
   bookingId?: number;
@@ -60,17 +60,6 @@ type BookingRequest = {
   }[];
 };
 
-export const bookingStatusMap: Record<BookingStatus, string> = {
-  Pending: 'Đang chờ',
-  Confirmed: 'Đã xác nhận',
-  Completed: 'Hoàn thành',
-  Cancelled: 'Đã hủy',
-};
 
-export const paymentStatusMap: Record<PaymentStatus, string> = {
-  Unpaid: 'Chưa thanh toán',
-  Paid: 'Đã thanh toán',
-  Failed: 'Thanh toán thất bại',
-};
 
 export { type BookingRequest, type BookingStatus, type PaymentStatus, type Booking };
