@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { getAllUserRequests } from '@/services/user_service';
-import type { User } from '@/types/user';
+import { translateRoleToVietnamese, type User } from '@/types/user';
 import {
   Table,
   TableBody,
@@ -124,7 +124,7 @@ export default function AddEmployeeDialog({
                     </TableCell>
                     <TableCell className='font-medium'>{user.userId}</TableCell>
                     <TableCell>{user.fullName}</TableCell>
-                    <TableCell>{user.role}</TableCell>
+                    <TableCell>{translateRoleToVietnamese(user.role)}</TableCell>
                   </TableRow>
                 ))
               ) : (

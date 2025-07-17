@@ -4,7 +4,7 @@ import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { getAllWorkSchedules, getUser_workScheduleBySlot } from '@/services/schedule_service';
-import type { User } from '@/types/user';
+import { translateRoleToVietnamese, type User } from '@/types/user';
 import {
   Table,
   TableBody,
@@ -154,7 +154,7 @@ export default function ManagerSchedulePage() {
                 <TableRow key={u.userId}>
                   <TableCell>{u.userId}</TableCell>
                   <TableCell>{u.fullName}</TableCell>
-                  <TableCell>{u.role}</TableCell>
+                  <TableCell>{translateRoleToVietnamese(u.role)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
