@@ -12,11 +12,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { CalendarIcon, Clock, MapPin } from 'lucide-react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { BookingFormValues } from '@/lib/zod/booking';
+import { useEffect } from 'react';
 
 interface ScheduleStepProps {
   form: UseFormReturn<BookingFormValues>;
@@ -25,6 +26,17 @@ interface ScheduleStepProps {
 }
 
 export function ScheduleStep({ form, timeSlots, selectedMethod }: ScheduleStepProps) {
+  // Watch for method changes to set default date for self-collection
+  const selectedMethodValue = form.watch('method');
+  useEffect(() => {
+    if (selectedMethodValue === 'TU_THU_MAU') {
+      const twoDaysFromNow = addDays(new Date(), 2);
+      form.setValue('collectionDate', twoDaysFromNow);
+    } else {
+      form.setValue('collectionDate', addDays(new Date(), 1));
+    }
+  }, [selectedMethod]);
+
   return (
     <div className='space-y-6'>
       <div className='text-center mb-8'>
@@ -69,7 +81,11 @@ export function ScheduleStep({ form, timeSlots, selectedMethod }: ScheduleStepPr
                           mode='single'
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) => date < new Date()}
+                          disabled={(date) =>
+                            selectedMethodValue === 'TU_THU_MAU'
+                              ? date < new Date(new Date().setDate(new Date().getDate() + 1))
+                              : date < new Date()
+                          }
                           captionLayout='dropdown'
                         />
                       </PopoverContent>

@@ -19,7 +19,7 @@ export const createTestParameter = async (data: TestParameter): Promise<TestPara
   return response.data;
 };
 
-export const updateTestParameter = async ( data: TestParameter): Promise<TestParameter> => {
+export const updateTestParameter = async (data: TestParameter): Promise<TestParameter> => {
   const response = await axiosInstance.put<TestParameter>(`/api/TestParameter`, {
     ...data,
   });

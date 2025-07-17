@@ -41,7 +41,7 @@ import NotFoundPage from '@/pages/error';
 
 import DashboardPage from '@/pages/dashboard';
 import { paths } from '@/utils/constant/path';
-
+import UsersPage from '@/pages/dashboard/users';
 
 const router = createBrowserRouter([
   // Public Pages
@@ -93,9 +93,6 @@ const router = createBrowserRouter([
       { path: paths.staff.scheduleforstaff, element: <UserSchedulePage /> },
       { path: paths.staff.bookingList, element: <BookingListPage /> },
       { path: paths.staff.addResult, element: <AddResultPage /> },
-      { path: paths.staff.profile, element: <ProfilePage /> },
-
-
     ],
   },
 
@@ -136,7 +133,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: paths.admin.users, element: <DashboardPage /> }, // Replace with actual UsersPage
+      { path: paths.admin.users, element: <UsersPage /> }, // Replace with actual UsersPage
       { path: paths.admin.parameterList, element: <ParameterPage /> },
       { path: paths.admin.testParameterList, element: <TestParameterPage /> },
       { path: paths.admin.profile, element: <ProfilePage /> },

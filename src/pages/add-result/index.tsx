@@ -102,7 +102,7 @@ export default function AddResultPage() {
       for (const sample of samples) {
         const key = `${param.testParameterId}-${sample.sampleId}`;
         const valPair = values[key] || ['', ''];
-        const value = valPair.filter(Boolean).join(',');
+        const value = valPair.filter(Boolean).join('-');
 
         const existing = resultDetails.find(
           (r) => r.testParameterId === param.testParameterId && r.sampleId === sample.sampleId

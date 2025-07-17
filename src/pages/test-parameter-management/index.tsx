@@ -31,6 +31,7 @@ const TestParameterPage = () => {
             <Button onClick={() => navigate(paths.manager.testParameterDetail(String(s.serviceId)))}>
               Chọn thông số
             </Button>
+
           </div>
         ))}
       </div>

@@ -1,9 +1,15 @@
 import axiosInstance from '@/lib/api/axios';
-import type { User } from '@/types/user';
+import type { User, UserRole } from '@/types/user';
 
 // GET all UserRequests
 export const getAllUserRequests = async (): Promise<User[]> => {
   const response = await axiosInstance.get<User[]>('/api/User');
+  return response.data;
+};
+
+// GET filtered users by role ID
+export const getFilteredUsers = async ({ roleId }: { roleId: number }): Promise<User[]> => {
+  const response = await axiosInstance.get<User[]>(`/api/User/GetUsersFilteredAsync/${roleId}`);
   return response.data;
 };
 
@@ -31,5 +37,13 @@ export const updateUserRequest = async (data: User): Promise<boolean> => {
 // DELETE UserRequest by ID
 export const deleteUserRequestById = async (id: string): Promise<boolean> => {
   const response = await axiosInstance.delete<boolean>(`/api/User/${id}`);
+  return response.data;
+};
+
+// UPDATE user role
+export const updateUserRole = async (userId: number, newRole: UserRole): Promise<boolean> => {
+  const response = await axiosInstance.put<boolean>(
+    `/api/User/role?uid=${userId}&newRole=${newRole}`,
+  );
   return response.data;
 };

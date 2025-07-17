@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/toast';
-import { useProfile } from '@/hooks/useProfile';
+import { useUser } from '@/hooks/useUser';
 import { cn } from '@/lib/utils';
 import {
   profileFormDefaultValues,
@@ -34,13 +34,13 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const ProfilePage = () => {
-  const { profileQuery, updateProfileMutation } = useProfile();
-  const { data: profile, isLoading, isError, error } = profileQuery;
+  const { getUserQuery, updateUserMutation } = useUser();
+  const { data: profile, isLoading, isError, error } = getUserQuery;
   const {
     mutateAsync: updateProfile,
     isPending: isUpdating,
     error: updateError,
-  } = updateProfileMutation;
+  } = updateUserMutation;
   const { showToast } = useToast();
 
   const form = useForm<ProfileFormValues>({

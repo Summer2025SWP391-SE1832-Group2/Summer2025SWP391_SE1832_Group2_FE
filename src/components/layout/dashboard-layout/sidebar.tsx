@@ -3,14 +3,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/auth';
 import { type UserRole } from '@/types/user';
-import {
-  Calendar,
-  ChevronDown,
-  FileText,
-  Package,
-  TestTube,
-  Users,
-} from 'lucide-react';
+import { Calendar, ChevronDown, FileText, Package, TestTube, Users } from 'lucide-react';
 import BrandLogo from '@/components/common/brand-logo';
 import { paths } from '@/utils/constant/path';
 import { useState } from 'react';
@@ -28,19 +21,19 @@ const staffLinks: SidebarLink[] = [
     title: 'Lịch hẹn',
     href: paths.staff.appointments,
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['Staff'],
+    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
   },
   {
     title: 'Lịch Làm việc',
     href: paths.staff.scheduleforstaff,
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['Staff'],
+    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
   },
   {
     title: 'Nhập mẫu',
     href: paths.staff.bookingList,
     icon: <Package className='h-5 w-5' />,
-    roles: ['Staff'],
+    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
   },
 ];
 
@@ -75,6 +68,12 @@ const managerLinks: SidebarLink[] = [
     icon: <FileText className='h-5 w-5' />,
     roles: ['Manager'],
   },
+  {
+    title: 'Người dùng',
+    href: paths.manager.users,
+    icon: <Users className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
 ];
 
 const adminLinks: SidebarLink[] = [
@@ -107,7 +106,12 @@ const DashboardSidebar = () => {
   let combinedLinks: SidebarLink[] = [];
 
   let defaultDashboardPath = '/';
-  if (role === 'Staff') {
+  if (
+    role === 'FacilityStaff' ||
+    role === 'HomeStaff' ||
+    role === 'TestStaff' ||
+    role === 'ShipStaff'
+  ) {
     combinedLinks = staffLinks;
     defaultDashboardPath = paths.staff.dashboard;
   } else if (role === 'Manager') {
@@ -150,7 +154,7 @@ const DashboardSidebar = () => {
                   variant='ghost'
                   className={cn(
                     'w-full justify-between px-3',
-                    isActive && 'bg-gray-100 dark:bg-gray-700'
+                    isActive && 'bg-gray-100 dark:bg-gray-700',
                   )}
                   onClick={() => hasSubLinks && toggleExpand(link.href)}
                 >
@@ -181,7 +185,7 @@ const DashboardSidebar = () => {
                         asChild
                         className={cn(
                           'w-full justify-start',
-                          isLinkActive(child.href) && 'bg-gray-100 dark:bg-gray-700'
+                          isLinkActive(child.href) && 'bg-gray-100 dark:bg-gray-700',
                         )}
                       >
                         <Link to={child.href} className='flex items-center gap-2'>
