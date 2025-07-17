@@ -43,10 +43,16 @@ export const useAuthStore = create<AuthStore>()(
           set({ token, isAuthenticated: true, isLoading: true });
 
           // Fetch user details
-          const userId = getUserIdFromToken(token);
-          const userDetails = await getUserRequestById(userId);
-
-          set({ user: userDetails, isLoading: false });
+          setTimeout(async () => {
+            try {
+              const userId = getUserIdFromToken(token);
+              const userDetails = await getUserRequestById(userId);
+              set({ user: userDetails, isLoading: false });
+            } catch (error) {
+              console.error('Error fetching user details:', error);
+              set({ isLoading: false });
+            }
+          }, 0);
         } catch (error) {
           console.error('Login error:', error);
           set(initialState);

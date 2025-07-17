@@ -10,6 +10,14 @@ type User = {
   address: string | null;
 };
 
-type UserRole = 'Guest' | 'Customer' | 'Staff' | 'Manager' | 'Admin';
+type UserRole =
+  | 'Guest'
+  | 'Customer'
+  | 'Manager'
+  | 'Admin'
+  | 'FacilityStaff'
+  | 'HomeStaff'
+  | 'TestStaff'
+  | 'ShipStaff';
 
 export type { User, UserRole };

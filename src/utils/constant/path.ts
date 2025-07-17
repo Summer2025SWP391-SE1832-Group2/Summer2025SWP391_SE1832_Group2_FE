@@ -47,6 +47,7 @@ export const paths = {
     bookingList: '/manager/bookinglist',
     addResult: '/manager/result/add/:id',
     manageSchedule : '/manager/manageschedule',
+    users: '/manager/users',
   },
 
   // Admin routes
@@ -66,7 +67,10 @@ export const paths = {
 
 export const getDefaultRouteByRole = (role?: UserRole) => {
   switch (role) {
-    case 'Staff':
+    case 'FacilityStaff':
+    case 'HomeStaff':
+    case 'TestStaff':
+    case 'ShipStaff':
       return paths.staff.dashboard;
     case 'Manager':
       return paths.manager.dashboard;
