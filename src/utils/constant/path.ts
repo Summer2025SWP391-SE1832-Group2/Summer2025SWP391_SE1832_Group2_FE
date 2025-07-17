@@ -55,6 +55,7 @@ export const paths = {
   admin: {
     dashboard: '/admin',
     users: '/admin/users',
+    serviceList: '/admin/serviceList',
     parameterList: '/admin/parameterlist',
     testParameterList: '/admin/testparameterlist',
     profile: '/admin/profile',

@@ -91,6 +91,12 @@ const adminLinks: SidebarLink[] = [
   },
   {
     title: 'Thông số xét nghiệm',
+    href: paths.admin.serviceList,
+    icon: <TestTube className='h-5 w-5' />,
+    roles: ['Admin'],
+  },
+  {
+    title: 'Danh sách dịch vụ',
     href: paths.admin.parameterList,
     icon: <TestTube className='h-5 w-5' />,
     roles: ['Admin'],

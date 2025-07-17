@@ -35,6 +35,7 @@ import UsersPage from '@/pages/dashboard/users';
 import BookingPage from '@/pages/booking';
 import BookingListPage from '@/pages/add-sample';
 import ShippingPage from '@/pages/shipping';
+import ServicesPage from '@/pages/dashboard/service';
 
 
 const router = createBrowserRouter([
@@ -142,10 +143,11 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: paths.admin.users, element: <UsersPage /> }, // Replace with actual UsersPage
+      { path: paths.admin.users, element: <UsersPage /> }, 
       { path: paths.admin.parameterList, element: <ParameterPage /> },
       { path: paths.admin.testParameterList, element: <TestParameterPage /> },
       { path: paths.admin.profile, element: <ProfilePage /> },
+      { path: paths.admin.serviceList, element: <ServicesPage /> },
 
     ],
   },
