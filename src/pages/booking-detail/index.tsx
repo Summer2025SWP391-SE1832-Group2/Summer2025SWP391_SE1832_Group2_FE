@@ -1,24 +1,32 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import {
+  Activity,
+  ArrowLeft,
+  CalendarArrowDown,
+  CalendarCheck,
+  CalendarCog,
   Clock,
   MapPin,
   PackageCheck,
+  Star,
   User,
-  ArrowLeft,
-  CalendarArrowDown,
-  CalendarCog,
-  CalendarCheck,
-  Activity,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { getBookingById } from '@/services/booking_service';
-import type { Booking } from '@/types/booking';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ResultContent } from '@/components/common/ResultContent';
+import { RatingDialog, RatingDisplay } from '@/components/common/rating';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ResultContent } from '@/components/common/ResultContent';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
+import { getBookingById } from '@/services/booking_service';
+import type { Booking } from '@/types/booking';
 
 const BookingDetailPage = () => {
   const navigate = useNavigate();
@@ -68,109 +76,123 @@ const BookingDetailPage = () => {
     TU_THU_MAU: 'Tự thu mẫu',
   };
 
+  const canShowRatingButton = booking?.finalResult && !booking.hasSubmittedRating;
+
   if (loading) {
-    return <Skeleton className="w-full h-48 m-6 rounded-xl" />;
+    return <Skeleton className='w-full h-48 m-6 rounded-xl' />;
   }
 
   if (!booking) {
-    return <p className="p-6 text-red-500">Không tìm thấy booking</p>;
+    return <p className='p-6 text-red-500'>Không tìm thấy booking</p>;
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <div className="flex justify-start mb-4">
-        <Button variant="outline" onClick={() => navigate(-1)} className="flex items-center gap-2">
-          <ArrowLeft className="w12-h12" /> Quay lại lịch sử
+    <div className='p-6 max-w-3xl mx-auto'>
+      <div className='flex justify-start mb-4'>
+        <Button variant='outline' onClick={() => navigate(-1)} className='flex items-center gap-2'>
+          <ArrowLeft className='w12-h12' /> Quay lại lịch sử
         </Button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-md p-6 space-y-6 border">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <PackageCheck className="w-6 h-6" /> Booking #{booking.bookingId}
+      <div className='bg-white rounded-2xl shadow-md p-6 space-y-6 border'>
+        <h1 className='text-3xl font-bold flex items-center gap-2'>
+          <PackageCheck className='w-6 h-6' /> Booking #{booking.bookingId}
         </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <User className="w12-h12 text-muted-foreground" />
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm'>
+          <div className='space-y-1'>
+            <div className='flex items-center gap-2'>
+              <User className='w12-h12 text-muted-foreground' />
               <span>Người đặt: {booking.fullName || 'Chưa có'}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <CalendarArrowDown className="w12-h12 text-muted-foreground" />
+            <div className='flex items-center gap-2'>
+              <CalendarArrowDown className='w12-h12 text-muted-foreground' />
               <span>Ngày đặt: {formatDate(booking.bookingDate)}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Activity className="w12-h12 text-muted-foreground" />
+            <div className='flex items-center gap-2'>
+              <Activity className='w12-h12 text-muted-foreground' />
               <span>Phương thức: {methodMap[booking.method] ?? booking.method}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w12-h12 text-muted-foreground" />
+            <div className='flex items-center gap-2'>
+              <Clock className='w12-h12 text-muted-foreground' />
               <span>Khung giờ: {formatTime(booking.time)}</span>
             </div>
           </div>
 
-          <div className="space-y-1">
-
-            <div className="flex items-center gap-2">
-              <CalendarCog className="w12-h12 text-muted-foreground" />
+          <div className='space-y-1'>
+            <div className='flex items-center gap-2'>
+              <CalendarCog className='w12-h12 text-muted-foreground' />
               <span>Ngày lấy mẫu: {formatDate(booking.collectionDate)}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w12-h12 text-muted-foreground" />
+            <div className='flex items-center gap-2'>
+              <Clock className='w12-h12 text-muted-foreground' />
               <span>Khung giờ: {formatTime(booking.time)}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <CalendarCheck className="w12-h12 text-muted-foreground" />
+            <div className='flex items-center gap-2'>
+              <CalendarCheck className='w12-h12 text-muted-foreground' />
               <span>Ngày trả kết quả: {formatDate(booking.preferredDate)}</span>
             </div>
-
-
           </div>
         </div>
 
-        <div className="flex items-start gap-2">
-          <MapPin className="w12-h12 text-muted-foreground mt-1" />
+        <div className='flex items-start gap-2'>
+          <MapPin className='w12-h12 text-muted-foreground mt-1' />
           <span>
             <strong>Địa điểm:</strong> {booking.location || 'Chưa có'}
           </span>
         </div>
 
-        <Dialog >
-          <DialogTrigger asChild>
-            <Button
-              variant={
-                booking.resultDetails && booking.resultDetails.length > 0
-                  ? "complete"
-                  : "error"
+        <div className='flex flex-wrap gap-3'>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant={
+                  booking.resultDetails && booking.resultDetails.length > 0 ? 'complete' : 'error'
+                }
+                disabled={!booking.resultDetails || booking.resultDetails.length === 0}
+              >
+                {booking.resultDetails && booking.resultDetails.length > 0
+                  ? 'Xem kết quả'
+                  : 'Chưa có kết quả'}
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className='!w-[60vw] !max-w-none !max-h-[100vh] overflow-auto'>
+              <DialogHeader>
+                <DialogTitle>Kết quả Booking #{booking.bookingId}</DialogTitle>
+              </DialogHeader>
+
+              <ResultContent resultDetails={booking.resultDetails || []} />
+
+              <div className=''>
+                <span className='font-semibold'>Lời nhận xét:</span>{' '}
+                {booking.finalResult || (
+                  <span className='text-muted-foreground italic'>Chưa có</span>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {canShowRatingButton && (
+            <RatingDialog
+              bookingId={booking.bookingId}
+              onRatingSuccess={() => {
+                setBooking({ ...booking, hasSubmittedRating: true });
+              }}
+              trigger={
+                <Button variant='outline' className='gap-2'>
+                  <Star className='w-4 h-4 fill-yellow-400 text-yellow-400' />
+                  Đánh giá dịch vụ
+                </Button>
               }
-              disabled={!booking.resultDetails || booking.resultDetails.length === 0}
-            >
-              {booking.resultDetails && booking.resultDetails.length > 0
-                ? "Xem kết quả"
-                : "Chưa có kết quả"}
-            </Button>
-          </DialogTrigger>
+            />
+          )}
 
-<DialogContent className="!w-[60vw] !max-w-none !max-h-[100vh] overflow-auto">
-            <DialogHeader>
-              <DialogTitle>Kết quả Booking #{booking.bookingId}</DialogTitle>
-            </DialogHeader>
-
-            <ResultContent resultDetails={booking.resultDetails || []} />
-
-            <div className="">
-              <span className="font-semibold">Lời nhận xét:</span>{" "}
-              {booking.finalResult || (
-                <span className="text-muted-foreground italic">Chưa có</span>
-              )}
-            </div>
-          </DialogContent>
-
-        </Dialog>
-
+          {booking.hasSubmittedRating && <RatingDisplay bookingId={booking.bookingId} />}
+        </div>
 
         <div>
-          <Badge variant="outline" className="uppercase">
+          <Badge variant='outline' className='uppercase'>
             {booking.status}
           </Badge>
         </div>

@@ -1,21 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { paths } from '@/utils/constant/path';
-import { AlertTriangle, ArrowLeft, FileText } from 'lucide-react';
-import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { AlertTriangle, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const PaymentFailedPage = () => {
-  const [searchParams] = useSearchParams();
-  const [errorDetails] = useState({
-    orderNumber: searchParams.get('orderNumber') || '0000000',
-    serviceName: searchParams.get('serviceName') || 'DNA Testing Service',
-    amount: searchParams.get('amount') || '1,000,000 VND',
-    errorCode: searchParams.get('errorCode') || 'ERR-5001',
-    errorMessage: searchParams.get('errorMessage') || 'Giao dịch không thành công',
-    date: new Date().toLocaleString('vi-VN'),
-  });
-
   return (
     <div className='container max-w-6xl mx-auto py-16 px-4 sm:px-6 flex flex-col items-center'>
       {/* Error Message */}
@@ -31,51 +19,6 @@ const PaymentFailedPage = () => {
       </div>
 
       {/* Error Details Card */}
-      <Card className='w-full max-w-2xl mb-12 overflow-hidden shadow-lg border-0 bg-white dark:bg-gray-800'>
-        <div className='bg-red-50 dark:bg-red-900/20 px-6 py-4 border-b border-border/30'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-2'>
-              <FileText className='h-5 w-5 text-red-600 dark:text-red-400' />
-              <h2 className='text-lg font-medium'>Chi tiết lỗi</h2>
-            </div>
-            <span className='text-sm text-muted-foreground'>{errorDetails.date}</span>
-          </div>
-        </div>
-
-        <CardContent className='p-6'>
-          <div className='space-y-4'>
-            <div className='flex justify-between py-2 border-b border-border/30'>
-              <span className='text-muted-foreground'>Dịch vụ:</span>
-              <span className='font-medium'>{errorDetails.serviceName}</span>
-            </div>
-
-            <div className='flex justify-between py-2 border-b border-border/30'>
-              <span className='text-muted-foreground'>Mã đơn hàng:</span>
-              <span className='font-medium'>#{errorDetails.orderNumber}</span>
-            </div>
-
-            <div className='flex justify-between py-2 border-b border-border/30'>
-              <span className='text-muted-foreground'>Tổng thanh toán:</span>
-              <span className='font-medium'>{errorDetails.amount}</span>
-            </div>
-
-            <div className='py-3 px-4 bg-red-50 dark:bg-red-900/10 rounded-md border border-red-200 dark:border-red-800'>
-              <div className='flex items-start'>
-                <AlertTriangle className='h-5 w-5 text-red-600 dark:text-red-400 mt-0.5 mr-2 flex-shrink-0' />
-                <div>
-                  <p className='font-medium text-red-700 dark:text-red-400'>
-                    {errorDetails.errorCode}: {errorDetails.errorMessage}
-                  </p>
-                  <p className='text-sm text-red-600/80 dark:text-red-300/80 mt-1'>
-                    Vui lòng kiểm tra lại thông tin thanh toán của bạn hoặc liên hệ hỗ trợ nếu vấn
-                    đề vẫn tiếp tục.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Action Buttons */}
       <Button asChild variant='outline' size='lg' className='w-full sm:w-auto'>

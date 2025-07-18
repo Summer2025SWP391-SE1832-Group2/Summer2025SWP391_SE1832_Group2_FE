@@ -37,18 +37,16 @@ export const TransactionPage = () => {
     if (!transactions) return null;
 
     const totalTransactions = transactions.length;
-    const successfulTransactions = transactions.filter((t) => t.status === 'SUCCESS').length;
-    const pendingTransactions = transactions.filter(
-      (t) => t.status === 'PENDING' || 'Đang chờ',
-    ).length;
+    const successfulTransactions = transactions.filter((t) => t.status === 'Đã thanh toán').length;
+    const unpaidTransactions = transactions.filter((t) => t.status === 'Chưa thanh toán').length;
     const totalAmount = transactions
-      .filter((t) => t.status === 'SUCCESS')
+      .filter((t) => t.status === 'Đã thanh toán')
       .reduce((sum, t) => sum + t.price, 0);
 
     return {
       total: totalTransactions,
       successful: successfulTransactions,
-      pending: pendingTransactions,
+      unpaid: unpaidTransactions,
       totalAmount,
     };
   }, [transactions]);
@@ -128,14 +126,16 @@ export const TransactionPage = () => {
 
             <Card className='bg-white/70 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium text-slate-600'>Đang xử lý</CardTitle>
-                <div className='p-2 bg-yellow-100 rounded-full'>
-                  <Calendar className='h-4 w-4 text-yellow-600' />
+                <CardTitle className='text-sm font-medium text-slate-600'>
+                  Chưa thanh toán
+                </CardTitle>
+                <div className='p-2 bg-red-100 rounded-full'>
+                  <Calendar className='h-4 w-4 text-red-600' />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className='text-3xl font-bold text-yellow-600'>{transactionStats.pending}</div>
-                <p className='text-xs text-slate-500 mt-1'>Giao dịch chờ xử lý</p>
+                <div className='text-3xl font-bold text-red-600'>{transactionStats.unpaid}</div>
+                <p className='text-xs text-slate-500 mt-1'>Giao dịch chưa thanh toán</p>
               </CardContent>
             </Card>
 
@@ -207,7 +207,7 @@ export const TransactionPage = () => {
             </CardHeader>
             <CardContent className='space-y-3 text-sm text-slate-600'>
               <p>• Bạn có thể sao chép mã giao dịch bằng cách nhấp vào biểu tượng copy</p>
-              <p>• Giao dịch có trạng thái "Thành công" đã được xử lý hoàn tất</p>
+              <p>• Giao dịch có trạng thái "Đã thanh toán" đã được xử lý hoàn tất</p>
               <p>• Liên hệ hỗ trợ nếu có giao dịch bất thường</p>
             </CardContent>
           </Card>

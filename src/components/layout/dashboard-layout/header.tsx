@@ -11,6 +11,9 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuthStore } from '@/stores/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { paths } from '@/utils/constant/path';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import { roleBadgeStyles, getRoleDisplayName } from '@/utils/role-utils';
 
 const DashboardHeader = () => {
   const { user, logout } = useAuthStore();
@@ -55,10 +58,26 @@ const DashboardHeader = () => {
                   <Avatar className='h-8 w-8'>
                     <AvatarFallback>{user?.fullName.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <span className='hidden lg:block text-sm font-medium'>{user?.fullName}</span>
+                  <div className='hidden lg:flex flex-col items-start'>
+                    <span className='text-sm font-medium'>{user?.fullName}</span>
+                    {user?.role && (
+                      <Badge
+                        variant='outline'
+                        className={cn('text-xs px-1.5 py-0 h-5', roleBadgeStyles[user.role])}
+                      >
+                        {getRoleDisplayName(user.role)}
+                      </Badge>
+                    )}
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end' className='w-[200px]'>
+                <div className='px-2 py-1.5 text-xs text-muted-foreground flex items-center gap-1.5 border-b mb-1'>
+                  <Badge variant='outline' className={roleBadgeStyles[user?.role || 'Guest']}>
+                    {getRoleDisplayName(user?.role || 'Guest')}
+                  </Badge>
+                  <span>Vai trò của bạn</span>
+                </div>
                 <DropdownMenuItem className='flex items-center gap-2' asChild>
                   <Link to={paths.profile} className='flex items-center gap-2 w-full'>
                     <User className='h-4 w-4' />

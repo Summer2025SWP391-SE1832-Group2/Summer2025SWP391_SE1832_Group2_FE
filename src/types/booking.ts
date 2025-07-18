@@ -26,6 +26,7 @@ type Booking = {
   resultDetails: [];
   fullName?: string;
   finalResult?: string;
+  hasSubmittedRating: boolean;
   sampleCollectionSchedules: {
     scheduleId: number;
     bookingId: number;
