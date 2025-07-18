@@ -20,4 +20,24 @@ type UserRole =
   | 'TestStaff'
   | 'ShipStaff';
 
-export type { User, UserRole };
+ export function translateRoleToVietnamese(role: string): string {
+    const roleLower = role.toLowerCase();
+    switch (roleLower) {
+      case 'admin':
+        return 'Quản trị viên';
+      case 'manager':
+        return 'Quản lý';
+      case 'facilitystaff':
+        return 'Nhân viên cơ sở';
+      case 'homestaff':
+        return 'Nhân viên tại nhà';
+      case 'teststaff':
+        return 'Nhân viên xét nghiệm';
+        case 'shipstaff':
+        return 'Nhân viên giao hàng';
+      default:
+        return role; 
+    }
+  }
+  
+export type { User, UserRole }  ;

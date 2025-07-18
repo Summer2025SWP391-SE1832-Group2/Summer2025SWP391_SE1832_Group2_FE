@@ -31,10 +31,14 @@ import PaymentFailedPage from '@/pages/payment/failed';
 import NotFoundPage from '@/pages/error';
 import DashboardPage from '@/pages/dashboard';
 import { paths } from '@/utils/constant/path';
+import StaffIndividualSchedulePage from '@/pages/schedule-staff';
+import ManagerSchedulePage from '@/pages/manager-schedule';
+
 import UsersPage from '@/pages/dashboard/users';
 import BookingPage from '@/pages/booking';
 import BookingListPage from '@/pages/add-sample';
 import ShippingPage from '@/pages/shipping';
+import ServicesPage from '@/pages/dashboard/service';
 
 
 const router = createBrowserRouter([
@@ -99,9 +103,11 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: paths.staff.appointments, element: <AppointmentsPage /> },
       { path: paths.staff.scheduleforstaff, element: <UserSchedulePage /> },
+      { path: paths.staff.staffSchedule, element: <StaffIndividualSchedulePage /> },
       { path: paths.staff.bookingList, element: <BookingListPage /> },
       { path: paths.staff.addResult, element: <AddResultPage /> },
       { path: paths.staff.shipping, element: <ShippingPage /> },
+      { path: paths.staff.profile, element: <ProfilePage /> },
     ],
   },
 
@@ -127,6 +133,12 @@ const router = createBrowserRouter([
       { path: paths.manager.parameterList, element: <ParameterPage /> },
       { path: paths.manager.testParameterList, element: <TestParameterPage /> },
       { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
+      { path: paths.manager.manageSchedule, element: <ManagerSchedulePage /> },
+      { path: paths.manager.bookingList, element: <BookingListPage /> },
+      { path: paths.manager.addResult, element: <AddResultPage /> },
+
+
+      { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
       { path: paths.manager.profile, element: <ProfilePage /> },
       { path: paths.manager.users, element: <UsersPage /> },
     ],
@@ -142,10 +154,11 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: paths.admin.users, element: <UsersPage /> }, // Replace with actual UsersPage
+      { path: paths.admin.users, element: <UsersPage /> },
       { path: paths.admin.parameterList, element: <ParameterPage /> },
       { path: paths.admin.testParameterList, element: <TestParameterPage /> },
       { path: paths.admin.profile, element: <ProfilePage /> },
+      { path: paths.admin.serviceList, element: <ServicesPage /> },
 
     ],
   },

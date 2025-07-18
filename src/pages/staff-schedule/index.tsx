@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import type { User } from '@/types/user';
+import { translateRoleToVietnamese, type User } from '@/types/user';
 import { getAllUserRequests } from '@/services/user_service';
 import { getUserWorkScheduleUserById } from '@/services/userworkschedule_service';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { paths } from '@/utils/constant/path';
 export default function StaffSchedulePage() {
@@ -49,7 +49,9 @@ export default function StaffSchedulePage() {
     const fetchUsers = async () => {
       try {
         const userData = await getAllUserRequests();
-        const staffUsers = userData.filter((user: any) => user.role === 'Staff' || user.role==='Manager'); // hoặc user.type
+        const staffUsers = userData.filter(
+          (user: any) => user.role.toLowerCase().includes('staff') || user.role === 'Manager',
+        ); // hoặc user.type
 
         setUsers(staffUsers);
       } catch (error) {
@@ -83,11 +85,11 @@ export default function StaffSchedulePage() {
   };
   return (
     <div className='p-6 h-[calc(100vh-64px)] w-full flex flex-col'>
-      <Table >
-        <TableHeader >
+      <Table>
+        <TableHeader>
           <TableRow>
-            <TableHead  className='border px-3 py-2'>ID</TableHead >
-            <TableHead  className='border px-3 py-2'>Họ tên</TableHead >
+            <TableHead className='border px-3 py-2'>ID</TableHead>
+            <TableHead className='border px-3 py-2'>Họ tên</TableHead>
             <TableHead className='border px-3 py-2'>Email</TableHead>
             <TableHead className='border px-3 py-2'>Chức Vụ</TableHead>
             <TableHead className='border px-3 py-2'>Xem lịch</TableHead>
@@ -96,19 +98,18 @@ export default function StaffSchedulePage() {
         <TableBody>
           {paginatedUsers.map((user) => (
             <TableRow key={user.userId}>
-              <TableCell  className='border px-3 py-2'>{user.userId}</TableCell >
-              <TableCell  className='border px-3 py-2'>{user.fullName}</TableCell >
-              <TableCell  className='border px-3 py-2'>{user.email}</TableCell >
-              <TableCell  className='border px-3 py-2'>{user.role}</TableCell >
+              <TableCell className='border px-3 py-2'>{user.userId}</TableCell>
+              <TableCell className='border px-3 py-2'>{user.fullName}</TableCell>
+              <TableCell className='border px-3 py-2'>{user.email}</TableCell>
+              <TableCell className='border px-3 py-2'>
+                {translateRoleToVietnamese(user.role)}
+              </TableCell>
 
-              <TableCell  className='border px-3 py-2 flex justify-center'>
-                <Button
-                variant={'black'}
-                  onClick={() => handleViewCalendar(user)}
-                >
+              <TableCell className='border px-3 py-2 flex justify-center'>
+                <Button variant={'black'} onClick={() => handleViewCalendar(user)}>
                   Xem lịch
                 </Button>
-              </TableCell >
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,4 +1,5 @@
 import axiosInstance from "@/lib/api/axios";
+import type { User } from "@/types/user";
 import type { WorkSchedule } from "@/types/workschedule";
 
 const getAllWorkSchedules = async (): Promise<WorkSchedule[]> => {
@@ -28,11 +29,15 @@ const getAllWorkSchedules = async (): Promise<WorkSchedule[]> => {
   const deleteWorkSchedule = async (id: number): Promise<void> => {
     await axiosInstance.delete(`/api/WorkSchedule/${id}`);
   };
-
+  const getUser_workScheduleBySlot = async (id: number, date : string): Promise<User[]> => {
+    const response = await axiosInstance.get<User[]>(`/api/UserWorkSchedule/getUser_workScheduleBySlot?workScheduleId=${id}&date=${date}`);
+    return response.data;
+  };
 export {
     getAllWorkSchedules,
     getWorkScheduleById,
     createWorkSchedule,
     updateWorkSchedule,
-    deleteWorkSchedule
+    deleteWorkSchedule,
+    getUser_workScheduleBySlot
 };

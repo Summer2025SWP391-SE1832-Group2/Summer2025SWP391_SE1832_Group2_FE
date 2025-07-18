@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+
 import type { Booking } from '@/types/booking';
 import type { User } from '@/types/user';
 
@@ -27,53 +28,51 @@ import {
 } from '@/services/booking_service';
 
 export default function AppointmentsPage() {
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [search, setSearch] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [employees, setEmployees] = useState<User[]>([]);
   const [assignedEmployee, setAssignedEmployee] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
-  const filteredBookings = bookings.filter((b) => {
-    const statusMatch =
-      filterStatus === '' || filterStatus === 'All'
-        ? true
-        : filterStatus === 'NoCollector'
-        ? b.sampleCollectionSchedules.some((scs) => scs.collectorId == null)
-        : b.status === filterStatus;
-    return statusMatch && b.bookingId.toString().includes(search);
-  });
-
-  // const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
-  const paginatedBookings = filteredBookings
-    .slice()
-    .reverse()
-    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
+  // Fetch booking data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchBookings = async () => {
       try {
         const data = await getAllBookingSchedule();
-        const filter = data.filter((booking) => booking.paymentStatus === 'Paid');
-        setBookings(filter);
-        console.log('Fetched bookings:', data);
+        const paidBookings = data.filter((b) => b.paymentStatus === 'Đã thanh toán');
+        setBookings(paidBookings);
       } catch (error) {
         console.error('Failed to fetch bookings:', error);
       }
     };
-    fetchData();
+    fetchBookings();
   }, []);
+
+  // Helpers
+  const getFilteredBookings = () =>
+    bookings
+      .filter((b) => b.bookingId.toString().includes(search))
+      .slice()
+      .reverse();
+
+  const getAssignedBookings = () =>
+    getFilteredBookings().filter((b) => b.sampleCollectionSchedules[0]?.collectorId !== null);
+
+  const getUnassignedBookings = () =>
+    getFilteredBookings().filter((b) => b.sampleCollectionSchedules[0]?.collectorId === null);
+
+  const isPastCollectionDate = (dateStr?: string) => {
+    if (!dateStr) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(dateStr) < today;
+  };
 
   const handleBookingClick = async (booking: Booking) => {
     setSelectedBooking(booking);
     setAssignedEmployee('');
     const scheduleId = booking.sampleCollectionSchedules?.[0]?.scheduleId;
-    if (!scheduleId) {
-      setEmployees([]);
-      return;
-    }
+    if (!scheduleId) return setEmployees([]);
     try {
       const staffList = await getStaffForSchedule(booking.bookingId);
       setEmployees(staffList);
@@ -84,80 +83,53 @@ export default function AppointmentsPage() {
   };
 
   const handleSaveAssignment = async () => {
-    if (!selectedBooking || !assignedEmployee) {
-      alert('Please select a booking and an employee.');
-      return;
-    }
+    if (!selectedBooking || !assignedEmployee) return alert('Vui lòng chọn nhân viên.');
+
     const scheduleId = selectedBooking.sampleCollectionSchedules?.[0]?.scheduleId;
     const staffId = parseInt(assignedEmployee);
-    if (!scheduleId || !staffId) {
-      alert('Missing schedule or staff ID.');
-      return;
-    }
+
+    if (!scheduleId || !staffId) return alert('Thiếu thông tin phân công.');
+
     try {
       await AssignStaffForSchedule(scheduleId, staffId);
-      alert('Staff assigned successfully!');
+      alert('Phân công thành công!');
       setSelectedBooking(null);
-      const updatedBookings = await getAllBookingSchedule();
-      setBookings(updatedBookings);
+      const updated = await getAllBookingSchedule();
+      setBookings(updated.filter((b) => b.paymentStatus === 'Đã thanh toán'));
     } catch (error) {
-      console.error('Assignment failed:', error);
-      alert('Failed to assign staff.');
+      console.error('Phân công thất bại:', error);
+      alert('Có lỗi xảy ra khi phân công.');
     }
   };
-  const assignedBookings = paginatedBookings.filter(
-    (b) => b.sampleCollectionSchedules[0]?.collectorId !== null,
-  );
-  const unassignedBookings = paginatedBookings.filter(
-    (b) => b.sampleCollectionSchedules[0]?.collectorId === null,
-  );
 
   return (
     <div className='max-w-7xl mx-auto p-6 space-y-6'>
+      {/* Search */}
       <div className='flex justify-between items-center gap-4'>
         <Input
-          placeholder='Search by Booking ID'
+          placeholder='Tìm kiếm theo mã đơn'
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setCurrentPage(1);
-          }}
-          className='w-1/2'
+          onChange={(e) => setSearch(e.target.value)}
+          className='w-full'
         />
-        <Select
-          value={filterStatus}
-          onValueChange={(value) => {
-            setFilterStatus(value);
-            setCurrentPage(1);
-          }}
-        >
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Filter by Status' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='All'>All</SelectItem>
-            <SelectItem value='Pending'>Pending</SelectItem>
-            <SelectItem value='Confirmed'>Confirmed</SelectItem>
-            <SelectItem value='NoCollector'>No Collector</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
+      {/* Tables */}
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-        {/* Bảng đã phân công */}
+        {/* Assigned */}
         <div>
           <h2 className='text-lg font-semibold mb-2'>Đã phân công</h2>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Trạng Thái</TableHead>
-                <TableHead>Thanh Toán</TableHead>
-                <TableHead>Người Lấy Mẫu</TableHead>
-                <TableHead>Ngày Lấy Mẫu</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Thanh toán</TableHead>
+                <TableHead>Người lấy mẫu</TableHead>
+                <TableHead>Ngày lấy mẫu</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {assignedBookings.map((booking) => (
+              {getAssignedBookings().map((booking) => (
                 <TableRow
                   key={booking.bookingId}
                   onClick={() => handleBookingClick(booking)}
@@ -177,20 +149,20 @@ export default function AppointmentsPage() {
           </Table>
         </div>
 
-        {/* Bảng chưa phân công */}
+        {/* Unassigned */}
         <div>
           <h2 className='text-lg font-semibold mb-2'>Chưa phân công</h2>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Trạng Thái</TableHead>
-                <TableHead>Thanh Toán</TableHead>
-                <TableHead>Người Lấy Mẫu</TableHead>
-                <TableHead>Ngày Lấy Mẫu</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Thanh toán</TableHead>
+                <TableHead>Người lấy mẫu</TableHead>
+                <TableHead>Ngày lấy mẫu</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {unassignedBookings.map((booking) => (
+              {getUnassignedBookings().map((booking) => (
                 <TableRow
                   key={booking.bookingId}
                   onClick={() => handleBookingClick(booking)}
@@ -213,66 +185,27 @@ export default function AppointmentsPage() {
         </div>
       </div>
 
-      {/* <Pagination className='mt-4'>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href='#'
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentPage((prev) => Math.max(prev - 1, 1));
-              }}
-            />
-          </PaginationItem>
-
-          {[...Array(totalPages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink
-                href='#'
-                isActive={index + 1 === currentPage}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setCurrentPage(index + 1);
-                }}
-              >
-                {index + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-
-          <PaginationItem>
-            <PaginationNext
-              href='#'
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination> */}
-
+      {/* Dialog */}
       <Dialog open={!!selectedBooking} onOpenChange={() => setSelectedBooking(null)}>
         <DialogContent className='!w-full !max-w-[95vw] max-h-[90vh] overflow-y-auto'>
           <DialogHeader>
-            <DialogTitle>Chi tiết</DialogTitle>
+            <DialogTitle>Chi tiết đơn</DialogTitle>
           </DialogHeader>
 
           {selectedBooking && (
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700'>
+              {/* Booking Info */}
               <div className='border rounded-xl p-4 bg-gray-50'>
                 <p className='font-semibold mb-2'>Chi tiết</p>
                 <div className='space-y-1'>
                   <div>
                     <strong>Mã đơn:</strong> {selectedBooking.bookingId}
                   </div>
-                  {/* <div><strong>Service Type ID:</strong> {selectedBooking.serviceTypeId}</div> */}
                   <div>
                     <strong>Người đặt:</strong> {selectedBooking.userId}
                   </div>
-                  {/* <div><strong>Sample Method:</strong> {selectedBooking.sampleMethod}</div> */}
                   <div>
-                    <strong>Thanh toán :</strong> {selectedBooking.paymentStatus}
+                    <strong>Thanh toán:</strong> {selectedBooking.paymentStatus}
                   </div>
                   <div>
                     <strong>Vị trí:</strong>{' '}
@@ -281,6 +214,7 @@ export default function AppointmentsPage() {
                 </div>
               </div>
 
+              {/* Time Info */}
               <div className='border rounded-xl p-4 bg-gray-50'>
                 <p className='font-semibold mb-2'>Thời gian</p>
                 <div className='space-y-1'>
@@ -290,7 +224,7 @@ export default function AppointmentsPage() {
                   </div>
                   <div>
                     <strong>Ngày thu mẫu:</strong>{' '}
-                    {selectedBooking.sampleCollectionSchedules[0]
+                    {selectedBooking.sampleCollectionSchedules[0]?.collectionDate
                       ? new Date(
                           selectedBooking.sampleCollectionSchedules[0].collectionDate,
                         ).toLocaleString()
@@ -303,6 +237,7 @@ export default function AppointmentsPage() {
                 </div>
               </div>
 
+              {/* Status Info */}
               <div className='border rounded-xl p-4 bg-gray-50'>
                 <p className='font-semibold mb-2'>Trạng thái</p>
                 <div className='space-y-1'>
@@ -318,43 +253,64 @@ export default function AppointmentsPage() {
 
               <div className='border rounded-xl p-4 bg-gray-50'>
                 <p className='font-semibold mb-2'>Phân công nhân viên</p>
-                <Select value={assignedEmployee} onValueChange={setAssignedEmployee}>
-                  <SelectTrigger className='w-full mt-1'>
-                    <SelectValue placeholder='Chọn nhân viên' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {employees.length === 0 && (
-                      <SelectItem value='NULL' disabled>
-                        Không có nhân viên nào{' '}
-                      </SelectItem>
-                    )}
-                    {employees
-                      .filter((emp) => emp.userId !== null && emp.userId !== undefined)
-                      .map((emp) => (
-                        <SelectItem key={emp.userId} value={emp.userId.toString()}>
-                          {emp.fullName}
+
+                {selectedBooking.sampleCollectionSchedules[0]?.collectorId ? (
+                  <p className='mt-1'>
+                    Đã phân công cho:{' '}
+                    <span className='font-medium'>
+                      {selectedBooking.sampleCollectionSchedules[0]?.collectorName}
+                    </span>
+                  </p>
+                ) : isPastCollectionDate(
+                    selectedBooking.sampleCollectionSchedules[0]?.collectionDate,
+                  ) ? (
+                  <p className='italic text-gray-500 mt-1'>Đã quá hạn – không thể phân công</p>
+                ) : (
+                  <Select value={assignedEmployee} onValueChange={setAssignedEmployee}>
+                    <SelectTrigger className='w-full mt-1'>
+                      <SelectValue placeholder='Chọn nhân viên' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {employees.length === 0 ? (
+                        <SelectItem value='NULL' disabled>
+                          Không có nhân viên nào
                         </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                      ) : (
+                        employees.map((emp) => (
+                          <SelectItem key={emp.userId} value={emp.userId.toString()}>
+                            {emp.fullName}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
           )}
 
-          <div className='flex justify-end gap-3 mt-6'>
-            <Button
-              className='px-5 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition'
-              onClick={handleSaveAssignment}
-            >
-              Lưu thay đổi
-            </Button>
-            <Button
-              className='px-5 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition'
-              onClick={() => setSelectedBooking(null)}
-            >
-              Hủy
-            </Button>
-          </div>
+         
+          {!selectedBooking?.sampleCollectionSchedules[0]?.collectorId &&
+            !isPastCollectionDate(selectedBooking?.sampleCollectionSchedules[0]?.collectionDate) && (
+              <div className='flex justify-end gap-3 mt-6'>
+                <Button className='bg-green-600 text-white' onClick={handleSaveAssignment}>
+                  Lưu thay đổi
+                </Button>
+                <Button variant='secondary' onClick={() => setSelectedBooking(null)}>
+                  Hủy
+                </Button>
+              </div>
+            )}
+
+          {/* Nút Hủy khi không được phép phân công */}
+          {(selectedBooking?.sampleCollectionSchedules[0]?.collectorId ||
+            isPastCollectionDate(selectedBooking?.sampleCollectionSchedules[0]?.collectionDate)) && (
+            <div className='flex justify-end gap-3 mt-6'>
+              <Button variant='secondary' onClick={() => setSelectedBooking(null)}>
+                Đóng
+              </Button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
