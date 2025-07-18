@@ -133,7 +133,7 @@ export default function BlogManagementPage() {
           <Button
             variant='outline'
             size='icon'
-            onClick={() => (window.location.href = '/dashboard/blogmanage/blogcreate')}
+            onClick={() => (window.location.href = paths.manager.blogCreate)}
           >
             <Plus className='w-5 h-5' />
           </Button>
