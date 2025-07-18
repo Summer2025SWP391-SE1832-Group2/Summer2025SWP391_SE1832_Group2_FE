@@ -6,21 +6,15 @@ type TransactionStatusBadgeProps = {
 };
 
 const statusStyles: Record<TransactionStatus, string> = {
-  SUCCESS:
+  'Đã thanh toán':
     'text-green-700 bg-gradient-to-r from-green-100 to-green-200 hover:from-green-200 hover:to-green-300 border-green-300 font-medium',
-  PENDING:
-    'text-yellow-700 bg-gradient-to-r from-yellow-100 to-yellow-200 hover:from-yellow-200 hover:to-yellow-300 border-yellow-300 font-medium',
-  FAILED:
+  'Chưa thanh toán':
     'text-red-700 bg-gradient-to-r from-red-100 to-red-200 hover:from-red-200 hover:to-red-300 border-red-300 font-medium',
-  CANCELLED:
-    'text-gray-700 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 border-gray-300 font-medium',
 };
 
 const statusText: Record<TransactionStatus, string> = {
-  SUCCESS: 'Thành công',
-  PENDING: 'Đang chờ',
-  FAILED: 'Thất bại',
-  CANCELLED: 'Đã hủy',
+  'Đã thanh toán': 'Đã thanh toán',
+  'Chưa thanh toán': 'Chưa thanh toán',
 };
 
 export const TransactionStatusBadge = ({ status }: TransactionStatusBadgeProps) => (

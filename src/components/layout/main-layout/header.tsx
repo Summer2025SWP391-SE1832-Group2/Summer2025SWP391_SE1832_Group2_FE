@@ -3,6 +3,7 @@ import { EmptyState } from '@/components/common/empty_state';
 import { ErrorMessage } from '@/components/common/error';
 import { Loading } from '@/components/common/loading';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,8 +12,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useService } from '@/hooks/useService';
+import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth';
 import { paths } from '@/utils/constant/path';
+import { roleBadgeStyles, getRoleDisplayName } from '@/utils/role-utils';
 import { ChevronDown, Clock, CreditCard, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
@@ -22,6 +25,7 @@ const Header = () => {
   const [isServiceMenuOpen, setIsServiceMenuOpen] = useState(false);
   const { queryServices } = useService();
   const { data: services, isLoading, error, refetch } = queryServices;
+
   const handleLogout = () => {
     logout();
   };
@@ -137,11 +141,27 @@ const Header = () => {
                   <Avatar>
                     <AvatarFallback>{user?.fullName?.charAt(0) ?? ''}</AvatarFallback>
                   </Avatar>
-                  <span className='hidden lg:block text-sm font-medium'>{user.fullName}</span>
+                  <div className='hidden lg:flex flex-col items-start'>
+                    <span className='text-sm font-medium'>{user.fullName}</span>
+                    {user?.role && (
+                      <Badge
+                        variant='outline'
+                        className={cn('text-xs px-1.5 py-0 h-5', roleBadgeStyles[user.role])}
+                      >
+                        {getRoleDisplayName(user.role)}
+                      </Badge>
+                    )}
+                  </div>
                   <ChevronDown className='h-4 w-4' />
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className='w-56' align='end'>
+                <div className='px-2 py-1.5 text-xs text-muted-foreground flex items-center gap-1.5 border-b mb-1'>
+                  <Badge variant='outline' className={roleBadgeStyles[user?.role || 'Guest']}>
+                    {getRoleDisplayName(user?.role || 'Guest')}
+                  </Badge>
+                  <span>Vai trò của bạn</span>
+                </div>
                 <DropdownMenuItem asChild>
                   <Link to={paths.profile}>
                     <span className='flex items-center gap-2 w-full'>

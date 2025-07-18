@@ -1,4 +1,4 @@
-export type TransactionStatus = 'SUCCESS' | 'PENDING' | 'FAILED' | 'CANCELLED';
+export type TransactionStatus = 'Đã thanh toán' | 'Chưa thanh toán';
 
 export type PaymentGateway = 'PayOS' | 'VNPay' | 'Momo' | 'ZaloPay';
 
