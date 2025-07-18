@@ -14,4 +14,12 @@
       description: string;
       img : string;
       };
-export type { Blog, Blogtype };
+
+      type Comment = {
+         uniqueId: number;
+         blogId: number;
+         userId: number;
+         comment1: string;
+         rootId: number | null;
+      }
+export type { Blog, Blogtype, Comment};

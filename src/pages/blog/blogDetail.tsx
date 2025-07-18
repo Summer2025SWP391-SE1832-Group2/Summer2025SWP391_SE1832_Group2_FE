@@ -4,25 +4,56 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { addFavorite, getBlogById } from '@/services/blogService';
-import type { Blog } from '@/types/blog';
-import Comment from '@/pages/comment';
+import type { Blog, Comment } from '@/types/blog';
+import Comments from '@/pages/comment';
 import { Heart } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
-
+import { Textarea } from '@/components/ui/textarea';
+import { createComment } from '@/services/comment_service';
 export default function BlogDetailHomePage() {
   const { blogId } = useParams<{ blogId: string }>();
   const [blog, setBlog] = useState<Blog | null>(null);
   const navigate = useNavigate();
   const [favoriteCount, setFavoriteCount] = useState(0);
   const [liked, setLiked] = useState(false);
-  const {  user } = useAuthStore();
+  const { user } = useAuthStore();
+
+  const [newComment, setNewComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const handleAddComment = async () => {
+    if (!newComment.trim() || !user?.userId || !blogId) return;
+
+    setIsSubmitting(true);
+    try {
+      const newCommentData: Comment = {
+        uniqueId: 0,
+        blogId: Number(blogId),
+        userId: user.userId,
+        comment1: newComment.trim(),
+        rootId: null,
+      };
+
+      await createComment(newCommentData);
+      setNewComment('');
+      setReloadKey((prev) => prev + 1);
+
+      // TODO: Reload comments nếu cần
+    } catch (err) {
+      console.error('Lỗi khi thêm bình luận:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleToggleFavorite = async () => {
     try {
       if (!blog || !user?.userId) return;
       if (liked) {
         setFavoriteCount((prev) => Math.max(prev - 1, 0));
       } else {
-        await addFavorite(blog.blogId,user?.userId );
+        await addFavorite(blog.blogId, user?.userId);
         setFavoriteCount((prev) => prev + 1);
       }
       setLiked(!liked);
@@ -48,7 +79,6 @@ export default function BlogDetailHomePage() {
     setFavoriteCount(15);
     setLiked(false);
   }, [blogId]);
- 
 
   if (!blog) {
     return <p className='p-6 text-muted-foreground'>Đang tải chi tiết blog...</p>;
@@ -85,7 +115,19 @@ export default function BlogDetailHomePage() {
       </Card>
       <div className='mt-6'>
         <h2 className='text-2xl font-semibold p-2'>Bình luận</h2>
-        <Comment blogId={Number(blogId)} />
+        <div className='space-y-2 p-2'>
+          <Textarea
+            placeholder='Nhập bình luận của bạn...'
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          />
+          <Button onClick={handleAddComment} disabled={isSubmitting || !newComment.trim()}>
+            {isSubmitting ? 'Đang gửi...' : 'Gửi bình luận'}
+          </Button>
+        </div>
+        <div className='max-h-[400px] overflow-y-auto pr-2'>
+          <Comments blogId={Number(blogId)} key={reloadKey} />
+        </div>
       </div>
     </div>
   );
