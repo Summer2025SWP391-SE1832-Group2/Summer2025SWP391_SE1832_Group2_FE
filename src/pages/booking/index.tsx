@@ -117,8 +117,8 @@ const BookingPage = () => {
     } else {
       form.setValue('location', '123 Nguyễn Thị Minh Khai, Q.1, TP.HCM');
     }
-    if (workSchedule && timeSlots && timeSlots.length > 0) {
-      form.setValue('time', timeSlots[0].value);
+    if (workSchedule && !form.getValues('time') && timeSlots?.[0]?.value) {
+      form.setValue('time', timeSlots?.[0]?.value);
     }
   }, [selectedMethod, form, workSchedule, timeSlots]);
 
@@ -143,7 +143,6 @@ const BookingPage = () => {
         const collectionDate = form.getValues('collectionDate');
         const time = form.getValues('time');
         const location = form.getValues('location');
-        console.log('Collection Date:', collectionDate, time, location);
         return !!collectionDate && !!time && !!location;
       default:
         return true;
