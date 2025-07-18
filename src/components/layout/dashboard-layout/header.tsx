@@ -33,12 +33,12 @@ const DashboardHeader = () => {
             </Button>
           </div>
           <div className='hidden lg:flex lg:grow'>
-            <div className='relative max-w-xs w-full'>
+            {/* <div className='relative max-w-xs w-full'>
               <Input type='search' placeholder='Tìm kiếm...' className='pl-9' />
               <div className='absolute inset-y-0 left-0 flex items-center pl-3'>
                 <Search className='h-4 w-4 text-gray-400' />
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right: Actions */}

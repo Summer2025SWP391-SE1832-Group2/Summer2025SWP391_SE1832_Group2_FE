@@ -5,10 +5,9 @@ import {
   createMultipleResultDetails,
   deleteResultDetailsByBookingId,
   getResultDetailsByBookingId,
-  updateMultipleResultDetails,
 } from '@/services/result-service';
 
-import type { ResultDetail, ResultItem } from '@/types/resultdetail';
+import type {  ResultItem } from '@/types/resultdetail';
 import type { Sample } from '@/types/sample';
 import type { TestParameter } from '@/types/testparameters';
 
@@ -31,7 +30,7 @@ export default function AddResultPage() {
   const [resultDetails, setResultDetails] = useState<ResultItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState<Record<string, [string, string]>>({});
-  const [finalResult, setFinalResult] = useState<string>('');
+  const [finalResult] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {

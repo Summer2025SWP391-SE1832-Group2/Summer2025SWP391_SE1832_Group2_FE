@@ -72,7 +72,7 @@ const ShippingPage = () => {
     const fetchAssignedBookings = async () => {
       try {
         const response = await getAllBookings();
-        const filtered = response.filter((booking) => booking.method === 'TU_THU_MAU');
+        const filtered = response.filter((booking) => booking.method === 'TU_THU_MAU' && booking.paymentStatus === 'Đã thanh toán');
 
         setBookings(filtered);
       } catch (error) {

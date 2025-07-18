@@ -27,7 +27,7 @@ const BookingListPage: React.FC = () => {
 
     const fetchData = async () => {
       try {
-        if (user.role === "Manager" || user.role === "Admin") {
+        if (user.role === "Manager" || user.role === "Admin" || user.role === "TestStaff") {
           const data: Booking[] = await getAllBookingSchedule();
           setBookings(data.reverse());
         } else {

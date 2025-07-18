@@ -109,6 +109,7 @@ const BookingPage = () => {
         const collectionDate = form.getValues('collectionDate');
         const time = form.getValues('time');
         const location = form.getValues('location');
+        console.log('Collection Date:', collectionDate, time, location);
         return !!collectionDate && !!time && !!location;
       default:
         return true;
@@ -140,7 +141,7 @@ const BookingPage = () => {
     try {
       const response = await createBookingMutation.mutateAsync({
         ...values,
-        paymentStatus: 'Unpaid',
+        paymentStatus: 'Chưa thanh toán',
         time: values.time,
         userId: user?.userId ?? 0,
         bookingDate: formatISO(new Date(), { representation: 'complete' }),

@@ -11,8 +11,7 @@ import {
 import type { BookingFormValues } from '@/lib/zod/booking';
 import { TestTube, User } from 'lucide-react';
 import type { UseFormReturn } from 'react-hook-form';
-import { useEffect } from 'react';
-import { addDays } from 'date-fns';
+
 
 interface SampleInfoStepProps {
   form: UseFormReturn<BookingFormValues>;

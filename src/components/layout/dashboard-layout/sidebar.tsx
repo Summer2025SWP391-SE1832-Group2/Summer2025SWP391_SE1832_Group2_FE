@@ -18,28 +18,22 @@ interface SidebarLink {
 
 const staffLinks: SidebarLink[] = [
   {
-    title: 'Lịch hẹn',
-    href: paths.staff.appointments,
-    icon: <Calendar className='h-5 w-5' />,
-    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
-  },
-  {
     title: 'Lịch Làm việc',
     href: paths.staff.staffSchedule,
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
+    roles: ['FacilityStaff', 'HomeStaff'],
   },
   {
     title: 'Giao kit',
     href: paths.staff.shipping,
     icon: <Calendar className='h-5 w-5' />,
-    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
+    roles: ['ShipStaff'],
   },
   {
     title: 'Nhập mẫu',
     href: paths.staff.bookingList,
     icon: <Package className='h-5 w-5' />,
-    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff'],
+    roles: ['FacilityStaff', 'HomeStaff', 'TestStaff'],
   },
 ];
 
@@ -167,62 +161,64 @@ const DashboardSidebar = () => {
 
       <div className='p-4'>
         <nav className='space-y-1'>
-          {combinedLinks.map((link) => {
-            const hasSubLinks = link.children && link.children.length > 0;
-            const isActive = isLinkActive(link.href);
-            const isExpandedLink = expanded[link.href];
+          {combinedLinks
+            .filter((link) => link.roles.includes(role))
+            .map((link) => {
+              const hasSubLinks = link.children && link.children.length > 0;
+              const isActive = isLinkActive(link.href);
+              const isExpandedLink = expanded[link.href];
 
-            return (
-              <div key={link.href}>
-                <Button
-                  variant='ghost'
-                  className={cn(
-                    'w-full justify-between px-3',
-                    isActive && 'bg-gray-100 dark:bg-gray-700',
-                  )}
-                  onClick={() => hasSubLinks && toggleExpand(link.href)}
-                >
-                  <Link
-                    to={hasSubLinks ? '#' : link.href}
-                    className='w-full flex justify-between items-center'
-                  >
-                    <div className='flex items-center gap-2'>
-                      {link.icon}
-                      {link.title}
-                    </div>
-                    {hasSubLinks && (
-                      <ChevronDown
-                        className={cn('h-4 w-4 transition-transform', {
-                          'rotate-180': isExpandedLink,
-                        })}
-                      />
+              return (
+                <div key={link.href}>
+                  <Button
+                    variant='ghost'
+                    className={cn(
+                      'w-full justify-between px-3',
+                      isActive && 'bg-gray-100 dark:bg-gray-700',
                     )}
-                  </Link>
-                </Button>
+                    onClick={() => hasSubLinks && toggleExpand(link.href)}
+                  >
+                    <Link
+                      to={hasSubLinks ? '#' : link.href}
+                      className='w-full flex justify-between items-center'
+                    >
+                      <div className='flex items-center gap-2'>
+                        {link.icon}
+                        {link.title}
+                      </div>
+                      {hasSubLinks && (
+                        <ChevronDown
+                          className={cn('h-4 w-4 transition-transform', {
+                            'rotate-180': isExpandedLink,
+                          })}
+                        />
+                      )}
+                    </Link>
+                  </Button>
 
-                {hasSubLinks && isExpandedLink && (
-                  <div className='ml-6 space-y-1 mt-1'>
-                    {link.children?.map((child) => (
-                      <Button
-                        key={child.href}
-                        variant='ghost'
-                        asChild
-                        className={cn(
-                          'w-full justify-start',
-                          isLinkActive(child.href) && 'bg-gray-100 dark:bg-gray-700',
-                        )}
-                      >
-                        <Link to={child.href} className='flex items-center gap-2'>
-                          {child.icon}
-                          {child.title}
-                        </Link>
-                      </Button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  {hasSubLinks && isExpandedLink && (
+                    <div className='ml-6 space-y-1 mt-1'>
+                      {link.children?.map((child) => (
+                        <Button
+                          key={child.href}
+                          variant='ghost'
+                          asChild
+                          className={cn(
+                            'w-full justify-start',
+                            isLinkActive(child.href) && 'bg-gray-100 dark:bg-gray-700',
+                          )}
+                        >
+                          <Link to={child.href} className='flex items-center gap-2'>
+                            {child.icon}
+                            {child.title}
+                          </Link>
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
         </nav>
       </div>
     </div>
