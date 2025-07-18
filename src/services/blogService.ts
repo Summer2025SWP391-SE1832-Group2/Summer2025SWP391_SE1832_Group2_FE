@@ -41,7 +41,11 @@ const updateBlogType = async ( data: Partial<Blogtype>): Promise<Blogtype> => {
   const response = await axiosInstance.put<Blogtype>(`/api/BlogsType`, data);
   return response.data;
 };
-
+const addFavorite = async (blogId: number, userId: number): Promise<Blog> => {
+  const data = { blogId, userId };
+  const response = await axiosInstance.post<Blog>("/api/Favorite", data);
+  return response.data;
+};
 export {
   getAllBlogs,
   getBlogById,
@@ -50,5 +54,6 @@ export {
   deleteBlog,
   getAllBlogByBlogTypeID,
   getAllBlogtype,
-  updateBlogType
+  updateBlogType,
+  addFavorite
 };
