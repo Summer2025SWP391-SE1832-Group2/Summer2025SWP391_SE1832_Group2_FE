@@ -1,22 +1,41 @@
 import { z } from 'zod';
 
-export const bookingSchema = z.object({
+// Sample schema
+const sampleSchema = z.object({
+  sampleType: z.string().min(1, { message: 'Vui lòng chọn loại mẫu' }),
+  participantName: z.string().min(1, { message: 'Vui lòng điền tên người tham gia' }),
+  notes: z.string().min(1, { message: 'Vui lòng điền ghi chú' }),
+});
+
+// Base booking schema without samples validation
+const baseBookingSchema = z.object({
   serviceId: z.number().positive(),
   collectionDate: z.date(),
   method: z.enum(['TAI_CO_SO_Y_TE', 'TU_THU_MAU', 'NHAN_VIEN_DEN_NHA']),
   location: z.string().min(1, { message: 'Địa chỉ là bắt buộc' }),
   buyKit: z.boolean(),
   time: z.string().min(1, { message: 'Vui lòng chọn khung giờ' }),
-  samples: z
-    .array(
-      z.object({
-        sampleType: z.string().min(1, { message: 'Vui lòng chọn loại mẫu' }),
-        participantName: z.string().min(1, { message: 'Vui lòng điền tên người tham gia' }),
-        notes: z.string().min(1, { message: 'Vui lòng điền ghi chú' }),
-      }),
-    )
-    .length(2, { message: 'Vui lòng điền đầy đủ thông tin của 2 mẫu' }),
 });
+
+// Flexible samples schema that accepts either one or two samples
+export const bookingSchema = baseBookingSchema
+  .extend({
+    samples: z.array(sampleSchema).min(1, { message: 'Vui lòng điền thông tin ít nhất 1 mẫu' }),
+  })
+  .refine(
+    (data) => {
+      // For NIPT service (serviceId = 7), one sample is enough
+      // For other services, we need exactly 2 samples
+      if (data.serviceId === 7) {
+        return data.samples.length >= 1;
+      }
+      return data.samples.length === 2;
+    },
+    {
+      message: 'Vui lòng điền đầy đủ thông tin của 2 mẫu',
+      path: ['samples'],
+    },
+  );
 
 export const bookingDefaultValues = {
   serviceId: 0,
