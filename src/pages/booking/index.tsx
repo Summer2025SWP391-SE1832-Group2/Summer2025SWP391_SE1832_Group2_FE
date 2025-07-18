@@ -21,7 +21,7 @@ import { paths } from '@/utils/constant/path';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formatISO } from 'date-fns';
 import { CalendarIcon, Check, ChevronLeft, ChevronRight, Package, TestTube } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -30,6 +30,11 @@ const sampleTypeOptions = [
   { label: 'Máu', value: 'Máu' },
   { label: 'Nước tiểu', value: 'Nước tiểu' },
   { label: 'Khác', value: 'Khác' },
+];
+
+const niptSampleTypeOptions = [
+  { label: 'Máu tĩnh mạch', value: 'Máu tĩnh mạch' },
+  { label: 'Máu ngoại vi', value: 'Máu ngoại vi' },
 ];
 
 const relationshipOptions = [
@@ -56,6 +61,9 @@ const BookingPage = () => {
   const { queryServiceById } = useService(Number(serviceId));
   const { data: service, isLoading, error, refetch } = queryServiceById;
 
+  // Check if this is NIPT service (serviceId = 7)
+  const isNiptService = Number(serviceId) === 7;
+
   // Step management
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -63,13 +71,31 @@ const BookingPage = () => {
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const [pendingBookingData, setPendingBookingData] = useState<BookingFormValues | null>(null);
 
-  // Form setup with Zod validation
-  const form = useForm<BookingFormValues>({
-    resolver: zodResolver(bookingFormSchema),
-    defaultValues: {
+  // Prepare default values based on service type
+  const defaultValues = useMemo(() => {
+    if (isNiptService) {
+      return {
+        ...bookingDefaultValues,
+        serviceId: Number(serviceId),
+        samples: [
+          {
+            sampleType: '',
+            participantName: '',
+            notes: 'Mẹ',
+          },
+        ],
+      };
+    }
+    return {
       ...bookingDefaultValues,
       serviceId: Number(serviceId),
-    },
+    };
+  }, [serviceId, isNiptService]);
+
+  // Form setup with validation
+  const form = useForm<BookingFormValues>({
+    resolver: zodResolver(bookingFormSchema),
+    defaultValues,
   });
 
   const selectedMethod = form.watch('method');
@@ -91,19 +117,27 @@ const BookingPage = () => {
     } else {
       form.setValue('location', '123 Nguyễn Thị Minh Khai, Q.1, TP.HCM');
     }
-    if (workSchedule && timeSlots) {
-      form.setValue('time', timeSlots?.[0]?.value ?? '');
+    if (workSchedule && timeSlots && timeSlots.length > 0) {
+      form.setValue('time', timeSlots[0].value);
     }
-  }, [selectedMethod, form, workSchedule]);
+  }, [selectedMethod, form, workSchedule, timeSlots]);
 
-  // Step validation
+  // Remove debug logs
   const isStepValid = (step: number) => {
     switch (step) {
       case 1:
         return !!selectedMethod;
       case 2:
-        return samples.every(
-          (sample) => sample.sampleType && sample.participantName && sample.notes,
+        if (isNiptService) {
+          // For NIPT, only validate the first sample
+          return (
+            samples[0] && samples[0].sampleType && samples[0].participantName && samples[0].notes
+          );
+        }
+        // For other services, validate both samples
+        return (
+          samples.length === 2 &&
+          samples.every((sample) => sample.sampleType && sample.participantName && sample.notes)
         );
       case 3:
         const collectionDate = form.getValues('collectionDate');
@@ -115,6 +149,12 @@ const BookingPage = () => {
         return true;
     }
   };
+
+  // Reset form when service changes
+  useEffect(() => {
+    form.reset(defaultValues);
+    setCurrentStep(1);
+  }, [service?.serviceId, defaultValues, form]);
 
   const nextStep = (e?: React.MouseEvent) => {
     if (e) {
@@ -219,8 +259,9 @@ const BookingPage = () => {
         return (
           <SampleInfoStep
             form={form}
-            sampleTypeOptions={sampleTypeOptions}
+            sampleTypeOptions={isNiptService ? niptSampleTypeOptions : sampleTypeOptions}
             relationshipOptions={relationshipOptions}
+            isNiptService={isNiptService}
           />
         );
 

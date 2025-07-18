@@ -28,14 +28,27 @@ interface ScheduleStepProps {
 export function ScheduleStep({ form, timeSlots, selectedMethod }: ScheduleStepProps) {
   // Watch for method changes to set default date for self-collection
   const selectedMethodValue = form.watch('method');
+
+  // Set default collection date when component mounts or method changes
   useEffect(() => {
+    // Make sure we have a valid date
+    let currentDate = form.getValues('collectionDate');
+    if (!currentDate || !(currentDate instanceof Date) || isNaN(currentDate.getTime())) {
+      currentDate = new Date(); // Fallback to current date if invalid
+    }
+
     if (selectedMethodValue === 'TU_THU_MAU') {
       const twoDaysFromNow = addDays(new Date(), 2);
       form.setValue('collectionDate', twoDaysFromNow);
     } else {
       form.setValue('collectionDate', addDays(new Date(), 1));
     }
-  }, [selectedMethod]);
+
+    // Set default time slot if available
+    if (timeSlots && timeSlots.length > 0 && !form.getValues('time')) {
+      form.setValue('time', timeSlots[0].value);
+    }
+  }, [selectedMethodValue, form, timeSlots]);
 
   return (
     <div className='space-y-6'>
@@ -104,7 +117,7 @@ export function ScheduleStep({ form, timeSlots, selectedMethod }: ScheduleStepPr
                       <Clock className='h-4 w-4' />
                       Khung giờ
                     </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ''}>
                       <FormControl>
                         <SelectTrigger className='h-12'>
                           <SelectValue placeholder='Chọn khung giờ' />
