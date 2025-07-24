@@ -10,17 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-// import {
-//   Table,
-//   TableCaption,
-//   TableHeader,
-//   TableBody,
-//   TableRow,
-//   TableHead,
-//   TableCell,
-// } from "@/components/ui/table";
+
 import { Button } from '@/components/ui/button';
-// import BlogTypeEditorDialog from './blog-type-edit-dialog';
 import { paths } from '@/utils/constant/path';
 import BlogTypeEditorDialog from './blog-type-edit-dialog';
 export default function BlogManagementPage() {

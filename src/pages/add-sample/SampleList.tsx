@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import type { Sample } from '@/types/sample';
 import { Button } from '@/components/ui/button';
-
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/toast';
 import { updateSamplePictureService } from '@/services/sample_service';
 import { DropzoneImageUpload } from '@/components/common/image-upload';
@@ -13,7 +11,7 @@ type SampleListProps = {
 };
 
 const SampleList: React.FC<SampleListProps> = ({ samples, onReload }) => {
-  const [pictureMap, setPictureMap] = useState<Record<number, string>>({});
+  // const [pictureMap, setPictureMap] = useState<Record<number, string>>({});
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [imageUrl, setImageUrl] = useState<string>('');
   const { showToast } = useToast();

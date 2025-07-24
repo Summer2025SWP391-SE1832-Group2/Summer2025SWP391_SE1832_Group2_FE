@@ -39,6 +39,7 @@ import BookingPage from '@/pages/booking';
 import BookingListPage from '@/pages/add-sample';
 import ShippingPage from '@/pages/shipping';
 import ServicesPage from '@/pages/dashboard/service';
+import FavoriteBlog from '@/pages/blog/favoriteBlog';
 
 
 const router = createBrowserRouter([
@@ -50,6 +51,8 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: paths.blog, element: <BlogPage /> },
       { path: paths.blogType, element: <BlogType /> },
+      { path: paths.blogFavorite, element: <FavoriteBlog /> },
+
 
       {
         element: <PublicRoute />,

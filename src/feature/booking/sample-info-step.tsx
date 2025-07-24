@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import type { BookingFormValues } from '@/lib/zod/booking';
 import { TestTube, User } from 'lucide-react';
 import { useEffect } from 'react';
@@ -63,7 +64,12 @@ export function SampleInfoStep({
         </p>
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto'>
+      <div
+        className={cn(
+          'grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto',
+          isNiptService && 'max-w-2xl space-y-6 grid-cols-none lg:grid-cols-none',
+        )}
+      >
         {/* Sample 1 */}
         <Card className='border-2 border-primary/20'>
           <CardHeader className='text-center bg-primary/5'>

@@ -2,14 +2,10 @@ import React, { useEffect, useState } from "react";
 import { getAllBookingSchedule, getBookingsByCollectorId } from "@/services/booking_service";
 import {
   getSamplesByBookingId,
-  createSampleService,
-  deleteSampleService,
-  updateSampleService,
 } from "@/services/sample_service";
-import { getCollectionScheduleByBookingId } from "@/services/sample_collection_schedule_service";
 import { useAuthStore } from "@/stores/auth";
 import type { Booking } from "@/types/booking";
-import type { Sample, NewSample } from "@/types/sample";
+import type { Sample } from "@/types/sample";
 import BookingTable from "./BookingTable";
 import { useToast } from "@/components/ui/toast";
 
@@ -20,7 +16,6 @@ const BookingListPage: React.FC = () => {
   const [bookings, setBookings] = useState<Array<Booking>>([]);
   const [sampleMap, setSampleMap] = useState<Record<number, Sample[]>>({});
   const [expanded, setExpanded] = useState<number | null>(null);
-  const [openDialogId, setOpenDialogId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -62,54 +57,10 @@ const BookingListPage: React.FC = () => {
     }
   };
 
-  const handleCreateSample = async (
-    bookingId: number,
-    data: Omit<NewSample, "bookingId">
-  ) => {
-    const currentSamples = sampleMap[bookingId] || [];
-    if (currentSamples.length >= 2) {
-      showToast("Mỗi booking chỉ được tạo tối đa 2 mẫu.", "error");
-      return;
-    }
 
-    if (!data.sampleType || !data.participantName || !data.notes) {
-      showToast("Vui lòng nhập đầy đủ thông tin.", "error");
-      return;
-    }
 
-    try {
-      await createSampleService({ ...data, bookingId, picture: "", transport: "" });
-      await loadSamples(bookingId);
-      setOpenDialogId(null);
-      showToast("Tạo mẫu thành công.", "success");
-    } catch (err) {
-      console.error(err);
-      showToast("Không thể tạo mẫu.", "error");
-    }
-  };
 
-  const handleDeleteSample = async (bookingId: number, sampleId: number) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xoá mẫu này?")) return;
-    try {
-      await deleteSampleService(sampleId);
-      await loadSamples(bookingId);
-      showToast("Xoá mẫu thành công.", "success");
-    } catch (err) {
-      console.error(err);
-      showToast("Xoá mẫu thất bại.", "error");
-    }
-  };
 
-  const handleEditSample = async (bookingId: number, updatedSample: Sample) => {
-    try {
-      await updateSampleService(updatedSample);
-      await loadSamples(bookingId);
-      showToast("Cập nhật mẫu thành công.", "success");
-    } catch (err) {
-      console.error(err);
-      showToast("Cập nhật mẫu thất bại.", "error");
-    }
-  };
 
   return (
     <div className="p-6">

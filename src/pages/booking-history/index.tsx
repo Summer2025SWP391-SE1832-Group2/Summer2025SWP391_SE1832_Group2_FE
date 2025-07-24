@@ -118,6 +118,7 @@ const BookingHistoryPage = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Mã đơn</TableHead>
+                  <TableHead>Dịch vụ</TableHead>
                   <TableHead>Trạng thái</TableHead>
                   <TableHead>Thanh toán</TableHead>
                   <TableHead>Ngày đặt</TableHead>
@@ -132,6 +133,7 @@ const BookingHistoryPage = () => {
                 {currentBookings.map((booking) => (
                   <TableRow key={booking.bookingId}>
                     <TableCell>#{booking.bookingId}</TableCell>
+                    <TableCell>{booking.serviceId}</TableCell>
                     <TableCell>
                       <Badge className={getBookingStatusColor(booking.status||"")}>{booking.status}</Badge>
                     </TableCell>

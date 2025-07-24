@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth';
 import { paths } from '@/utils/constant/path';
 import { roleBadgeStyles, getRoleDisplayName } from '@/utils/role-utils';
-import { ChevronDown, Clock, CreditCard, LogOut, User } from 'lucide-react';
+import { ChevronDown, Clock, CreditCard, FileHeart, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -183,6 +183,14 @@ const Header = () => {
                     <span className='flex items-center gap-2 w-full'>
                       <CreditCard className='h-4 w-4' />
                       Xem giao dịch
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={paths.blogFavorite}>
+                    <span className='flex items-center gap-2 w-full'>
+                      <FileHeart  className='h-4 w-4' />
+                      Blog yêu thích
                     </span>
                   </Link>
                 </DropdownMenuItem>

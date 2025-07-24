@@ -6,7 +6,7 @@ interface ShippingStepProps {
 }
 
 export default function ShippingStep({ shippingList }: ShippingStepProps) {
-  const status = shippingList[0]?.status;
+  // const status = shippingList[0]?.status;
 
   return (
     <div className="flex items-center justify-between w-full max-w-4xl mx-auto">

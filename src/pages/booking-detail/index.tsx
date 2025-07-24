@@ -162,7 +162,7 @@ const BookingDetailPage = () => {
                 <DialogTitle>Kết quả Booking #{booking.bookingId}</DialogTitle>
               </DialogHeader>
 
-              <ResultContent resultDetails={booking.resultDetails || []} />
+<ResultContent resultDetails={booking.resultDetails || []} serviceId={booking.serviceId} />
 
               <div className=''>
                 <span className='font-semibold'>Lời nhận xét:</span>{' '}

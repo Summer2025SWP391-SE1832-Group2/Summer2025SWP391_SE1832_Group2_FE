@@ -17,7 +17,7 @@ import { vi } from 'date-fns/locale';
 import { CalendarIcon, Clock, MapPin } from 'lucide-react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { BookingFormValues } from '@/lib/zod/booking';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 interface ScheduleStepProps {
   form: UseFormReturn<BookingFormValues>;
@@ -26,29 +26,24 @@ interface ScheduleStepProps {
 }
 
 export function ScheduleStep({ form, timeSlots, selectedMethod }: ScheduleStepProps) {
-  // Watch for method changes to set default date for self-collection
-  const selectedMethodValue = form.watch('method');
-
-  // Set default collection date when component mounts or method changes
   useEffect(() => {
-    // Make sure we have a valid date
-    let currentDate = form.getValues('collectionDate');
-    if (!currentDate || !(currentDate instanceof Date) || isNaN(currentDate.getTime())) {
-      currentDate = new Date(); // Fallback to current date if invalid
-    }
-
-    if (selectedMethodValue === 'TU_THU_MAU') {
+    if (selectedMethod === 'TU_THU_MAU') {
       const twoDaysFromNow = addDays(new Date(), 2);
       form.setValue('collectionDate', twoDaysFromNow);
     } else {
       form.setValue('collectionDate', addDays(new Date(), 1));
     }
+  }, [selectedMethod, form]);
 
-    // Set default time slot if available
-    if (timeSlots && timeSlots.length > 0 && !form.getValues('time')) {
-      form.setValue('time', timeSlots[0].value);
-    }
-  }, [selectedMethodValue, form, timeSlots]);
+  // Memoize the disabled date function to prevent unnecessary re-renders
+  const disabledDates = useMemo(() => {
+    return (date: Date) => {
+      if (selectedMethod === 'TU_THU_MAU') {
+        return date < new Date(new Date().setDate(new Date().getDate() + 1));
+      }
+      return date < new Date();
+    };
+  }, [selectedMethod]);
 
   return (
     <div className='space-y-6'>
@@ -94,11 +89,7 @@ export function ScheduleStep({ form, timeSlots, selectedMethod }: ScheduleStepPr
                           mode='single'
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) =>
-                            selectedMethodValue === 'TU_THU_MAU'
-                              ? date < new Date(new Date().setDate(new Date().getDate() + 1))
-                              : date < new Date()
-                          }
+                          disabled={disabledDates}
                           captionLayout='dropdown'
                         />
                       </PopoverContent>

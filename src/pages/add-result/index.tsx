@@ -3,11 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getSamplesByBookingId } from '@/services/sample_service';
 import {
   createMultipleResultDetails,
-  deleteResultDetailsByBookingId,
   getResultDetailsByBookingId,
+  updateMultipleResultDetails,
 } from '@/services/result-service';
 
-import type {  ResultItem } from '@/types/resultdetail';
+import { getBookingById } from '@/services/booking_service';
+
+import type { ResultItem } from '@/types/resultdetail';
 import type { Sample } from '@/types/sample';
 import type { TestParameter } from '@/types/testparameters';
 
@@ -19,6 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { paths } from '@/utils/constant/path';
+import ExcelImport from '@/components/common/xlsx/ExcelImport';
 
 export default function AddResultPage() {
   const navigate = useNavigate();
@@ -31,15 +34,17 @@ export default function AddResultPage() {
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState<Record<string, [string, string]>>({});
   const [finalResult] = useState<string>('');
+  const [serviceId, setServiceId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [sampleData, parameterData, resultData] = await Promise.all([
+        const [sampleData, parameterData, resultData, bookingData] = await Promise.all([
           getSamplesByBookingId(bookingId),
           getTestParametersByBookingId(bookingId),
           getResultDetailsByBookingId(bookingId),
+          getBookingById(bookingId),
         ]);
 
         if (sampleData.length === 0) {
@@ -48,10 +53,10 @@ export default function AddResultPage() {
           return;
         }
 
+        setServiceId(bookingData.serviceId);
         setSamples(sampleData);
         setTestParameters(parameterData);
 
-        // 🔧 Convert ResultDetail[] -> ResultItem[]
         const resultItems: ResultItem[] = resultData.map((r) => ({
           resultDetailId: (r as any).resultDetailId ?? 0,
           bookingId,
@@ -66,8 +71,13 @@ export default function AddResultPage() {
         const newValues: Record<string, [string, string]> = {};
         resultItems.forEach((r) => {
           const key = `${r.testParameterId}-${r.sampleId}`;
-          const split = r.value.split('-');
-          newValues[key] = [split[0] || '', split[1] || ''];
+          if (bookingData.serviceId === 7) {
+            // Không tách nếu là serviceId 7 (cho phép giá trị âm)
+            newValues[key] = [r.value || '', ''];
+          } else {
+            const split = r.value.split('-');
+            newValues[key] = [split[0] || '', split[1] || ''];
+          }
         });
         setValues(newValues);
       } catch (err) {
@@ -103,7 +113,11 @@ export default function AddResultPage() {
       for (const sample of samples) {
         const key = `${param.testParameterId}-${sample.sampleId}`;
         const valPair = values[key] || ['', ''];
-        const value = valPair.filter(Boolean).join('-');
+
+        const value =
+          serviceId === 7
+            ? valPair[0]
+            : valPair.filter(Boolean).join('-');
 
         const existing = resultDetails.find(
           (r) => r.testParameterId === param.testParameterId && r.sampleId === sample.sampleId
@@ -123,17 +137,18 @@ export default function AddResultPage() {
     const toCreate = resultItems.filter((item) => item.resultDetailId === 0);
     const toUpdate = resultItems.filter((item) => item.resultDetailId !== 0);
 
-try {
-  if (toUpdate.length > 0) {
-    await deleteResultDetailsByBookingId(bookingId);
+    try {
+      const payload = {
+        bookingId,
+        finalResult,
+        results: [...toUpdate, ...toCreate],
+      };
 
-    const newResults = [...toUpdate, ...toCreate];
-    if (newResults.length > 0) {
-      await createMultipleResultDetails({ bookingId, finalResult, results: newResults });
-    }
-  } else if (toCreate.length > 0) {
-    await createMultipleResultDetails({ bookingId, finalResult, results: toCreate });
-  }
+      if (toUpdate.length > 0) {
+        await updateMultipleResultDetails(payload);
+      } else if (toCreate.length > 0) {
+        await createMultipleResultDetails(payload);
+      }
 
       alert('Lưu kết quả thành công!');
     } catch (err) {
@@ -160,55 +175,97 @@ try {
           {loading ? (
             <Skeleton className='w-full h-[200px] rounded-md' />
           ) : (
-            <div className='overflow-x-auto'>
-              <table className='min-w-full table-auto border border-muted rounded-md'>
-                <thead className='bg-muted'>
-                  <tr>
-                    <th className='px-4 py-2 border-b text-left'>Chỉ số</th>
-                    {samples.map((sample) => (
-                      <th key={sample.sampleId} className='px-4 py-2 border-b text-center'>
-                        {sample.participantName || `Mẫu ${sample.sampleId}`}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {testParameters.map((param) => (
-                    <tr key={param.testParameterId} className='hover:bg-muted/30'>
-                      <td className='border p-2 whitespace-nowrap font-medium'>{param.name}</td>
-                      {samples.map((sample) => {
-                        const key = `${param.testParameterId}-${sample.sampleId}`;
-                        const valPair = values[key] || ['', ''];
-                        return (
-                          <td key={sample.sampleId} className='border p-2'>
-                            <div className='flex gap-2 justify-center'>
-                              <Input
-                                value={valPair[0]}
-                                onChange={(e) =>
-                                  handleChange(sample.sampleId, param.testParameterId, 0, e.target.value)
-                                }
-                                className='w-20'
-                              />
-                              <Input
-                                value={valPair[1]}
-                                onChange={(e) =>
-                                  handleChange(sample.sampleId, param.testParameterId, 1, e.target.value)
-                                }
-                                className='w-20'
-                              />
-                            </div>
-                          </td>
-                        );
-                      })}
+            <>
+              <div className='overflow-x-auto'>
+                <table className='min-w-full table-auto border border-muted rounded-md'>
+                  <thead className='bg-muted'>
+                    <tr>
+                      <th className='px-4 py-2 border-b text-left'>Chỉ số</th>
+                      {samples.map((sample) => (
+                        <th key={sample.sampleId} className='px-4 py-2 border-b text-center'>
+                          {sample.participantName || `Mẫu ${sample.sampleId}`}
+                        </th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {testParameters.map((param) => (
+                      <tr key={param.testParameterId} className='hover:bg-muted/30'>
+                        <td className='border p-2 whitespace-nowrap font-medium'>{param.name}</td>
+                        {samples.map((sample) => {
+                          const key = `${param.testParameterId}-${sample.sampleId}`;
+                          const valPair = values[key] || ['', ''];
+                          return (
+                            <td key={sample.sampleId} className='border p-2 text-center'>
+                              {serviceId === 7 ? (
+                                <div className='flex items-center justify-center'>
+                                  {param.name.toLowerCase() === 'cfdna' ? (
+                                    <div className='relative w-32'>
+                                      <Input
+                                        placeholder='cfDNA'
+                                        value={valPair[0]}
+                                        onChange={(e) =>
+                                          handleChange(sample.sampleId, param.testParameterId, 0, e.target.value)
+                                        }
+                                        className='pr-6'
+                                      />
+                                      <span className='absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground text-sm'>%</span>
+                                    </div>
+                                  ) : (
+                                    <Input
+                                      placeholder='Số âm/số dương'
+                                      value={valPair[0]}
+                                      onChange={(e) =>
+                                        handleChange(sample.sampleId, param.testParameterId, 0, e.target.value)
+                                      }
+                                      className='w-32'
+                                    />
+                                  )}
+                                </div>
+                              ) : (
+                                <div className='flex gap-2 justify-center'>
+                                  <Input
+                                    placeholder='Giá trị 1'
+                                    value={valPair[0]}
+                                    onChange={(e) =>
+                                      handleChange(sample.sampleId, param.testParameterId, 0, e.target.value)
+                                    }
+                                    className='w-20'
+                                  />
+                                  <Input
+                                    placeholder='Giá trị 2'
+                                    value={valPair[1]}
+                                    onChange={(e) =>
+                                      handleChange(sample.sampleId, param.testParameterId, 1, e.target.value)
+                                    }
+                                    className='w-20'
+                                  />
+                                </div>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <ExcelImport
+                testParameters={testParameters}
+                samples={samples}
+                serviceId={serviceId}
+                onImport={(imported) => {
+                  setValues((prev) => ({ ...prev, ...imported }));
+                }}
+              />
+
+
+              <div className='mt-6 flex justify-end'>
+                <Button onClick={handleSave}>Lưu kết quả</Button>
+              </div>
+            </>
           )}
-          <div className='mt-6 flex justify-end'>
-            <Button onClick={handleSave}>Lưu kết quả</Button>
-          </div>
         </CardContent>
       </Card>
     </div>
