@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { addFavorite, getBlogById } from '@/services/blogService';
+import { addFavorite, getBlogById, getListFavoriteBlogsByBlogID, isFavorite } from '@/services/blogService';
 import type { Blog, Comment } from '@/types/blog';
 import Comments from '@/pages/comment';
 import { Heart } from 'lucide-react';
@@ -39,7 +39,6 @@ export default function BlogDetailHomePage() {
       setNewComment('');
       setReloadKey((prev) => prev + 1);
 
-      // TODO: Reload comments nếu cần
     } catch (err) {
       console.error('Lỗi khi thêm bình luận:', err);
     } finally {
@@ -66,16 +65,18 @@ export default function BlogDetailHomePage() {
       try {
         const data = await getBlogById(Number(blogId));
         setBlog(data);
+        if (user?.userId && data?.blogId) {
+          const favoriteStatus = await isFavorite(user.userId, data.blogId);
+          setLiked(favoriteStatus);
+        }
+        const coutHear = await getListFavoriteBlogsByBlogID(Number(blogId));
+        setFavoriteCount(coutHear.length  || 0);
       } catch (error) {
         console.error('Error fetching blog detail:', error);
       }
     };
 
     if (blogId) fetchBlog();
-    // getFavoriteStats(Number(blogId)).then((res) => {
-    //   setFavoriteCount(res.count);
-    //   setLiked(res.liked);
-    // });
     setFavoriteCount(15);
     setLiked(false);
   }, [blogId]);

@@ -10,6 +10,7 @@ export const paths = {
   register: '/register',
   blog: '/blog-type/blog/:blogTypeId',
   blogType: '/blog-type',
+  blogFavorite: '/blog-favorite',
 
   profile: 'profile',
   transaction: '/transaction',
