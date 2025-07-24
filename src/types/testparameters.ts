@@ -5,7 +5,6 @@ type TestParameter = {
   displayOrder: number;
   name: string;
   unit?: string;
-  cfDNA: string;
   description?: string;
 };
 

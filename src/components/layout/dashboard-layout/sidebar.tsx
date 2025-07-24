@@ -27,11 +27,7 @@ const staffLinks: SidebarLink[] = [
     title: 'Giao kit',
     href: paths.staff.shipping,
     icon: <Calendar className='h-5 w-5' />,
-<<<<<<< Updated upstream
     roles: ['ShipStaff'],
-=======
-    roles: [ 'ShipStaff'],
->>>>>>> Stashed changes
   },
   {
     title: 'Nhập mẫu',
