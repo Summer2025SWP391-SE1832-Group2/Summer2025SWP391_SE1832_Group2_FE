@@ -103,11 +103,13 @@ const BookingPage = () => {
 
   // Time slots
   const { data: workSchedule } = getWorkScheduleQuery;
-  const timeSlots = workSchedule?.map((item) => ({
-    id: item.workScheduleId,
-    label: `${item.title} (${item.startTime} - ${item.endTime})`,
-    value: `${item.startTime}-${item.endTime}`,
-  }));
+  const timeSlots = useMemo(() => {
+    return workSchedule?.map((item) => ({
+      id: item.workScheduleId,
+      label: `${item.title} (${item.startTime} - ${item.endTime})`,
+      value: `${item.startTime}-${item.endTime}`,
+    }));
+  }, [workSchedule]);
 
   // Update values when method changes
   useEffect(() => {
@@ -120,9 +122,8 @@ const BookingPage = () => {
     if (workSchedule && !form.getValues('time') && timeSlots?.[0]?.value) {
       form.setValue('time', timeSlots?.[0]?.value);
     }
-  }, [selectedMethod, form, workSchedule, timeSlots]);
+  }, [selectedMethod, timeSlots]);
 
-  // Remove debug logs
   const isStepValid = (step: number) => {
     switch (step) {
       case 1:
@@ -140,9 +141,9 @@ const BookingPage = () => {
           samples.every((sample) => sample.sampleType && sample.participantName && sample.notes)
         );
       case 3:
-        const collectionDate = form.getValues('collectionDate');
-        const time = form.getValues('time');
-        const location = form.getValues('location');
+        const collectionDate = form.watch('collectionDate');
+        const time = form.watch('time');
+        const location = form.watch('location');
         return !!collectionDate && !!time && !!location;
       default:
         return true;
@@ -153,7 +154,7 @@ const BookingPage = () => {
   useEffect(() => {
     form.reset(defaultValues);
     setCurrentStep(1);
-  }, [service?.serviceId, defaultValues, form]);
+  }, [service?.serviceId]);
 
   const nextStep = (e?: React.MouseEvent) => {
     if (e) {
