@@ -55,6 +55,8 @@ const BookingTable: React.FC<BookingTableProps> = ({
                 <TableHead>ID</TableHead>
                 <TableHead>Khách hàng</TableHead>
                 <TableHead>Trạng thái</TableHead>
+                <TableHead>Thời hạn</TableHead>
+
                 <TableHead className='text-right'>Hành động</TableHead>
               </TableRow>
             </TableHeader>
@@ -65,6 +67,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                     <TableCell>{b.bookingId}</TableCell>
                     <TableCell>{b.fullName}</TableCell>
                     <TableCell>{b.status}</TableCell>
+                    <TableCell>{new Date(b.preferredDate).toLocaleDateString()}</TableCell>
                     <TableCell className='space-x-2 text-right'>
                       {user?.role !== 'TestStaff' && (
                         <Button size='sm' onClick={() => onToggleSamples(b.bookingId)}>

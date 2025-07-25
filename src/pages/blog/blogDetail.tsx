@@ -50,6 +50,7 @@ export default function BlogDetailHomePage() {
     try {
       if (!blog || !user?.userId) return;
       if (liked) {
+        await addFavorite(blog.blogId, user?.userId);
         setFavoriteCount((prev) => Math.max(prev - 1, 0));
       } else {
         await addFavorite(blog.blogId, user?.userId);
