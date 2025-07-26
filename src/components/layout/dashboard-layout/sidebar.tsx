@@ -86,6 +86,12 @@ const managerLinks: SidebarLink[] = [
     icon: <Users className='h-5 w-5' />,
     roles: ['Manager'],
   },
+  {
+    title: 'Thống kê',
+    href: paths.manager.financial,
+    icon: <Users className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
 ];
 
 const adminLinks: SidebarLink[] = [

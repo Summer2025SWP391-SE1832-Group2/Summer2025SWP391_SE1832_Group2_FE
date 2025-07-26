@@ -53,6 +53,7 @@ export const paths = {
     manageSchedule : '/manager/manageschedule',
     profile: '/manager/profile',
     users: '/manager/users',
+    financial: '/manager/financial',
   },
 
   // Admin routes

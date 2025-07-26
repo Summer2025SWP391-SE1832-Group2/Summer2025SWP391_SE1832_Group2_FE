@@ -40,6 +40,7 @@ import BookingListPage from '@/pages/add-sample';
 import ShippingPage from '@/pages/shipping';
 import ServicesPage from '@/pages/dashboard/service';
 import FavoriteBlog from '@/pages/blog/favoriteBlog';
+import FinancialDashboard from '@/pages/financial';
 
 
 const router = createBrowserRouter([
@@ -139,11 +140,11 @@ const router = createBrowserRouter([
       { path: paths.manager.manageSchedule, element: <ManagerSchedulePage /> },
       { path: paths.manager.bookingList, element: <BookingListPage /> },
       { path: paths.manager.addResult, element: <AddResultPage /> },
-
-
       { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
       { path: paths.manager.profile, element: <ProfilePage /> },
       { path: paths.manager.users, element: <UsersPage /> },
+      { path: paths.manager.financial, element: <FinancialDashboard /> },
+
     ],
   },
 
