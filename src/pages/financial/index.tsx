@@ -7,7 +7,7 @@ export default function FinancialDashboard() {
     <div className="p-4 space-y-6">
       <DashboardOverview />
       <ChartSection />
-      <TransactionTable />
+      {/* <TransactionTable /> */}
     </div>
   );
 }

@@ -17,3 +17,13 @@ export interface Transaction {
   createdAt: string;
   updatedAt: string;
 }
+export interface TransactionSummary {
+  totalPaidAmount: number;
+  totalRefundedAmount: number;
+  totalSuccessfulTransactions: number;
+  totalRefundedTransactions: number;
+}
+export interface TransactionChartData {
+  label: string;
+  total: number;
+}
