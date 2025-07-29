@@ -28,6 +28,7 @@ import {
 import { Button } from '@/components/ui/button';
 import type { Shipping } from '@/types/shipping';
 import { getListShippingByBookingId, updateShipping } from '@/services/shipping_service';
+import { getUserRequestById } from '@/services/user_service';
 
 const ShippingPage = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -36,6 +37,7 @@ const ShippingPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [shippingList, setShippingList] = useState<Shipping[]>([]);
+  const [userPhones, setUserPhones] = useState<Map<number, string>>(new Map());
 
   const handleOpenDialog = async (booking: Booking) => {
     setSelectedBooking(booking);
@@ -84,7 +86,26 @@ const ShippingPage = () => {
 
     fetchAssignedBookings();
   }, []);
-
+  useEffect(() => {
+    const fetchPhones = async () => {
+      const map = new Map<number, string>();
+      await Promise.all(
+        bookings.map(async (booking) => {
+          if (!map.has(booking.userId)) {
+            const phone = await getUserRequestById(booking.userId);
+            map.set(booking.userId, phone.phone ?? "Không xác định");
+          }
+        })
+      );
+      setUserPhones(map);
+    };
+  
+    if (bookings.length > 0) {
+      fetchPhones();
+    }
+  }, [bookings]);
+  
+  
   const totalPages = Math.ceil(bookings.length / limit);
   const paginatedBookings = bookings.slice((page - 1) * limit, page * limit);
 
@@ -109,8 +130,8 @@ const ShippingPage = () => {
               <TableCell>{booking.bookingId}</TableCell>
               <TableCell>{booking.paymentStatus}</TableCell>
               <TableCell>{new Date(booking.collectionDate).toLocaleDateString()}</TableCell>
-              <TableCell>{booking.sampleCollectionSchedules?.[0]?.location}</TableCell>
-              <TableCell>{booking.sampleCollectionSchedules?.[0]?.location}</TableCell>
+              <TableCell>{userPhones.get(booking.userId) ?? "Đang tải..."}</TableCell>
+              <TableCell>{booking.location}</TableCell>
               <TableCell>
                 <button
                   onClick={() => handleOpenDialog(booking)}
