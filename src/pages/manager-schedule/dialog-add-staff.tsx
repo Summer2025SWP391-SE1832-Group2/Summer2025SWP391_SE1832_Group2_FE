@@ -78,7 +78,7 @@ export default function AddEmployeeDialog({
       try {
         const userData = await getAllUserRequests();
         const staffUsers = userData.filter(
-          (user: any) => user.role.toLowerCase().includes('staff')|| user.role === 'Manager',
+          (user) => user.role === 'HomeStaff' || user.role === 'FacilityStaff' 
         );
         setUsers(staffUsers);
       } catch (error) {

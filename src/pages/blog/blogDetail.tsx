@@ -95,7 +95,7 @@ export default function BlogDetailHomePage() {
 
       <Card>
         <CardContent className='p-6 space-y-4'>
-          <img src={blog.image} alt={blog.title} className='w-full h-64 object-cover rounded-md' />
+          <img src={blog.image} alt={blog.title} className='w-full h-full object-cover rounded-md' />
           <div className='flex justify-between items-center'>
             <h1 className='text-3xl font-bold'>{blog.title}</h1>
             <div className='flex items-center gap-2'>

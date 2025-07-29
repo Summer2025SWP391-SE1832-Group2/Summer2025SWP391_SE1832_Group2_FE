@@ -80,7 +80,7 @@ export default function ManagerSchedulePage() {
     setSelectedSlot(event.slotId);
     const users = await getUser_workScheduleBySlot(event.slotId, dateString);
     const filteredUsers = users.filter(
-      (user) => user.role !== 'Admin' && user.role !== 'Manager'
+      (user) => user.role === 'HomeStaff' || user.role === 'FacilityStaff' 
     );
     setSelectedUsers(filteredUsers);
   };

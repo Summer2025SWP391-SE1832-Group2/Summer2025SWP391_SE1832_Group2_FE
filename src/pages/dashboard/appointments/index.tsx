@@ -39,8 +39,9 @@ export default function AppointmentsPage() {
     const fetchBookings = async () => {
       try {
         const data = await getAllBookingSchedule();
-        const paidBookings = data.filter((b) => b.paymentStatus === 'Đã thanh toán');
-        setBookings(paidBookings);
+        setBookings(data);
+        // const paidBookings = data.filter((b) => b.paymentStatus === 'Đã thanh toán');
+        // setBookings(paidBookings);
       } catch (error) {
         console.error('Failed to fetch bookings:', error);
       }
@@ -123,7 +124,6 @@ export default function AppointmentsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Trạng thái</TableHead>
-                <TableHead>Thanh toán</TableHead>
                 <TableHead>Người lấy mẫu</TableHead>
                 <TableHead>Ngày lấy mẫu</TableHead>
               </TableRow>
@@ -136,7 +136,6 @@ export default function AppointmentsPage() {
                   className='cursor-pointer hover:bg-gray-100'
                 >
                   <TableCell>{booking.status}</TableCell>
-                  <TableCell>{booking.paymentStatus}</TableCell>
                   <TableCell>{booking.sampleCollectionSchedules[0]?.collectorName}</TableCell>
                   <TableCell>
                     {new Date(
@@ -156,7 +155,6 @@ export default function AppointmentsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Trạng thái</TableHead>
-                <TableHead>Thanh toán</TableHead>
                 <TableHead>Người lấy mẫu</TableHead>
                 <TableHead>Ngày lấy mẫu</TableHead>
               </TableRow>
@@ -169,9 +167,8 @@ export default function AppointmentsPage() {
                   className='cursor-pointer hover:bg-gray-100'
                 >
                   <TableCell>{booking.status}</TableCell>
-                  <TableCell>{booking.paymentStatus}</TableCell>
                   <TableCell>
-                    {booking.sampleCollectionSchedules[0]?.collectorName || 'N/A'}
+                    {booking.sampleCollectionSchedules[0]?.collectorName || ' '}
                   </TableCell>
                   <TableCell>
                     {new Date(
@@ -202,7 +199,7 @@ export default function AppointmentsPage() {
                     <strong>Mã đơn:</strong> {selectedBooking.bookingId}
                   </div>
                   <div>
-                    <strong>Người đặt:</strong> {selectedBooking.userId}
+                    <strong>Người đặt:</strong> {selectedBooking.fullName}
                   </div>
                   <div>
                     <strong>Thanh toán:</strong> {selectedBooking.paymentStatus}
@@ -244,10 +241,10 @@ export default function AppointmentsPage() {
                   <div>
                     <strong>Trạng thái:</strong> {selectedBooking.status}
                   </div>
-                  <div>
+                  {/* <div>
                     <strong>Trạng thái mẫu:</strong>{' '}
                     {selectedBooking.sampleCollectionSchedules[0]?.status || 'N/A'}
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

@@ -72,7 +72,9 @@ const ShippingPage = () => {
     const fetchAssignedBookings = async () => {
       try {
         const response = await getAllBookings();
-        const filtered = response.filter((booking) => booking.method === 'TU_THU_MAU' && booking.paymentStatus === 'Đã thanh toán');
+        const filtered = response.filter(
+          (booking) => booking.method === 'TU_THU_MAU' && booking.paymentStatus === 'Đã thanh toán',
+        );
 
         setBookings(filtered);
       } catch (error) {
@@ -93,18 +95,22 @@ const ShippingPage = () => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Mã đơn</TableHead>
             <TableHead>Trạng Thái</TableHead>
-            <TableHead>Thanh Toán</TableHead>
             <TableHead>Ngày Giao Kit</TableHead>
+            <TableHead>Số điện thoại</TableHead>
+            <TableHead>Địa chỉ</TableHead>
             <TableHead>Xác nhận</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginatedBookings.map((booking) => (
             <TableRow key={booking.bookingId} className='cursor-pointer hover:bg-gray-100'>
-              <TableCell>{booking.status}</TableCell>
+              <TableCell>{booking.bookingId}</TableCell>
               <TableCell>{booking.paymentStatus}</TableCell>
-              <TableCell>{booking.collectionDate}</TableCell>
+              <TableCell>{new Date(booking.collectionDate).toLocaleDateString()}</TableCell>
+              <TableCell>{booking.sampleCollectionSchedules?.[0]?.location}</TableCell>
+              <TableCell>{booking.sampleCollectionSchedules?.[0]?.location}</TableCell>
               <TableCell>
                 <button
                   onClick={() => handleOpenDialog(booking)}
@@ -150,10 +156,7 @@ const ShippingPage = () => {
             <Button variant='secondary' onClick={() => setOpenDialog(false)}>
               Đóng
             </Button>
-            <Button
-              onClick={handleConfirmShipping}
-              disabled={shippingList.length >1}
-            >
+            <Button onClick={handleConfirmShipping} disabled={shippingList.length > 1}>
               Xác nhận giao hàng
             </Button>
           </DialogFooter>
