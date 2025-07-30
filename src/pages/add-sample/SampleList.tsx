@@ -11,20 +11,21 @@ type SampleListProps = {
 };
 
 const SampleList: React.FC<SampleListProps> = ({ samples, onReload }) => {
-  // const [pictureMap, setPictureMap] = useState<Record<number, string>>({});
+  const [imageUrlMap, setImageUrlMap] = useState<Record<number, string>>({});
   const [loadingId, setLoadingId] = useState<number | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>('');
   const { showToast } = useToast();
 
-  const handleImageUploaded = (url: string) => {
-    setImageUrl(url);
-    console.log('Image uploaded:', url);
-    
+  const handleImageUploaded = (sampleId: number, url: string) => {
+    setImageUrlMap((prev) => ({ ...prev, [sampleId]: url }));
+    console.log(`Image uploaded for sample ${sampleId}:`, url);
   };
+
   const handleUpdatePicture = async (sampleId: number) => {
     try {
+      const url = imageUrlMap[sampleId];
+      if (!url) return;
       setLoadingId(sampleId);
-      await updateSamplePictureService(sampleId, imageUrl);
+      await updateSamplePictureService(sampleId, url);
       showToast('Cập nhật hình ảnh thành công.', 'success');
       onReload();
     } catch (err) {
@@ -68,18 +69,19 @@ const SampleList: React.FC<SampleListProps> = ({ samples, onReload }) => {
           </div>
 
           <div className='flex gap-2 items-center'>
-
             <DropzoneImageUpload
-              onImageUploaded={handleImageUploaded}
-              defaultImage={imageUrl}
-            />{' '}
-             <Button
-              size="sm"
-              disabled={loadingId === s.sampleId}
-              onClick={() => handleUpdatePicture(s.sampleId)}
-            >
-              {loadingId === s.sampleId ? "Đang lưu..." : "Cập nhật"}
-            </Button>
+              onImageUploaded={(url) => handleImageUploaded(s.sampleId, url)}
+              defaultImage={imageUrlMap[s.sampleId]}
+            />
+            {imageUrlMap[s.sampleId] && (
+              <Button
+                size='sm'
+                disabled={loadingId === s.sampleId}
+                onClick={() => handleUpdatePicture(s.sampleId)}
+              >
+                {loadingId === s.sampleId ? 'Đang lưu...' : 'Cập nhật'}
+              </Button>
+            )}
           </div>
         </div>
       ))}

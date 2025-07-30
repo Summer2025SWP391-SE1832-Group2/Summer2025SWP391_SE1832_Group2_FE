@@ -39,7 +39,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return bookings.slice(start, start + ITEMS_PER_PAGE);
   }, [bookings, currentPage]);
-  const { isAuthenticated, user } = useAuthStore();
+  const { user } = useAuthStore();
 
   return (
     <div>
@@ -98,8 +98,8 @@ const BookingTable: React.FC<BookingTableProps> = ({
             </TableBody>
           </Table>
 
-          {bookings.length > 0 && totalPages > 1 &&(
-            <div className="flex justify-center items-center gap-2 mt-4">
+          {bookings.length > 0 && totalPages > 1 && (
+            <div className='flex justify-center items-center gap-2 mt-4'>
               <Button
                 size='sm'
                 variant='outline'
