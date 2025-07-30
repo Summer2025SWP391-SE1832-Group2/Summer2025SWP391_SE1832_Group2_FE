@@ -93,19 +93,18 @@ const ShippingPage = () => {
         bookings.map(async (booking) => {
           if (!map.has(booking.userId)) {
             const phone = await getUserRequestById(booking.userId);
-            map.set(booking.userId, phone.phone ?? "Không xác định");
+            map.set(booking.userId, phone.phone ?? 'Không xác định');
           }
-        })
+        }),
       );
       setUserPhones(map);
     };
-  
+
     if (bookings.length > 0) {
       fetchPhones();
     }
   }, [bookings]);
-  
-  
+
   const totalPages = Math.ceil(bookings.length / limit);
   const paginatedBookings = bookings.slice((page - 1) * limit, page * limit);
 
@@ -130,7 +129,7 @@ const ShippingPage = () => {
               <TableCell>{booking.bookingId}</TableCell>
               <TableCell>{booking.paymentStatus}</TableCell>
               <TableCell>{new Date(booking.collectionDate).toLocaleDateString()}</TableCell>
-              <TableCell>{userPhones.get(booking.userId) ?? "Đang tải..."}</TableCell>
+              <TableCell>{userPhones.get(booking.userId) ?? 'Đang tải...'}</TableCell>
               <TableCell>{booking.location}</TableCell>
               <TableCell>
                 <button

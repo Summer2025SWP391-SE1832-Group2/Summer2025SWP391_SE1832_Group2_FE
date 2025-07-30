@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { createUserWorkSchedule } from '@/services/userworkschedule_service';
+import { getUser_workScheduleBySlot } from '@/services/schedule_service';
 
 interface AddEmployeeDialogProps {
   open: boolean;
@@ -45,7 +46,16 @@ export default function AddEmployeeDialog({
       alert('Chưa chọn ngày hoặc slot!');
       return;
     }
+    const today = new Date();
+    const selected = new Date(selectedDate);
+    selected.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
 
+    if (selected <= today) {
+      alert('Chỉ được thêm nhân viên từ ngày mai trở đi.');
+      onClose();
+      return;
+    }
     const selectedUsers = users.filter((u) => selectedUserIds.has(u.userId));
 
     for (const user of selectedUsers) {
@@ -75,18 +85,28 @@ export default function AddEmployeeDialog({
   };
   useEffect(() => {
     const fetchUsers = async () => {
+      if (!selectedDate || !selectedSlot) return;
+
       try {
         const userData = await getAllUserRequests();
         const staffUsers = userData.filter(
-          (user) => user.role === 'HomeStaff' || user.role === 'FacilityStaff' 
+          (user) => user.role === 'HomeStaff' || user.role === 'FacilityStaff',
         );
-        setUsers(staffUsers);
+
+        // Lấy danh sách đã phân công
+        const dateString = format(selectedDate, 'yyyy/MM/dd');
+        const assignedUsers = await getUser_workScheduleBySlot(selectedSlot, dateString);
+        const assignedUserIds = new Set(assignedUsers.map((u) => u.userId));
+
+        // Lọc ra những người chưa được phân công
+        const availableUsers = staffUsers.filter((u) => !assignedUserIds.has(u.userId));
+        setUsers(availableUsers);
       } catch (error) {
         console.error('Lỗi tải danh sách người dùng', error);
       }
     };
     fetchUsers();
-  }, []);
+  }, [selectedDate, selectedSlot, onClose]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
