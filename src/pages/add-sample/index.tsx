@@ -32,6 +32,12 @@ const BookingListPage: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string>("");
 
   const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
+  const getViewResultPath = (role: string | undefined, bookingId: number) => {
+    if (role === "Manager") return paths.manager.viewResult.replace(":id", bookingId.toString());
+    if (["TestStaff", "HomeStaff", "FacilityStaff"].includes(role || ""))
+      return paths.staff.viewResult.replace(":id", bookingId.toString());
+    return paths.home;
+  };
 
   const paginatedBookings = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -123,23 +129,24 @@ const BookingListPage: React.FC = () => {
                     <TableCell>{b.status}</TableCell>
                     <TableCell>{new Date(b.preferredDate).toLocaleDateString()}</TableCell>
                     <TableCell className="space-x-2 text-right">
-                   
-                        <Button size="sm" onClick={() => handleToggleSamples(b.bookingId)}>
-                          {expanded === b.bookingId ? "Ẩn mẫu" : "Xem mẫu"}
-                        </Button>
-                    
+
+                      <Button size="sm" onClick={() => handleToggleSamples(b.bookingId)}>
+                        {expanded === b.bookingId ? "Ẩn mẫu" : "Xem mẫu"}
+                      </Button>
+
 
                       {user?.role === "TestStaff" && b.status !== "Đang chờ xử lý" && (
                         <Link to={paths.staff.addResult.replace(":id", b.bookingId.toString())}>
                           <Button size="sm">Nhập kết quả</Button>
                         </Link>
                       )}
-
                       {b.status === "Hoàn thành" && (
-                        <Link to={paths.manager.viewResult.replace(":id", b.bookingId.toString())}>
+                        <Link to={getViewResultPath(user?.role, b.bookingId)}>
                           <Button size="sm" variant="secondary">Xem kết quả</Button>
                         </Link>
                       )}
+
+
                     </TableCell>
 
                   </TableRow>
