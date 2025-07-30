@@ -11,8 +11,8 @@ const NotFoundPage = () => {
       <p className="mt-2 text-sm text-muted-foreground">
         Có thể đường dẫn đã bị thay đổi hoặc bạn đã nhập sai.
       </p>
-      <Button className="mt-6" onClick={() => navigate("/")}>
-        Quay về trang chủ
+      <Button className="mt-6" onClick={() => navigate(-1)}>
+        Quay lại
       </Button>
     </div>
   );

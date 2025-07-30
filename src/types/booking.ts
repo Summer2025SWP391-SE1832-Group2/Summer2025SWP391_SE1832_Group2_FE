@@ -13,6 +13,7 @@ import type { BookingFormValues } from '@/lib/zod/booking';
 type Booking = {
   bookingId: number;
   serviceId: number;
+  serviceName: string;
   userId: number;
   bookingDate: string;
   status?: string;

@@ -35,12 +35,10 @@ const ShippingPage = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [shippingList, setShippingList] = useState<Shipping[]>([]);
   const [userPhones, setUserPhones] = useState<Map<number, string>>(new Map());
 
   const handleOpenDialog = async (booking: Booking) => {
-    setSelectedBooking(booking);
     try {
       const result = await getListShippingByBookingId(booking.bookingId);
       setShippingList(result);

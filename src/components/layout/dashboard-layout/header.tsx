@@ -75,7 +75,7 @@ const DashboardHeader = () => {
                   <Badge variant='outline' className={roleBadgeStyles[user?.role || 'Guest']}>
                     {getRoleDisplayName(user?.role || 'Guest')}
                   </Badge>
-                  <span>Vai trò của bạn</span>
+                  {/* <span>Vai trò của bạn</span> */}
                 </div>
                 <DropdownMenuItem className='flex items-center gap-2' asChild>
                   <Link to={paths.profile} className='flex items-center gap-2 w-full'>

@@ -1,5 +1,4 @@
 import DashboardOverview from "./DashboardOverview";
-import TransactionTable from "./TransactionTable";
 import ChartSection from "./ChartSection";
 
 export default function FinancialDashboard() {

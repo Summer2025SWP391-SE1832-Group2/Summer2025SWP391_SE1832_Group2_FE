@@ -22,11 +22,13 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { paths } from '@/utils/constant/path';
 import ExcelImport from '@/components/common/xlsx/ExcelImport';
+import { useToast } from '@/components/ui/toast';
 
 export default function AddResultPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const bookingId = Number(id);
+  const { showToast } = useToast();
 
   const [samples, setSamples] = useState<Sample[]>([]);
   const [testParameters, setTestParameters] = useState<TestParameter[]>([]);
@@ -48,7 +50,7 @@ export default function AddResultPage() {
         ]);
 
         if (sampleData.length === 0) {
-          alert('Booking chưa có mẫu. Vui lòng thêm mẫu trước.');
+          showToast("Booking chưa có mẫu. Vui lòng thêm mẫu trước.", "error");
           navigate(-1);
           return;
         }
@@ -72,7 +74,6 @@ export default function AddResultPage() {
         resultItems.forEach((r) => {
           const key = `${r.testParameterId}-${r.sampleId}`;
           if (bookingData.serviceId === 7) {
-            // Không tách nếu là serviceId 7 (cho phép giá trị âm)
             newValues[key] = [r.value || '', ''];
           } else {
             const split = r.value.split('-');
@@ -82,19 +83,20 @@ export default function AddResultPage() {
         setValues(newValues);
       } catch (err) {
         console.error('Lỗi khi tải dữ liệu:', err);
+        showToast("Không thể tải dữ liệu.", "error");
       } finally {
         setLoading(false);
       }
     };
 
     if (!bookingId || isNaN(bookingId)) {
-      alert('Booking ID không hợp lệ.');
+      showToast("Booking ID không hợp lệ.", "error");
       navigate(paths.staff.bookingList);
       return;
     }
 
     fetchData();
-  }, [bookingId, navigate]);
+  }, [bookingId, navigate, showToast]);
 
   const handleChange = (sampleId: number, testParameterId: number, index: 0 | 1, value: string) => {
     const key = `${testParameterId}-${sampleId}`;
@@ -150,10 +152,11 @@ export default function AddResultPage() {
         await createMultipleResultDetails(payload);
       }
 
-      alert('Lưu kết quả thành công!');
+      showToast("Lưu kết quả thành công!", "success");
+      navigate(paths.manager.viewResult.replace(":id", bookingId.toString()));
     } catch (err) {
       console.error('Lỗi khi lưu:', err);
-      alert('Lỗi khi lưu kết quả.');
+      showToast("Lỗi khi lưu kết quả.", "error");
     }
   };
 
@@ -259,7 +262,6 @@ export default function AddResultPage() {
                   setValues((prev) => ({ ...prev, ...imported }));
                 }}
               />
-
 
               <div className='mt-6 flex justify-end'>
                 <Button onClick={handleSave}>Lưu kết quả</Button>

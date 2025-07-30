@@ -41,6 +41,7 @@ import ShippingPage from '@/pages/shipping';
 import ServicesPage from '@/pages/dashboard/service';
 import FavoriteBlog from '@/pages/blog/favoriteBlog';
 import FinancialDashboard from '@/pages/financial';
+import ViewResultPage from '@/pages/view-result';
 
 
 const router = createBrowserRouter([
@@ -106,10 +107,12 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <DashboardPage /> },
       { path: paths.staff.appointments, element: <AppointmentsPage /> },
-      { path: paths.staff.scheduleforstaff, element: <UserSchedulePage /> },
+      // { path: paths.staff.scheduleforstaff, element: <UserSchedulePage /> },
       { path: paths.staff.staffSchedule, element: <StaffIndividualSchedulePage /> },
       { path: paths.staff.bookingList, element: <BookingListPage /> },
       { path: paths.staff.addResult, element: <AddResultPage /> },
+      { path: paths.staff.viewResult, element: <ViewResultPage /> },
+
       { path: paths.staff.shipping, element: <ShippingPage /> },
       { path: paths.staff.profile, element: <ProfilePage /> },
     ],
@@ -130,7 +133,6 @@ const router = createBrowserRouter([
       { path: paths.manager.schedules, element: <UserSchedulePage /> },
       { path: paths.manager.services, element: <ServicePage /> },
       { path: paths.manager.bookingList, element: <BookingListPage /> },
-      { path: paths.manager.addResult, element: <AddResultPage /> },
       { path: paths.manager.blogManage, element: <BlogManagementPage /> },
       { path: paths.manager.blogCreate, element: <BlogCreatePage /> },
       { path: paths.manager.blogDetail(':blogId'), element: <BlogDetailManagePage /> },
@@ -139,11 +141,10 @@ const router = createBrowserRouter([
       { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
       { path: paths.manager.manageSchedule, element: <ManagerSchedulePage /> },
       { path: paths.manager.bookingList, element: <BookingListPage /> },
-      { path: paths.manager.addResult, element: <AddResultPage /> },
+      { path: paths.manager.viewResult, element: <ViewResultPage /> },
       { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
       { path: paths.manager.profile, element: <ProfilePage /> },
       { path: paths.manager.users, element: <UsersPage /> },
-      { path: paths.manager.financial, element: <FinancialDashboard /> },
 
     ],
   },
@@ -163,6 +164,7 @@ const router = createBrowserRouter([
       { path: paths.admin.testParameterList, element: <TestParameterPage /> },
       { path: paths.admin.profile, element: <ProfilePage /> },
       { path: paths.admin.serviceList, element: <ServicesPage /> },
+      { path: paths.admin.financial, element: <FinancialDashboard /> },
 
     ],
   },

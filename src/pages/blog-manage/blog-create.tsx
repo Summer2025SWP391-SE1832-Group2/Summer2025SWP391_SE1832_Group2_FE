@@ -37,7 +37,6 @@ export default function BlogCreatePage() {
   const [blogTypeId, setBlogTypeId] = useState<string>('');
   const [contentHTML, setContentHTML] = useState('');
   const [showHTMLPreview, setShowHTMLPreview] = useState(false);
-  const [imageURL, setImageURL] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [blogTypes, setBlogTypes] = useState<Blogtype[]>([]);
 
@@ -78,12 +77,6 @@ export default function BlogCreatePage() {
     },
   });
 
-  const insertImage = () => {
-    if (editor && imageURL) {
-      editor.chain().focus().setImage({ src: imageURL }).run();
-      setImageURL('');
-    }
-  };
 
   const handleSubmit = async () => {
     const blogData = {

@@ -133,7 +133,7 @@ const BookingHistoryPage = () => {
                 {currentBookings.map((booking) => (
                   <TableRow key={booking.bookingId}>
                     <TableCell>#{booking.bookingId}</TableCell>
-                    <TableCell>{booking.serviceId}</TableCell>
+                    <TableCell>{booking.serviceName}</TableCell>
                     <TableCell>
                       <Badge className={getBookingStatusColor(booking.status||"")}>{booking.status}</Badge>
                     </TableCell>

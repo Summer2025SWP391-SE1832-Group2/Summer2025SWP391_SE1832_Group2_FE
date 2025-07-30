@@ -86,12 +86,7 @@ const managerLinks: SidebarLink[] = [
     icon: <Users className='h-5 w-5' />,
     roles: ['Manager'],
   },
-  {
-    title: 'Thống kê',
-    href: paths.manager.financial,
-    icon: <Users className='h-5 w-5' />,
-    roles: ['Manager'],
-  },
+
 ];
 
 const adminLinks: SidebarLink[] = [
@@ -117,6 +112,12 @@ const adminLinks: SidebarLink[] = [
     title: 'Thông số dịch vụ',
     href: paths.admin.testParameterList,
     icon: <TestTube className='h-5 w-5' />,
+    roles: ['Admin'],
+  },
+  {
+    title: 'Thống kê',
+    href: paths.admin.financial,
+    icon: <Users className='h-5 w-5' />,
     roles: ['Admin'],
   },
 ];

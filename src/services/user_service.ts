@@ -1,5 +1,5 @@
 import axiosInstance from '@/lib/api/axios';
-import type { User, UserRole } from '@/types/user';
+import type { DashboardInfo, User, UserRole } from '@/types/user';
 
 // GET all UserRequests
 export const getAllUserRequests = async (): Promise<User[]> => {
@@ -45,5 +45,10 @@ export const updateUserRole = async (userId: number, newRole: UserRole): Promise
   const response = await axiosInstance.put<boolean>(
     `/api/User/role?uid=${userId}&newRole=${newRole}`,
   );
+  return response.data;
+};
+//Dashboard 
+export const getDashboardInfo = async (): Promise<DashboardInfo> => {
+  const response = await axiosInstance.get<DashboardInfo>('/api/User/get-dashboard-info');
   return response.data;
 };

@@ -39,5 +39,11 @@ type UserRole =
         return role; 
     }
   }
-  
-export type { User, UserRole }  ;
+  type DashboardInfo = {
+  totalBookings: number;
+  totalBookingsToday: number;
+  totalUsers: number;
+  totalBookingsCompleted: number;
+}
+export type { User, UserRole, DashboardInfo}  ;
+ 
