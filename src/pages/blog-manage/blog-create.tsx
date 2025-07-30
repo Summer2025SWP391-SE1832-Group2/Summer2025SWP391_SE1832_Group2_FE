@@ -36,6 +36,7 @@ export default function BlogCreatePage() {
   const [title, setTitle] = useState('');
   const [blogTypeId, setBlogTypeId] = useState<string>('');
   const [contentHTML, setContentHTML] = useState('');
+
   const [showHTMLPreview, setShowHTMLPreview] = useState(false);
   const [thumbnail, setThumbnail] = useState('');
   const [blogTypes, setBlogTypes] = useState<Blogtype[]>([]);

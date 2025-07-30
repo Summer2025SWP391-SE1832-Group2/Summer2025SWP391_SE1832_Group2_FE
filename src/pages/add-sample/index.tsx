@@ -123,11 +123,11 @@ const BookingListPage: React.FC = () => {
                     <TableCell>{b.status}</TableCell>
                     <TableCell>{new Date(b.preferredDate).toLocaleDateString()}</TableCell>
                     <TableCell className="space-x-2 text-right">
-                      {user?.role !== "TestStaff" && (
+                   
                         <Button size="sm" onClick={() => handleToggleSamples(b.bookingId)}>
                           {expanded === b.bookingId ? "Ẩn mẫu" : "Xem mẫu"}
                         </Button>
-                      )}
+                    
 
                       {user?.role === "TestStaff" && b.status !== "Đang chờ xử lý" && (
                         <Link to={paths.staff.addResult.replace(":id", b.bookingId.toString())}>
@@ -178,22 +178,23 @@ const BookingListPage: React.FC = () => {
                                   </div>
                                 </div>
 
-                                <div className="flex flex-col gap-3 p-3 border rounded-md bg-gray-50">
-                                  <DropzoneImageUpload
-                                    onImageUploaded={handleImageUploaded}
-                                    defaultImage={imageUrl}
-                                  />
+                                {user?.role !== "TestStaff" && (
+                                  <div className="flex flex-col gap-3 p-3 border rounded-md bg-gray-50">
+                                    <DropzoneImageUpload
+                                      onImageUploaded={handleImageUploaded}
+                                      defaultImage={imageUrl}
+                                    />
 
-                                  <Button
-                                    size="sm"
-                                    className=""
-                                    disabled={loadingId === s.sampleId || !imageUrl}
-                                    onClick={() => handleUpdatePicture(s.sampleId, b.bookingId)}
-                                  >
-                                    {loadingId === s.sampleId ? "Đang lưu..." : "Cập nhật"}
-                                  </Button>
-                                </div>
-
+                                    <Button
+                                      size="sm"
+                                      className=""
+                                      disabled={loadingId === s.sampleId || !imageUrl}
+                                      onClick={() => handleUpdatePicture(s.sampleId, b.bookingId)}
+                                    >
+                                      {loadingId === s.sampleId ? "Đang lưu..." : "Cập nhật"}
+                                    </Button>
+                                  </div>
+                                )}
                               </CardContent>
                             </Card>
                           ))}

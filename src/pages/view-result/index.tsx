@@ -15,6 +15,7 @@ import { useToast } from '@/components/ui/toast';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
+import { paths } from '@/utils/constant/path';
 
 const ViewResultPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,12 +29,12 @@ const ViewResultPage = () => {
 
   const backPath =
     role === 'Manager'
-      ? '/manager/result'
+      ? paths.manager.bookingList
       : role === 'FacilityStaff' 
       || role === 'TestStaff'
       || role === 'HomeStaff'
-        ? '/staff/bookinglist'
-        : '/';
+      ? paths.staff.bookingList
+        : paths.home;
 
   useEffect(() => {
     if (!bookingId || isNaN(bookingId)) return;
