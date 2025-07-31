@@ -47,9 +47,13 @@ export default function ManagerSchedulePage() {
     async function fetchData() {
       const data = await getAllWorkSchedules();
       const events: ScheduleEvent[] = [];
-      const ref = new Date();
-      const start = new Date(ref.getFullYear(), ref.getMonth(), 1);
-      const end = new Date(ref.getFullYear(), ref.getMonth() + 1, 0);
+
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth(); // 0-11
+
+      const start = new Date(year, month, 1);
+      const end = new Date(year, month + 1, 0);
+
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         data.forEach((slot, index) => {
           const startParts = slot.startTime.split(':');
@@ -69,10 +73,12 @@ export default function ManagerSchedulePage() {
           });
         });
       }
+
       setEvents(events);
     }
+
     fetchData();
-  }, []);
+  }, [currentDate]); // 👈 Lưu ý: theo dõi currentDate
 
   const handleSelectEvent = async (event: ScheduleEvent) => {
     const dateString = format(event.start, 'yyyy/MM/dd');
@@ -80,19 +86,40 @@ export default function ManagerSchedulePage() {
     setSelectedSlot(event.slotId);
     const users = await getUser_workScheduleBySlot(event.slotId, dateString);
     const filteredUsers = users.filter(
-      (user) => user.role === 'HomeStaff' || user.role === 'FacilityStaff' 
+      (user) => user.role === 'HomeStaff' || user.role === 'FacilityStaff',
     );
     setSelectedUsers(filteredUsers);
   };
 
   return (
     <div className='h-screen w-full flex flex-row'>
-      {/* 2/3 trái: Calendar */}
       <div className='basis-2/3 border-r border-gray-200'>
         <style>{`
           .rbc-month-row { min-height: 130px; }
           .rbc-toolbar { display: none; }
         `}</style>
+        <div className='flex justify-between items-center p-4 border-b border-gray-200'>
+          <h2 className='text-xl font-semibold'>Lịch làm việc: {format(currentDate, 'MM/yyyy')}</h2>
+          <div className='space-x-2'>
+            <Button
+              variant='outline'
+              onClick={() =>
+                setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
+              }
+            >
+              Tháng trước
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() =>
+                setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
+              }
+            >
+              Tháng sau
+            </Button>
+          </div>
+        </div>
+
         <Calendar
           showAllEvents
           localizer={localizer}
@@ -126,7 +153,6 @@ export default function ManagerSchedulePage() {
         />
       </div>
 
-      {/* 1/3 phải: Danh sách nhân viên */}
       <div className='basis-1/3 overflow-y-auto p-4'>
         <Button
           onClick={() => {
@@ -168,6 +194,7 @@ export default function ManagerSchedulePage() {
           </p>
         )}
       </div>
+
       <AddEmployeeDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

@@ -3,7 +3,15 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/auth';
 import { type UserRole } from '@/types/user';
-import { Calendar, ChevronDown, FileText, Package, TestTube, Users } from 'lucide-react';
+import {
+  BanknoteArrowDown,
+  Calendar,
+  ChevronDown,
+  FileText,
+  Package,
+  TestTube,
+  Users,
+} from 'lucide-react';
 import BrandLogo from '@/components/common/brand-logo';
 import { paths } from '@/utils/constant/path';
 import { useState } from 'react';
@@ -87,6 +95,12 @@ const managerLinks: SidebarLink[] = [
     roles: ['Manager'],
   },
 
+  {
+    title: 'Hoàn Tiền',
+    href: paths.manager.refund,
+    icon: <BanknoteArrowDown className='h-5 w-5' />,
+    roles: ['Manager'],
+  },
 ];
 
 const adminLinks: SidebarLink[] = [

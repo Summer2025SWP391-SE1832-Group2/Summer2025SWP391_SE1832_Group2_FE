@@ -26,6 +26,7 @@ import {
   getStaffForSchedule,
   AssignStaffForSchedule,
 } from '@/services/booking_service';
+import AssignStaffDialog from './dialog-assign-staff';
 
 export default function AppointmentsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -61,13 +62,6 @@ export default function AppointmentsPage() {
 
   const getUnassignedBookings = () =>
     getFilteredBookings().filter((b) => b.sampleCollectionSchedules[0]?.collectorId === null);
-
-  const isPastCollectionDate = (dateStr?: string) => {
-    if (!dateStr) return false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return new Date(dateStr) < today;
-  };
 
   const handleBookingClick = async (booking: Booking) => {
     setSelectedBooking(booking);
@@ -183,133 +177,15 @@ export default function AppointmentsPage() {
       </div>
 
       {/* Dialog */}
-      <Dialog open={!!selectedBooking} onOpenChange={() => setSelectedBooking(null)}>
-        <DialogContent className='!w-full !max-w-[95vw] max-h-[90vh] overflow-y-auto'>
-          <DialogHeader>
-            <DialogTitle>Chi tiết đơn</DialogTitle>
-          </DialogHeader>
-
-          {selectedBooking && (
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700'>
-              {/* Booking Info */}
-              <div className='border rounded-xl p-4 bg-gray-50'>
-                <p className='font-semibold mb-2'>Chi tiết</p>
-                <div className='space-y-1'>
-                  <div>
-                    <strong>Mã đơn:</strong> {selectedBooking.bookingId}
-                  </div>
-                  <div>
-                    <strong>Người đặt:</strong> {selectedBooking.fullName}
-                  </div>
-                  <div>
-                    <strong>Thanh toán:</strong> {selectedBooking.paymentStatus}
-                  </div>
-                  <div>
-                    <strong>Vị trí:</strong>{' '}
-                    {selectedBooking.sampleCollectionSchedules[0]?.location || 'N/A'}
-                  </div>
-                </div>
-              </div>
-
-              {/* Time Info */}
-              <div className='border rounded-xl p-4 bg-gray-50'>
-                <p className='font-semibold mb-2'>Thời gian</p>
-                <div className='space-y-1'>
-                  <div>
-                    <strong>Ngày đặt:</strong>{' '}
-                    {new Date(selectedBooking.bookingDate).toLocaleDateString()}
-                  </div>
-                  <div>
-                    <strong>Ngày thu mẫu:</strong>{' '}
-                    {selectedBooking.sampleCollectionSchedules[0]?.collectionDate
-                      ? new Date(
-                          selectedBooking.sampleCollectionSchedules[0].collectionDate,
-                        ).toLocaleString()
-                      : 'N/A'}
-                  </div>
-                  <div>
-                    <strong>Thời gian:</strong>{' '}
-                    {selectedBooking.sampleCollectionSchedules[0]?.time || 'N/A'}
-                  </div>
-                </div>
-              </div>
-
-              {/* Status Info */}
-              <div className='border rounded-xl p-4 bg-gray-50'>
-                <p className='font-semibold mb-2'>Trạng thái</p>
-                <div className='space-y-1'>
-                  <div>
-                    <strong>Trạng thái:</strong> {selectedBooking.status}
-                  </div>
-                  {/* <div>
-                    <strong>Trạng thái mẫu:</strong>{' '}
-                    {selectedBooking.sampleCollectionSchedules[0]?.status || 'N/A'}
-                  </div> */}
-                </div>
-              </div>
-
-              <div className='border rounded-xl p-4 bg-gray-50'>
-                <p className='font-semibold mb-2'>Phân công nhân viên</p>
-
-                {selectedBooking.sampleCollectionSchedules[0]?.collectorId ? (
-                  <p className='mt-1'>
-                    Đã phân công cho:{' '}
-                    <span className='font-medium'>
-                      {selectedBooking.sampleCollectionSchedules[0]?.collectorName}
-                    </span>
-                  </p>
-                ) : isPastCollectionDate(
-                    selectedBooking.sampleCollectionSchedules[0]?.collectionDate,
-                  ) ? (
-                  <p className='italic text-gray-500 mt-1'>Đã quá hạn – không thể phân công</p>
-                ) : (
-                  <Select value={assignedEmployee} onValueChange={setAssignedEmployee}>
-                    <SelectTrigger className='w-full mt-1'>
-                      <SelectValue placeholder='Chọn nhân viên' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {employees.length === 0 ? (
-                        <SelectItem value='NULL' disabled>
-                          Không có nhân viên nào
-                        </SelectItem>
-                      ) : (
-                        employees.map((emp) => (
-                          <SelectItem key={emp.userId} value={emp.userId.toString()}>
-                            {emp.fullName}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-                )}
-              </div>
-            </div>
-          )}
-
-         
-          {!selectedBooking?.sampleCollectionSchedules[0]?.collectorId &&
-            !isPastCollectionDate(selectedBooking?.sampleCollectionSchedules[0]?.collectionDate) && (
-              <div className='flex justify-end gap-3 mt-6'>
-                <Button className='bg-green-600 text-white' onClick={handleSaveAssignment}>
-                  Lưu thay đổi
-                </Button>
-                <Button variant='secondary' onClick={() => setSelectedBooking(null)}>
-                  Hủy
-                </Button>
-              </div>
-            )}
-
-          {/* Nút Hủy khi không được phép phân công */}
-          {(selectedBooking?.sampleCollectionSchedules[0]?.collectorId ||
-            isPastCollectionDate(selectedBooking?.sampleCollectionSchedules[0]?.collectionDate)) && (
-            <div className='flex justify-end gap-3 mt-6'>
-              <Button variant='secondary' onClick={() => setSelectedBooking(null)}>
-                Đóng
-              </Button>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <AssignStaffDialog
+        booking={selectedBooking}
+        open={!!selectedBooking}
+        onClose={() => setSelectedBooking(null)}
+        employees={employees}
+        assignedEmployee={assignedEmployee}
+        setAssignedEmployee={setAssignedEmployee}
+        onSave={handleSaveAssignment}
+      />
     </div>
   );
 }

@@ -189,7 +189,7 @@ const Header = () => {
                 <DropdownMenuItem asChild>
                   <Link to={paths.blogFavorite}>
                     <span className='flex items-center gap-2 w-full'>
-                      <FileHeart  className='h-4 w-4' />
+                      <FileHeart className='h-4 w-4' />
                       Blog yêu thích
                     </span>
                   </Link>

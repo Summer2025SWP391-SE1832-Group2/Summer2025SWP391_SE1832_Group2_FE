@@ -33,7 +33,6 @@ export const paths = {
     viewResult: '/staff/result/view/:id',
     profile: '/staff/profile',
     shipping: '/staff/shipping',
-
   },
 
   // Manager routes
@@ -55,7 +54,7 @@ export const paths = {
     manageSchedule: '/manager/manageschedule',
     profile: '/manager/profile',
     users: '/manager/users',
-
+    refund: '/manager/refund',
   },
 
   // Admin routes
@@ -67,7 +66,6 @@ export const paths = {
     testParameterList: '/admin/testparameterlist',
     profile: '/admin/profile',
     financial: '/admin/financial',
-
   },
   // Payment results
   paymentSuccess: '/payment-success',

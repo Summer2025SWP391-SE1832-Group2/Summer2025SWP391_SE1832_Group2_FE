@@ -144,6 +144,7 @@ const BookingPage = () => {
         const collectionDate = form.watch('collectionDate');
         const time = form.watch('time');
         const location = form.watch('location');
+        console.log('collectionDate', collectionDate, 'time', time, 'location', location);
         return !!collectionDate && !!time && !!location;
       default:
         return true;
@@ -188,7 +189,7 @@ const BookingPage = () => {
         collectionDate: formatISO(values.collectionDate, { representation: 'complete' }),
       });
 
-      showToast('Booking created successfully', 'success');
+      showToast('Tạo thành công', 'success');
 
       setTimeout(() => {
         window.location.href = response;

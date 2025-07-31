@@ -28,6 +28,7 @@ type Booking = {
   fullName?: string;
   finalResult?: string;
   hasSubmittedRating: boolean;
+  orderCode?: number;
   sampleCollectionSchedules: {
     scheduleId: number;
     bookingId: number;
@@ -41,7 +42,7 @@ type Booking = {
 };
 
 type BookingStatus = 'Đang chờ xử lý' | 'Đã lấy mẫu' | 'Hoàn thành';
-type PaymentStatus = 'Đã thanh toán' | 'Chưa thanh toán' ;
+type PaymentStatus = 'Đã thanh toán' | 'Chưa thanh toán';
 
 type BookingRequest = {
   bookingId?: number;
@@ -61,7 +62,5 @@ type BookingRequest = {
     notes: string;
   }[];
 };
-
-
 
 export { type BookingRequest, type BookingStatus, type PaymentStatus, type Booking };

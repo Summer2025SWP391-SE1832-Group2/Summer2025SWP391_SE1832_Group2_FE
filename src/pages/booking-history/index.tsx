@@ -20,7 +20,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { getBookingsByUserId } from '@/services/booking_service';
+import { cancelBooking, getBookingsByUserId } from '@/services/booking_service';
+import ConfirmCancelDialog from './confirm-cancel';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -65,7 +66,6 @@ const BookingHistoryPage = () => {
     return time;
   };
 
-
   const methodMap: Record<string, string> = {
     TAI_CO_SO_Y_TE: 'Cơ sở y tế',
     NHAN_VIEN_DEN_NHA: 'Nhân viên đến nhà',
@@ -87,33 +87,54 @@ const BookingHistoryPage = () => {
     }
   };
   const getPaymentStatusColor = (paymentStatus: string) => {
-  switch (paymentStatus.toLowerCase()) {
-    case 'đã thanh toán':
-      return 'bg-green-100 text-green-700';
-    case 'chưa thanh toán':
-      return 'bg-red-100 text-red-700';
-    default:
-      return 'bg-gray-100 text-gray-700';
-  }
-};
-
+    switch (paymentStatus.toLowerCase()) {
+      case 'đã thanh toán':
+        return 'bg-green-100 text-green-700';
+      case 'chưa thanh toán':
+        return 'bg-red-100 text-red-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
 
   const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
   const reversedBookings = [...bookings].reverse();
-  const currentBookings = reversedBookings.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const currentBookings = reversedBookings.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
+  );
 
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
+  const handleCancelBooking = async () => {
+    if (!selectedBookingId) return;
+
+    try {
+      // TODO: Gọi API hủy đơn tại đây
+      console.log('Hủy đơn có ID:', selectedBookingId);
+      cancelBooking(selectedBookingId);
+      setBookings((prev) => prev.filter((b) => b.bookingId !== selectedBookingId));
+      alert('Đã hủy đặt lịch thành công.');
+    } catch (error) {
+      console.error('Lỗi khi hủy đặt lịch:', error);
+      alert('Có lỗi xảy ra khi hủy đặt lịch. Vui lòng thử lại sau.');
+    } finally {
+      setCancelDialogOpen(false);
+      setSelectedBookingId(null);
+    }
+  };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-6">Lịch sử đặt lịch</h2>
+    <div className='p-6'>
+      <h2 className='text-2xl font-semibold mb-6'>Lịch sử đặt lịch</h2>
 
       {bookings.length === 0 ? (
-        <p className="text-muted-foreground">Bạn chưa có lịch sử booking nào.</p>
+        <p className='text-muted-foreground'>Bạn chưa có lịch sử booking nào.</p>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-lg border">
+          <div className='overflow-x-auto rounded-lg border'>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -126,7 +147,7 @@ const BookingHistoryPage = () => {
                   <TableHead>Thời gian</TableHead>
                   <TableHead>Phương thức</TableHead>
                   <TableHead>Địa điểm</TableHead>
-                  <TableHead className="text-right">Hành động</TableHead>
+                  <TableHead className='text-right'>Hành động</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -135,10 +156,15 @@ const BookingHistoryPage = () => {
                     <TableCell>#{booking.bookingId}</TableCell>
                     <TableCell>{booking.serviceName}</TableCell>
                     <TableCell>
-                      <Badge className={getBookingStatusColor(booking.status||"")}>{booking.status}</Badge>
+                      <Badge className={getBookingStatusColor(booking.status || '')}>
+                        {booking.status}
+                      </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getPaymentStatusColor(booking.paymentStatus)} variant="secondary">
+                      <Badge
+                        className={getPaymentStatusColor(booking.paymentStatus)}
+                        variant='secondary'
+                      >
                         {booking.paymentStatus}
                       </Badge>
                     </TableCell>
@@ -147,12 +173,23 @@ const BookingHistoryPage = () => {
                     <TableCell>{formatTime(booking.time)}</TableCell>
                     <TableCell>{methodMap[booking.method] ?? booking.method}</TableCell>
                     <TableCell>{booking.location || 'Chưa có'}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className='text-right'>
                       <Link to={paths.bookingDetail(String(booking.bookingId))}>
-                        <Button variant="outline" size="sm">
+                        <Button variant='outline' size='sm'>
                           Chi tiết
                         </Button>
                       </Link>
+                      <Button
+                        variant='destructive'
+                        size='sm'
+                        className='ml-1'
+                        onClick={() => {
+                          setSelectedBookingId(booking.bookingId);
+                          setCancelDialogOpen(true);
+                        }}
+                      >
+                        Hủy
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -160,13 +197,13 @@ const BookingHistoryPage = () => {
             </Table>
           </div>
 
-          <Pagination className="mt-4 justify-center">
+          <Pagination className='mt-4 justify-center'>
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious onClick={handlePrevPage} />
               </PaginationItem>
               <PaginationItem>
-                <span className="text-sm text-muted-foreground px-4">
+                <span className='text-sm text-muted-foreground px-4'>
                   Trang {currentPage} / {totalPages}
                 </span>
               </PaginationItem>
@@ -177,6 +214,11 @@ const BookingHistoryPage = () => {
           </Pagination>
         </>
       )}
+      <ConfirmCancelDialog
+        open={cancelDialogOpen}
+        onClose={() => setCancelDialogOpen(false)}
+        onConfirm={handleCancelBooking}
+      />
     </div>
   );
 };

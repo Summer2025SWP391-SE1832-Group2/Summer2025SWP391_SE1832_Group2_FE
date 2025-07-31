@@ -42,7 +42,7 @@ import ServicesPage from '@/pages/dashboard/service';
 import FavoriteBlog from '@/pages/blog/favoriteBlog';
 import FinancialDashboard from '@/pages/financial';
 import ViewResultPage from '@/pages/view-result';
-
+import RefundPage from '@/pages/refund';
 
 const router = createBrowserRouter([
   // Public Pages
@@ -54,7 +54,6 @@ const router = createBrowserRouter([
       { path: paths.blog, element: <BlogPage /> },
       { path: paths.blogType, element: <BlogType /> },
       { path: paths.blogFavorite, element: <FavoriteBlog /> },
-
 
       {
         element: <PublicRoute />,
@@ -138,14 +137,20 @@ const router = createBrowserRouter([
       { path: paths.manager.blogDetail(':blogId'), element: <BlogDetailManagePage /> },
       { path: paths.manager.parameterList, element: <ParameterPage /> },
       { path: paths.manager.testParameterList, element: <TestParameterPage /> },
-      { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
+      {
+        path: paths.manager.testParameterDetail(':serviceId'),
+        element: <TestParameterDetailPage />,
+      },
       { path: paths.manager.manageSchedule, element: <ManagerSchedulePage /> },
       { path: paths.manager.bookingList, element: <BookingListPage /> },
       { path: paths.manager.viewResult, element: <ViewResultPage /> },
-      { path: paths.manager.testParameterDetail(':serviceId'), element: <TestParameterDetailPage /> },
+      {
+        path: paths.manager.testParameterDetail(':serviceId'),
+        element: <TestParameterDetailPage />,
+      },
       { path: paths.manager.profile, element: <ProfilePage /> },
       { path: paths.manager.users, element: <UsersPage /> },
-
+      { path: paths.manager.refund, element: <RefundPage /> },
     ],
   },
 
@@ -165,7 +170,6 @@ const router = createBrowserRouter([
       { path: paths.admin.profile, element: <ProfilePage /> },
       { path: paths.admin.serviceList, element: <ServicesPage /> },
       { path: paths.admin.financial, element: <FinancialDashboard /> },
-
     ],
   },
 
