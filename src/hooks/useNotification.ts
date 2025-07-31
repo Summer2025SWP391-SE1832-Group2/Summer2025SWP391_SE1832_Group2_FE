@@ -90,6 +90,5 @@ export const useNotification = () => {
     refetch: notificationsQuery.refetch,
     notificationCount,
     markAsRead: markAsReadMutation.mutate,
-    isMarkingAsRead: markAsReadMutation.isPending,
   };
 };
