@@ -11,9 +11,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/hooks/useAuth';
+import { generateToken } from '@/lib/firebase';
 import { loginFormDefaultValues, loginFormSchema, type LoginFormValues } from '@/lib/zod/login';
+import { saveFcmToken } from '@/services/notification_service';
 import { useAuthStore } from '@/stores/auth';
 import { paths } from '@/utils/constant/path';
+import { getUserIdFromToken } from '@/utils/helper';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
@@ -41,6 +44,11 @@ const LoginPage = () => {
     try {
       const response = await loginMutation.mutateAsync(data);
       if (!response.success) return;
+      const fcmToken = await generateToken();
+      const userId = getUserIdFromToken(response.data.token);
+      if (fcmToken) {
+        await saveFcmToken({ userId, token: fcmToken });
+      }
       login(response.data.token);
       showToast(response.message || 'Đăng nhập thành công!', 'success');
     } catch (error: any) {
