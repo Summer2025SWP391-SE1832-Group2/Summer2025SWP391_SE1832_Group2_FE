@@ -2,6 +2,7 @@ import BrandLogo from '@/components/common/brand-logo';
 import { EmptyState } from '@/components/common/empty_state';
 import { ErrorMessage } from '@/components/common/error';
 import { Loading } from '@/components/common/loading';
+import NotificationBell from '@/components/common/notification-bell';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -134,6 +135,8 @@ const Header = () => {
         </nav>
 
         <div className='flex items-center space-x-4'>
+          <NotificationBell />
+
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -189,7 +192,7 @@ const Header = () => {
                 <DropdownMenuItem asChild>
                   <Link to={paths.blogFavorite}>
                     <span className='flex items-center gap-2 w-full'>
-                      <FileHeart  className='h-4 w-4' />
+                      <FileHeart className='h-4 w-4' />
                       Blog yêu thích
                     </span>
                   </Link>
