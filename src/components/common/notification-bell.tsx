@@ -12,8 +12,7 @@ import { Bell, X } from 'lucide-react';
 
 const NotificationBell = () => {
   const { user } = useAuthStore();
-  const { notifications, isLoading, notificationCount, markAsRead, isMarkingAsRead } =
-    useNotification();
+  const { notifications, isLoading, notificationCount, markAsRead } = useNotification();
 
   if (user?.role !== 'Customer') {
     return null;
@@ -35,8 +34,11 @@ const NotificationBell = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-80' align='end'>
-        <div className='px-2 py-1.5 text-xs text-muted-foreground border-b mb-1'>
-          Thông báo ({notifications.length})
+        <div className='px-3 py-2 text-xs text-muted-foreground border-b mb-1 flex items-center justify-between'>
+          <span>Thông báo ({notifications.length})</span>
+          {notificationCount > 0 && (
+            <span className='text-blue-600 font-medium'>{notificationCount} chưa đọc</span>
+          )}
         </div>
         {notifications.length === 0 ? (
           <div className='px-3 py-4 text-center text-sm text-muted-foreground'>
@@ -45,27 +47,37 @@ const NotificationBell = () => {
         ) : (
           <div className='max-h-60 overflow-y-auto'>
             {notifications.map((notification) => (
-              <DropdownMenuItem key={notification.id} className='flex flex-col items-start p-3'>
+              <DropdownMenuItem
+                key={notification.id}
+                className={`flex flex-col items-start p-3 transition-all duration-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                  !notification.isRead
+                    ? 'bg-blue-50 dark:bg-blue-950/20 border-l-4 border-blue-500'
+                    : 'border-l-4 border-transparent'
+                }`}
+                onClick={() => {
+                  if (!notification.isRead) {
+                    markAsRead(notification.id);
+                  }
+                }}
+              >
                 <div className='flex items-start justify-between w-full'>
                   <div className='flex-1'>
-                    <div className='font-medium text-sm'>{notification.title}</div>
+                    <div className='flex items-center gap-2'>
+                      <div className='font-medium text-sm'>{notification.title}</div>
+                      {!notification.isRead && (
+                        <Badge
+                          variant='secondary'
+                          className='text-xs px-1.5 py-0 h-4 bg-blue-100 text-blue-700'
+                        >
+                          Mới
+                        </Badge>
+                      )}
+                    </div>
                     <div className='text-xs text-muted-foreground mt-1'>{notification.body}</div>
                     <div className='text-xs text-muted-foreground mt-1'>
                       {new Date(notification.receivedAt).toLocaleTimeString('vi-VN')}
                     </div>
                   </div>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='h-6 w-6 ml-2'
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      markAsRead(notification.id);
-                    }}
-                    disabled={isMarkingAsRead}
-                  >
-                    <X className='h-3 w-3' />
-                  </Button>
                 </div>
               </DropdownMenuItem>
             ))}
