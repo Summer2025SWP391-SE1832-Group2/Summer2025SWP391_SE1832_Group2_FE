@@ -1,53 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Bell, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { onMessageListener } from '@/lib/firebase';
-import { useToast } from '../ui/toast';
+import { useNotification } from '@/hooks/useNotification';
 import { useAuthStore } from '@/stores/auth';
-
-interface NotificationPayload {
-  notification?: {
-    title?: string;
-    body?: string;
-  };
-}
+import { Bell, X } from 'lucide-react';
 
 const NotificationBell = () => {
-  const [notificationCount, setNotificationCount] = useState(0);
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const { showToast } = useToast();
   const { user } = useAuthStore();
-
-  useEffect(() => {
-    if (user?.role !== 'Customer') return;
-
-    const handleMessage = async () => {
-      try {
-        const payload = (await onMessageListener()) as NotificationPayload;
-
-        const newNotification = {
-          id: Date.now(),
-          title: payload?.notification?.title || 'Thông báo mới',
-          body: payload?.notification?.body || 'Bạn có thông báo mới',
-          timestamp: new Date(),
-        };
-
-        setNotifications((prev) => [newNotification, ...prev]);
-        setNotificationCount((prev) => prev + 1);
-      } catch (error) {
-        showToast('Lỗi lắng nghe thông báo', 'error');
-      }
-    };
-
-    handleMessage();
-  }, [user?.role]);
+  const { notifications, isLoading, notificationCount, markAsRead, isMarkingAsRead } =
+    useNotification();
 
   if (user?.role !== 'Customer') {
     return null;
@@ -55,11 +21,7 @@ const NotificationBell = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        onClick={() => {
-          setNotificationCount(0);
-        }}
-      >
+      <DropdownMenuTrigger asChild>
         <Button variant='ghost' size='icon' className='relative'>
           <Bell className='h-5 w-5' />
           {notificationCount > 0 && (
@@ -78,7 +40,7 @@ const NotificationBell = () => {
         </div>
         {notifications.length === 0 ? (
           <div className='px-3 py-4 text-center text-sm text-muted-foreground'>
-            Không có thông báo mới
+            {isLoading ? 'Đang tải...' : 'Không có thông báo mới'}
           </div>
         ) : (
           <div className='max-h-60 overflow-y-auto'>
@@ -89,7 +51,7 @@ const NotificationBell = () => {
                     <div className='font-medium text-sm'>{notification.title}</div>
                     <div className='text-xs text-muted-foreground mt-1'>{notification.body}</div>
                     <div className='text-xs text-muted-foreground mt-1'>
-                      {notification.timestamp.toLocaleTimeString('vi-VN')}
+                      {new Date(notification.receivedAt).toLocaleTimeString('vi-VN')}
                     </div>
                   </div>
                   <Button
@@ -98,8 +60,9 @@ const NotificationBell = () => {
                     className='h-6 w-6 ml-2'
                     onClick={(e) => {
                       e.stopPropagation();
-                      setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+                      markAsRead(notification.id);
                     }}
+                    disabled={isMarkingAsRead}
                   >
                     <X className='h-3 w-3' />
                   </Button>
