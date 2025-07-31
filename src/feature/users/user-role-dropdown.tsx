@@ -12,6 +12,7 @@ import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { UserStatusBadge } from './user-status-badge';
 import { useToast } from '@/components/ui/toast';
+import { useAuthStore } from '@/stores/auth';
 
 interface UserRoleDropdownProps {
   user: User;
@@ -21,15 +22,12 @@ export const UserRoleDropdown = ({ user }: UserRoleDropdownProps) => {
   const [currentRole, setCurrentRole] = useState<UserRole>(user.role);
   const { updateRoleMutation } = useUser();
   const { showToast } = useToast();
+  const { user: currentUser } = useAuthStore();
 
-  const availableRoles: UserRole[] = [
-    'Manager',
-    'FacilityStaff',
-    'HomeStaff',
-    'TestStaff',
-    'ShipStaff',
-    'Customer',
-  ];
+  const availableRoles: UserRole[] =
+    currentUser?.role === 'Manager'
+      ? ['FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff', 'Customer']
+      : ['Manager', 'FacilityStaff', 'HomeStaff', 'TestStaff', 'ShipStaff', 'Customer'];
 
   const handleRoleChange = async (newRole: UserRole) => {
     try {
