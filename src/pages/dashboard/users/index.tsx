@@ -32,7 +32,12 @@ const UsersPage = () => {
         />
       ) : (
         <div className='rounded-md border'>
-          <DataTable columns={columns} data={users} />
+          <DataTable
+            columns={columns}
+            data={users}
+            searchKey='fullName'
+            searchPlaceholder='Tìm kiếm người dùng'
+          />
         </div>
       )}
     </div>
