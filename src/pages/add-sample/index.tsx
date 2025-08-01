@@ -29,9 +29,10 @@ const BookingListPage: React.FC = () => {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingId, setLoadingId] = useState<number | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>("");
+  const [imageUrls, setImageUrls] = useState<Record<number, string>>({});
 
   const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
+
   const getViewResultPath = (role: string | undefined, bookingId: number) => {
     if (role === "Manager") return paths.manager.viewResult.replace(":id", bookingId.toString());
     if (["TestStaff", "HomeStaff", "FacilityStaff"].includes(role || ""))
@@ -82,11 +83,14 @@ const BookingListPage: React.FC = () => {
     }
   };
 
-  const handleImageUploaded = (url: string) => {
-    setImageUrl(url);
+  const handleImageUploaded = (url: string, sampleId: number) => {
+    setImageUrls((prev) => ({ ...prev, [sampleId]: url }));
   };
 
   const handleUpdatePicture = async (sampleId: number, bookingId: number) => {
+    const imageUrl = imageUrls[sampleId];
+    if (!imageUrl) return;
+
     try {
       setLoadingId(sampleId);
       await updateSamplePictureService(sampleId, imageUrl);
@@ -129,32 +133,28 @@ const BookingListPage: React.FC = () => {
                     <TableCell>{b.status}</TableCell>
                     <TableCell>{new Date(b.preferredDate).toLocaleDateString()}</TableCell>
                     <TableCell className="space-x-2 text-right">
-
                       <Button size="sm" onClick={() => handleToggleSamples(b.bookingId)}>
                         {expanded === b.bookingId ? "Ẩn mẫu" : "Xem mẫu"}
                       </Button>
-
 
                       {user?.role === "TestStaff" && b.status !== "Đang chờ xử lý" && (
                         <Link to={paths.staff.addResult.replace(":id", b.bookingId.toString())}>
                           <Button size="sm">Nhập kết quả</Button>
                         </Link>
                       )}
+
                       {b.status === "Hoàn thành" && (
                         <Link to={getViewResultPath(user?.role, b.bookingId)}>
                           <Button size="sm" variant="secondary">Xem kết quả</Button>
                         </Link>
                       )}
-
-
                     </TableCell>
-
                   </TableRow>
 
                   {expanded === b.bookingId && (
                     <TableRow>
                       <TableCell colSpan={5}>
-                        <div className="grid grid-cols-1  xl:grid-cols-2 gap-4 py-4  items-center justify-center">
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 py-4 items-center justify-center">
                           {sampleMap[b.bookingId]?.map((s) => (
                             <Card key={s.sampleId} className="shadow-sm border">
                               <CardHeader>
@@ -188,14 +188,12 @@ const BookingListPage: React.FC = () => {
                                 {user?.role !== "TestStaff" && (
                                   <div className="flex flex-col gap-3 p-3 border rounded-md bg-gray-50">
                                     <DropzoneImageUpload
-                                      onImageUploaded={handleImageUploaded}
-                                      defaultImage={imageUrl}
+                                      onImageUploaded={(url) => handleImageUploaded(url, s.sampleId)}
+                                      defaultImage={imageUrls[s.sampleId]}
                                     />
-
                                     <Button
                                       size="sm"
-                                      className=""
-                                      disabled={loadingId === s.sampleId || !imageUrl}
+                                      disabled={loadingId === s.sampleId || !imageUrls[s.sampleId]}
                                       onClick={() => handleUpdatePicture(s.sampleId, b.bookingId)}
                                     >
                                       {loadingId === s.sampleId ? "Đang lưu..." : "Cập nhật"}
@@ -209,7 +207,6 @@ const BookingListPage: React.FC = () => {
                       </TableCell>
                     </TableRow>
                   )}
-
                 </React.Fragment>
               ))}
             </TableBody>
@@ -239,9 +236,8 @@ const BookingListPage: React.FC = () => {
             </div>
           )}
         </>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 };
 
