@@ -1,5 +1,5 @@
 import axiosInstance from '@/lib/api/axios';
-import type { Booking, BookingRequest } from '@/types/booking';
+import type { Booking, BookingRequest, BookingWithScheduleAndShip } from '@/types/booking';
 import type { User } from '@/types/user';
 
 // Get all bookings
@@ -10,6 +10,13 @@ const getAllBookings = async (): Promise<Booking[]> => {
 
 const getAllBookingSchedule = async (): Promise<Booking[]> => {
   const response = await axiosInstance.get<Booking[]>('/BookingWithSchedule');
+  return response.data;
+};
+
+const getAllBookingWithScheduleAndShip = async (): Promise<BookingWithScheduleAndShip[]> => {
+  const response = await axiosInstance.get<BookingWithScheduleAndShip[]>(
+    '/BookingWithScheduleAndShip',
+  );
   return response.data;
 };
 
@@ -100,6 +107,7 @@ export {
   deleteBooking,
   getAllBookings,
   getAllBookingSchedule,
+  getAllBookingWithScheduleAndShip,
   getBookingById,
   getBookingsByUserId,
   getStaffForSchedule,

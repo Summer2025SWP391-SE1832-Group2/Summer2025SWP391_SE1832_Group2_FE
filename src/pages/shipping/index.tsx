@@ -6,8 +6,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getAllBookings } from '@/services/booking_service';
-import type { Booking } from '@/types/booking';
+import { getAllBookingWithScheduleAndShip } from '@/services/booking_service';
+import type { BookingWithScheduleAndShip } from '@/types/booking';
 import { useEffect, useState } from 'react';
 import {
   Pagination,
@@ -31,17 +31,23 @@ import { getListShippingByBookingId, updateShipping } from '@/services/shipping_
 import { getUserRequestById } from '@/services/user_service';
 
 const ShippingPage = () => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<BookingWithScheduleAndShip[]>([]);
   const [page, setPage] = useState(1);
   const limit = 10;
   const [openDialog, setOpenDialog] = useState(false);
   const [shippingList, setShippingList] = useState<Shipping[]>([]);
   const [userPhones, setUserPhones] = useState<Map<number, string>>(new Map());
 
-  const handleOpenDialog = async (booking: Booking) => {
+  const handleOpenDialog = async (booking: BookingWithScheduleAndShip) => {
     try {
-      const result = await getListShippingByBookingId(booking.bookingId);
-      setShippingList(result);
+      // Use the shipping orders from the booking data if available
+      if (booking.shippingOrders && booking.shippingOrders.length > 0) {
+        setShippingList(booking.shippingOrders);
+      } else {
+        // Fallback to API call if shipping orders are not included
+        const result = await getListShippingByBookingId(booking.bookingId);
+        setShippingList(result);
+      }
       setOpenDialog(true);
     } catch (err) {
       console.error('Failed to fetch shipping list:', err);
@@ -71,7 +77,7 @@ const ShippingPage = () => {
   useEffect(() => {
     const fetchAssignedBookings = async () => {
       try {
-        const response = await getAllBookings();
+        const response = await getAllBookingWithScheduleAndShip();
         const filtered = response.filter(
           (booking) => booking.method === 'TU_THU_MAU' && booking.paymentStatus === 'Đã thanh toán',
         );
@@ -115,6 +121,7 @@ const ShippingPage = () => {
           <TableRow>
             <TableHead>Mã đơn</TableHead>
             <TableHead>Trạng Thái</TableHead>
+            <TableHead>Ngày Thu Kit</TableHead>
             <TableHead>Ngày Giao Kit</TableHead>
             <TableHead>Số điện thoại</TableHead>
             <TableHead>Địa chỉ</TableHead>
@@ -127,8 +134,11 @@ const ShippingPage = () => {
               <TableCell>{booking.bookingId}</TableCell>
               <TableCell>{booking.paymentStatus}</TableCell>
               <TableCell>{new Date(booking.collectionDate).toLocaleDateString()}</TableCell>
+              <TableCell>
+                {new Date(booking.shippingOrders?.[0]?.createAt).toLocaleDateString()}
+              </TableCell>
               <TableCell>{userPhones.get(booking.userId) ?? 'Đang tải...'}</TableCell>
-              <TableCell>{booking.location}</TableCell>
+              <TableCell>{booking.shippingOrders?.[0]?.address ?? 'Không có địa chỉ'}</TableCell>
               <TableCell>
                 <button
                   onClick={() => handleOpenDialog(booking)}

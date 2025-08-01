@@ -1,4 +1,5 @@
 import type { BookingFormValues } from '@/lib/zod/booking';
+import type { Shipping } from './shipping';
 
 // type SampleCollectionSchedule = {
 //   scheduleId: number;
@@ -63,4 +64,24 @@ type BookingRequest = {
   }[];
 };
 
-export { type BookingRequest, type BookingStatus, type PaymentStatus, type Booking };
+type BookingWithScheduleAndShip = {
+  bookingId: number;
+  userId: number;
+  fullName: string;
+  bookingDate: string;
+  collectionDate: string;
+  status: string;
+  paymentStatus: PaymentStatus;
+  preferredDate: string;
+  method: BookingFormValues['method'];
+  orderCode: number;
+  shippingOrders: Shipping[];
+};
+
+export {
+  type BookingRequest,
+  type BookingStatus,
+  type PaymentStatus,
+  type Booking,
+  type BookingWithScheduleAndShip,
+};
