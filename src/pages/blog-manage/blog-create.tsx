@@ -78,7 +78,6 @@ export default function BlogCreatePage() {
     },
   });
 
-
   const handleSubmit = async () => {
     const blogData = {
       createBy: 1,

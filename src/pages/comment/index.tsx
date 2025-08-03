@@ -12,7 +12,7 @@ export default function Comments({ blogId }: CommentsProps) {
 
   const fetchComments = async () => {
     try {
-      const res = await getBlockByBookId(blogId); // rename lại nếu cần
+      const res = await getBlockByBookId(blogId);
       setComments(res);
     } catch (error) {
       console.error('Lỗi khi tải bình luận:', error);

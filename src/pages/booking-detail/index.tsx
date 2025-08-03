@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
 import { ResultContent } from '@/components/common/ResultContent';
 import { RatingDialog, RatingDisplay } from '@/components/common/rating';
 import { Badge } from '@/components/ui/badge';
@@ -25,40 +24,46 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getBookingById } from '@/services/booking_service';
 import type { Booking } from '@/types/booking';
 import { useAuthStore } from '@/stores/auth';
 import { useToast } from '@/components/ui/toast';
+import type { Sample } from '@/types/sample';
+import { getSamplesByBookingId } from '@/services/sample_service';
 
 const BookingDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const bookingId = Number(id);
   const { showToast } = useToast();
-
   const user = useAuthStore((state) => state.user);
 
   const [loading, setLoading] = useState(true);
+  const [samplesLoading, setSamplesLoading] = useState(true);
   const [booking, setBooking] = useState<Booking | null>(null);
+  const [samples, setSamples] = useState<Sample[]>([]);
 
   useEffect(() => {
-    if (!bookingId || isNaN(bookingId)) return;
+    if (!bookingId || isNaN(bookingId)) {
+      showToast('ID booking không hợp lệ.', 'error', 5000);
+      navigate('/');
+      return;
+    }
 
     const fetchBooking = async () => {
       try {
         const data = await getBookingById(bookingId);
-
         if (!user || data.userId !== user.userId) {
           showToast('Bạn không có quyền truy cập vào booking này.', 'info', 5000);
           navigate('/');
           return;
         }
-
         setBooking(data);
       } catch (error) {
         console.error('Lỗi khi lấy chi tiết booking:', error);
-        showToast('Đã xảy ra lỗi khi tải thông tin đặt lịch. Vui lòng thử lại sau.', 'info', 5000);
+        showToast('Đã xảy ra lỗi khi tải thông tin đặt lịch. Vui lòng thử lại sau.', 'error', 5000);
         navigate('/');
       } finally {
         setLoading(false);
@@ -66,7 +71,24 @@ const BookingDetailPage = () => {
     };
 
     fetchBooking();
-  }, [bookingId, user, navigate]);
+  }, [bookingId, user, navigate, showToast]);
+
+  useEffect(() => {
+    const fetchSamples = async () => {
+      if (!bookingId) return;
+      setSamplesLoading(true);
+      try {
+        const samplesData = await getSamplesByBookingId(bookingId);
+        setSamples(samplesData);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách mẫu:', error);
+        showToast('Không thể tải danh sách mẫu.', 'error', 5000);
+      } finally {
+        setSamplesLoading(false);
+      }
+    };
+    fetchSamples();
+  }, [bookingId, showToast]);
 
   const formatDate = (dateStr: string) => {
     if (!dateStr || dateStr === '0001-01-01T00:00:00') return 'Chưa chọn';
@@ -86,7 +108,7 @@ const BookingDetailPage = () => {
   };
 
   const methodMap: Record<string, string> = {
-    TAI_CO_SO_Y_TE: 'Tại cơ sở y tế ',
+    TAI_CO_SO_Y_TE: 'Tại cơ sở y tế',
     NHAN_VIEN_DEN_NHA: 'Nhân viên đến nhà',
     TU_THU_MAU: 'Tự thu mẫu',
   };
@@ -102,7 +124,7 @@ const BookingDetailPage = () => {
   }
 
   return (
-    <div className='p-6 max-w-3xl mx-auto'>
+    <div className='p-6 max-w-4xl mx-auto'>
       <div className='flex justify-start mb-4'>
         <Button variant='outline' onClick={() => navigate(-1)} className='flex items-center gap-2'>
           <ArrowLeft className='w-4 h-4' /> Quay lại lịch sử
@@ -115,7 +137,7 @@ const BookingDetailPage = () => {
         </h1>
         {booking.status === 'Đã hủy' && (
           <div className='font-bold flex items-center gap-2'>
-            <Barcode className='w-6 h-6' /> Mã hoàn tiền : {booking.orderCode}
+            <Barcode className='w-6 h-6' /> Mã hoàn tiền: {booking.orderCode}
           </div>
         )}
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm'>
@@ -132,12 +154,7 @@ const BookingDetailPage = () => {
               <Activity className='w-4 h-4 text-muted-foreground' />
               <span>Phương thức: {methodMap[booking.method] ?? booking.method}</span>
             </div>
-            <div className='flex items-center gap-2'>
-              <Clock className='w-4 h-4 text-muted-foreground' />
-              <span>Khung giờ: {formatTime(booking.time)}</span>
-            </div>
           </div>
-
           <div className='space-y-1'>
             <div className='flex items-center gap-2'>
               <CalendarCog className='w-4 h-4 text-muted-foreground' />
@@ -173,17 +190,14 @@ const BookingDetailPage = () => {
                   : 'Chưa có kết quả'}
               </Button>
             </DialogTrigger>
-
             <DialogContent className='!w-[60vw] !max-w-none !max-h-[100vh] overflow-auto'>
               <DialogHeader>
                 <DialogTitle>Kết quả Booking #{booking.bookingId}</DialogTitle>
               </DialogHeader>
-
               <ResultContent
                 resultDetails={booking.resultDetails || []}
                 serviceId={booking.serviceId}
               />
-
               <div className='mt-4'>
                 <span className='font-semibold'>Lời nhận xét:</span>{' '}
                 {booking.finalResult || (
@@ -192,7 +206,6 @@ const BookingDetailPage = () => {
               </div>
             </DialogContent>
           </Dialog>
-
           {canShowRatingButton && (
             <RatingDialog
               bookingId={booking.bookingId}
@@ -205,13 +218,55 @@ const BookingDetailPage = () => {
               }
             />
           )}
-
           {booking.hasSubmittedRating && <RatingDisplay bookingId={booking.bookingId} />}
         </div>
         <div>
           <Badge variant='outline' className='uppercase'>
             {booking.status}
           </Badge>
+        </div>
+        <div className='mt-6'>
+          <h2 className='text-xl font-semibold mb-2'>Thông tin mẫu</h2>
+          {samplesLoading ? (
+            <Skeleton className='w-full h-24 rounded-xl' />
+          ) : samples.length > 0 ? (
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              {samples.map((sample) => (
+                <Card key={sample.sampleId} className='shadow-sm border'>
+                  <CardHeader>
+                    <CardTitle>Mẫu #{sample.sampleId}</CardTitle>
+                    <CardDescription>
+                      {sample.participantName || 'N/A'} • {sample.sampleType || 'N/A'}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className='space-y-4'>
+                    <div className='space-y-1 text-sm'>
+                      <p>
+                        <strong>Người tham gia:</strong> {sample.participantName || 'N/A'}
+                      </p>
+                      <p>
+                        <strong>Loại mẫu:</strong> {sample.sampleType || 'N/A'}
+                      </p>
+                      <div>
+                        <p className='font-semibold'>Hình ảnh hiện tại:</p>
+                        {sample.picture ? (
+                          <img
+                            src={sample.picture}
+                            alt='Ảnh mẫu'
+                            className='mt-1 h-24 w-auto object-cover border rounded'
+                          />
+                        ) : (
+                          <span className='italic text-muted-foreground'>Chưa có</span>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <p className='text-center text-gray-500 italic'>Không có mẫu nào</p>
+          )}
         </div>
       </div>
     </div>

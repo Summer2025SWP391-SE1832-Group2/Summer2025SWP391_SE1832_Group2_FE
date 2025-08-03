@@ -9,7 +9,9 @@ import {
 } from '@/components/ui/select';
 import type { Booking } from '@/types/booking';
 import { translateRoleToVietnamese, type User } from '@/types/user';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getSamplesByBookingId } from '@/services/sample_service';
+import type { Sample } from '@/types/sample';
 
 type Props = {
   booking: Booking | null;
@@ -41,7 +43,20 @@ export default function AssignStaffDialog({
 
   const schedule = booking.sampleCollectionSchedules[0];
   const [isEditing, setIsEditing] = useState(false);
+  const [samples, setSamples] = useState<Sample[]>([]);
 
+  useEffect(() => {
+    const fetchSamples = async () => {
+      try {
+        const sampleInfor = await getSamplesByBookingId(booking.bookingId);
+        setSamples(sampleInfor);
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu samples:', error);
+      }
+    };
+
+    fetchSamples();
+  }, [booking.bookingId]);
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className='!w-full !max-w-[95vw] max-h-[90vh] overflow-y-auto'>
@@ -64,7 +79,10 @@ export default function AssignStaffDialog({
                 <strong>Loại dịch vụ :</strong> {booking.method}
               </div>
               <div>
-                <strong>Vị trí:</strong> {schedule?.location || 'N/A'}
+                <strong>Địa chỉ :</strong> {schedule?.location || 'N/A'}
+              </div>
+              <div>
+                <strong>Trạng thái:</strong> {booking.status}
               </div>
             </div>
           </div>
@@ -90,11 +108,32 @@ export default function AssignStaffDialog({
 
           {/* Status */}
           <div className='border rounded-xl p-4 bg-gray-50'>
-            <p className='font-semibold mb-2'>Trạng thái</p>
-            <div className='space-y-1'>
-              <div>
-                <strong>Trạng thái:</strong> {booking.status}
-              </div>
+            <p className='font-semibold mb-2'>Thông tin mẫu</p>
+            <div className='overflow-x-auto'>
+              {samples.length > 0 ? (
+                <table className='min-w-full text-sm text-gray-700'>
+                  <thead>
+                    <tr className='bg-gray-100'>
+                      <th className='px-4 py-2 text-left font-semibold'>Mã mẫu</th>
+                      <th className='px-4 py-2 text-left font-semibold'>Tên người tham gia</th>
+                      <th className='px-4 py-2 text-left font-semibold'>Quan hệ</th>
+                      <th className='px-4 py-2 text-left font-semibold'>Loại mẫu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {samples.map((sample) => (
+                      <tr key={sample.sampleId} className='border-b'>
+                        <td className='px-4 py-2'>{sample.sampleId}</td>
+                        <td className='px-4 py-2'>{sample.participantName || 'N/A'}</td>
+                        <td className='px-4 py-2'>{sample.notes || 'N/A'}</td>
+                        <td className='px-4 py-2'>{sample.sampleType || 'N/A'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className='italic text-gray-500 text-center py-2'>Không có mẫu nào</div>
+              )}
             </div>
           </div>
 
