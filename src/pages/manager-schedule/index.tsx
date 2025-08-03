@@ -33,7 +33,7 @@ const localizer = dateFnsLocalizer({
   locales: { vi },
 });
 
-const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+const colors = ['#8DBCC7', '#A4CCD9', '#C4E1E6', '#EBFFD8'];
 
 export default function ManagerSchedulePage() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -137,7 +137,7 @@ export default function ManagerSchedulePage() {
           eventPropGetter={(event) => ({
             style: {
               backgroundColor: event.color,
-              color: 'white',
+              color: '#333',
               borderRadius: '4px',
               padding: '1px 2px',
               fontSize: '11px',

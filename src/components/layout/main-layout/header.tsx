@@ -126,12 +126,12 @@ const Header = () => {
           >
             Blog
           </Link>
-          <Link
+          {/* <Link
             to={paths.blogType}
             className='text-sm font-medium text-muted-foreground hover:text-primary'
           >
             Phản Hồi
-          </Link>
+          </Link> */}
         </nav>
 
         <div className='flex items-center space-x-4'>

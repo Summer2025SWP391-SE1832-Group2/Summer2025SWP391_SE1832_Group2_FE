@@ -20,8 +20,16 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
 import { cancelBooking, getBookingsByUserId } from '@/services/booking_service';
 import ConfirmCancelDialog from './confirm-cancel';
+import { useToast } from '@/components/ui/toast';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -29,7 +37,7 @@ const BookingHistoryPage = () => {
   const { user } = useAuthStore();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const { showToast } = useToast();
   useEffect(() => {
     const fetchBookings = async () => {
       if (!user?.userId) return;
@@ -51,18 +59,13 @@ const BookingHistoryPage = () => {
 
   const formatTime = (time: string) => {
     if (!time) return 'Chưa có';
-
-    // Nếu là dạng "HH:mm:ss-HH:mm:ss"
     if (time.includes('-')) {
       const [start, end] = time.split('-');
       return `${start.split(':').slice(0, 2).join(':')} - ${end.split(':').slice(0, 2).join(':')}`;
     }
-
-    // Nếu chỉ có một mốc thời gian dạng "HH:mm:ss"
     if (time.match(/^\d{2}:\d{2}:\d{2}$/)) {
       return time.split(':').slice(0, 2).join(':');
     }
-
     return time;
   };
 
@@ -86,6 +89,7 @@ const BookingHistoryPage = () => {
         return 'bg-gray-100 text-gray-700';
     }
   };
+
   const getPaymentStatusColor = (paymentStatus: string) => {
     switch (paymentStatus.toLowerCase()) {
       case 'đã thanh toán':
@@ -101,20 +105,19 @@ const BookingHistoryPage = () => {
   const reversedBookings = [...bookings].reverse();
   const currentBookings = reversedBookings.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
   );
 
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
+
   const handleCancelBooking = async () => {
     if (!selectedBookingId) return;
-
     try {
-      // TODO: Gọi API hủy đơn tại đây
-      console.log('Hủy đơn có ID:', selectedBookingId);
-      cancelBooking(selectedBookingId);
+      await cancelBooking(selectedBookingId);
       setBookings((prev) => prev.filter((b) => b.bookingId !== selectedBookingId));
       alert('Đã hủy đặt lịch thành công.');
     } catch (error) {
@@ -127,15 +130,15 @@ const BookingHistoryPage = () => {
   };
 
   return (
-    <div className='p-6'>
+    <div className="p-6 min-h-[500px]">
       <h2 className='text-2xl font-semibold mb-6'>Lịch sử đặt lịch</h2>
 
       {bookings.length === 0 ? (
         <p className='text-muted-foreground'>Bạn chưa có lịch sử booking nào.</p>
       ) : (
         <>
-          <div className='overflow-x-auto rounded-lg border'>
-            <Table>
+          <div className='overflow-x-auto rounded-lg '>
+            <Table className='h-full'>
               <TableHeader>
                 <TableRow>
                   <TableHead>Mã đơn</TableHead>
@@ -174,22 +177,33 @@ const BookingHistoryPage = () => {
                     <TableCell>{methodMap[booking.method] ?? booking.method}</TableCell>
                     <TableCell>{booking.location || 'Chưa có'}</TableCell>
                     <TableCell className='text-right'>
-                      <Link to={paths.bookingDetail(String(booking.bookingId))}>
-                        <Button variant='outline' size='sm'>
-                          Chi tiết
-                        </Button>
-                      </Link>
-                      <Button
-                        variant='destructive'
-                        size='sm'
-                        className='ml-1'
-                        onClick={() => {
-                          setSelectedBookingId(booking.bookingId);
-                          setCancelDialogOpen(true);
-                        }}
-                      >
-                        Hủy
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant='ghost' size='icon'>
+                            <MoreHorizontal className='w-4 h-4' />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align='end'>
+                          <DropdownMenuItem asChild>
+                            <Link to={paths.bookingDetail(String(booking.bookingId))}>
+                              <span>Chi tiết đơn hàng</span>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              if (booking.status?.toLowerCase() === 'Đang chờ xử lý') {
+                                setSelectedBookingId(booking.bookingId);
+                                setCancelDialogOpen(true);
+                              } else {
+                                showToast("Chỉ đơn hàng đang chờ xử lý mới được phép huỷ và hoàn tiền.", "info");
+                              }
+                            }}
+                          >
+                            Huỷ đơn hàng
+                          </DropdownMenuItem>
+
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -197,23 +211,27 @@ const BookingHistoryPage = () => {
             </Table>
           </div>
 
-          <Pagination className='mt-4 justify-center'>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious onClick={handlePrevPage} />
-              </PaginationItem>
-              <PaginationItem>
-                <span className='text-sm text-muted-foreground px-4'>
-                  Trang {currentPage} / {totalPages}
-                </span>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext onClick={handleNextPage} />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          {totalPages > 1 && (
+            <Pagination className='mt-4 justify-center'>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious onClick={handlePrevPage} />
+                </PaginationItem>
+                <PaginationItem>
+                  <span className='text-sm text-muted-foreground px-4'>
+                    Trang {currentPage} / {totalPages}
+                  </span>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext onClick={handleNextPage} />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+
         </>
       )}
+
       <ConfirmCancelDialog
         open={cancelDialogOpen}
         onClose={() => setCancelDialogOpen(false)}

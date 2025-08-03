@@ -8,12 +8,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useNotification } from '@/hooks/useNotification';
 import { useAuthStore } from '@/stores/auth';
-import { Bell, X } from 'lucide-react';
+import { paths } from '@/utils/constant/path';
+import { Bell } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const NotificationBell = () => {
   const { user } = useAuthStore();
   const { notifications, isLoading, notificationCount, markAsRead } = useNotification();
-
+  const navigate = useNavigate();
   if (user?.role !== 'Customer') {
     return null;
   }
@@ -21,7 +23,12 @@ const NotificationBell = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='ghost' size='icon' className='relative'>
+        <Button
+          variant='ghost'
+          size='icon'
+          className='relative'
+          
+        >
           <Bell className='h-5 w-5' />
           {notificationCount > 0 && (
             <Badge
@@ -33,6 +40,7 @@ const NotificationBell = () => {
           )}
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className='w-80' align='end'>
         <div className='px-3 py-2 text-xs text-muted-foreground border-b mb-1 flex items-center justify-between'>
           <span>Thông báo ({notifications.length})</span>
@@ -49,15 +57,16 @@ const NotificationBell = () => {
             {notifications.map((notification) => (
               <DropdownMenuItem
                 key={notification.id}
-                className={`flex flex-col items-start p-3 transition-all duration-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 ${
-                  !notification.isRead
-                    ? 'bg-blue-50 dark:bg-blue-950/20 border-l-4 border-blue-500'
-                    : 'border-l-4 border-transparent'
-                }`}
+                className={`flex flex-col items-start p-3 transition-all duration-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 ${!notification.isRead
+                  ? 'bg-blue-50 dark:bg-blue-950/20 border-l-4 border-blue-500'
+                  : 'border-l-4 border-transparent'
+                  }`}
+               
                 onClick={() => {
                   if (!notification.isRead) {
                     markAsRead(notification.id);
                   }
+                  navigate(paths.bookingHistory);
                 }}
               >
                 <div className='flex items-start justify-between w-full'>
